@@ -1,0 +1,238 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>Trang cá nhân</h1>
+  </div>
+
+  <div class="card profile-card mb-4">
+    <div class="card-body">
+      <div class="row align-items-center" *ngFor="let user of userData">
+        <div class="col-md-2 text-center">
+          <img
+            *ngIf="user.hinhAnh; else defaultAvatar"
+            [src]="baseUrl + user.hinhAnh"
+            alt="Hình ảnh sản phẩm"
+            class="rounded-circle profile-img"
+            style="width: 150px; height: 150px; object-fit: cover;"
+          />
+
+          <ng-template #defaultAvatar>
+            <i
+              class="fa fa-user-circle text-secondary"
+              style="font-size: 100px"
+            ></i>
+          </ng-template>
+        </div>
+        <div class="col-md-10 bg-profile">
+          <h3 class="mb-3">{{ user.tenKhachHang }}</h3>
+          <p class="text-secondary mb-2">
+            <i class="fa-solid fa-phone me-2"></i>Số điện thoại:
+            {{ user.soDienThoai }}
+          </p>
+          <p class="text-secondary mb-2">
+            <i class="fa-solid fa-envelope me-2"></i>Email: {{ user.email }}
+          </p>
+          <p class="text-secondary mb-3">
+            <i class="fa-solid fa-map-marker-alt me-2"></i>Địa chỉ:
+            {{ user.diaChi }}
+          </p>
+          <button
+            (click)="handlerOpenDialog(user, 'edit')"
+            class="btn btn-primary"
+          >
+            <i class="fa-solid fa-edit me-2"></i>
+            Chỉnh sửa
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <button
+        class="nav-link active"
+        (click)="selectTab('Đơn Hàng')"
+        [class.active]="activeTab === 'Đơn Hàng'"
+      >
+        Đơn Hàng
+      </button>
+    </li>
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        (click)="selectTab('Bài Đăng')"
+        [class.active]="activeTab === 'Bài Đăng'"
+      >
+        Bài Đăng
+      </button>
+    </li>
+  </ul>
+
+  <div *ngIf="activeTab === 'Đơn Hàng'">
+    <div class="card profile-card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr class="text-center">
+                <th>Họ Tên</th>
+                <th>Sản phẩm</th>
+                <th>Số điện thoại</th>
+                <th>Địa chỉ</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Ngày mua</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let dhang of listOfData">
+                <td class="text-center">{{ dhang.tenKhachHang }}</td>
+                <td class="text-center">
+                  <button
+                    (click)="handlerOpenDialogChiTietDonHang(dhang, 'view')"
+                    class="btn btn-primary"
+                  >
+                    Chi tiết
+                  </button>
+                </td>
+                <td class="text-center">{{ dhang.soDienThoai }}</td>
+                <td class="text-center">{{ dhang.email }}</td>
+                <td class="text-center">{{ dhang.tongTien | moneyPipe }}</td>
+                <td class="text-center">
+                  {{
+                    dhang.trangThaiSanPham | labelValue: listTrangThaiSanPham
+                  }}
+                </td>
+                <td class="text-center">
+                  {{ dhang.ngayMua | dateTimeFormat }}
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-danger btn-sm">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === 'Bài Đăng'">
+    <div class="card profile-card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr class="text-center">
+                <th>Họ Tên</th>
+                <th>Sản phẩm</th>
+                <th>Đánh giá</th>
+                <th>Bình luận</th>
+                <th>Ngày đánh giá</th>
+                <th>Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let forum of forums">
+                <td class="text-center">{{ forum.tenKhachHang }}</td>
+                <td class="text-center">{{ forum.tenGoiTap }}</td>
+                <td class="text-center">
+                  <i
+                    *ngFor="let star of [].constructor(forum.danhGia)"
+                    class="fa-solid fa-star text-warning"
+                  ></i>
+                </td>
+                <td class="text-center">{{ forum.binhLuan }}</td>
+                <td class="text-center">
+                  {{ forum.ngayDanhGia | dateFormat }}
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-danger btn-sm">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade show d-block bg-modal"
+  *ngIf="isModalOpen2"
+  style="background-color: rgba(0, 0, 0, 0.5)"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title fw-bold">Chỉnh sửa thông tin cá nhân</h4>
+        <button type="button" class="btn-close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="mb-3">
+              <label for="TenKhachHang" class="form-label">Họ và Tên</label>
+              <input
+                type="text"
+                class="form-control"
+                id="TenKhachHang"
+                name="TenKhachHang"
+                placeholder="Họ và tên"
+                disabled
+              />
+            </div>
+            <!-- <div class="mb-3">
+                    <label for="MatKhau" class="form-label">Mật Khẩu</label>
+                    <input type="text" class="form-control" id="MatKhau" [(ngModel)]="inforUser.MatKhau" name="MatKhau" placeholder="Mật khẩu">
+                </div> -->
+            <div class="mb-3">
+              <label for="SoDienThoai" class="form-label">Số điện thoại</label>
+              <input
+                type="text"
+                class="form-control"
+                id="SoDienThoai"
+                name="SoDienThoai"
+                placeholder="Số điện thoại"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="Email" class="form-label">Email</label>
+              <input
+                type="text"
+                class="form-control"
+                id="Email"
+                name="Email"
+                placeholder="Số điện thoại"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="DiaChi" class="form-label">Địa chỉ</label>
+              <input
+                type="text"
+                class="form-control"
+                id="DiaChi"
+                name="DiaChi"
+                placeholder="Địa chỉ"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="HinhAnh" class="form-label">Hình ảnh</label>
+              <input type="file" class="form-control" id="HinhAnh" required />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success">Cập nhật</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

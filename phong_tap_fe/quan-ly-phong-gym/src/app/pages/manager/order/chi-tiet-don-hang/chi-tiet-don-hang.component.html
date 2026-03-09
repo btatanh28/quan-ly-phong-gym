@@ -1,0 +1,49 @@
+<nz-tabset [(nzSelectedIndex)]="indexTab" class="popup-layout">
+  <nz-tab class="title-layout" nzTitle="Thông tin">
+    <ng-container *ngIf="!initForm">
+      <nz-skeleton [nzParagraph]="{ rows: 10 }"></nz-skeleton>
+    </ng-container>
+  </nz-tab>
+</nz-tabset>
+
+<div>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th class="text-center">Tên gói tập</th>
+                <th class="text-center">Giá</th>
+                <th class="text-center">Số lượng</th>
+                <th class="text-center">Tổng tiền</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of listOfData">
+                <td class="text-center">{{ item.tenGoiTap }}</td>
+                <td class="text-center">{{ item.gia | moneyPipe }}</td>
+                <td class="text-center">{{ item.soLuong }}</td>
+                <td class="text-center">
+                  {{ item.gia * item.soLuong | moneyPipe }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="list-button mt-4">
+  <button
+    nz-button
+    type="button"
+    class="btn btn-danger"
+    (click)="closeDialog()"
+  >
+    <i class="isax-close-circle1 mr-2"></i>Đóng
+  </button>
+</div>

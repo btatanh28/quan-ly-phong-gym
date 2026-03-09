@@ -1,0 +1,18 @@
+<div
+  class="container d-flex justify-content-center align-items-center vh-100 scan-bg"
+>
+  <div class="card scan-card text-center p-4">
+    <h4 class="scan-title mb-3">📷 Scan QR Check-in</h4>
+
+    <div class="scanner-box position-relative">
+      <div id="reader"></div>
+
+      <!-- scan line -->
+      <div class="scan-line"></div>
+    </div>
+
+    <div *ngIf="scanResult" class="alert alert-success mt-4">
+      ✅ Check-in thành công: {{ scanResult }}
+    </div>
+  </div>
+</div>

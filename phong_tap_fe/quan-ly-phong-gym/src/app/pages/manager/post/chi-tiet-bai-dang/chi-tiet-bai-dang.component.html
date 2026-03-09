@@ -1,0 +1,85 @@
+<nz-tabset [(nzSelectedIndex)]="indexTab" class="popup-layout">
+  <nz-tab class="title-layout" nzTitle="Thông tin">
+    <ng-container *ngIf="!initForm">
+      <nz-skeleton [nzParagraph]="{ rows: 10 }"></nz-skeleton>
+    </ng-container>
+    <ng-template nz-tab *ngTemplateOutlet="tab1"></ng-template>
+  </nz-tab>
+</nz-tabset>
+
+<ng-template #tab1>
+  <ng-container *ngIf="initForm">
+    <form *ngIf="myForm" [formGroup]="myForm" (ngSubmit)="saveData()">
+      <div class="bg-display-flex">
+        <!-- PHẦN ẢNH ĐẠI DIỆN TRÒN GIỮA -->
+        <div class="avatar-section">
+          <div class="avatar-wrapper">
+            <label for="hinhAnh" class="avatar-label">
+              <div class="avatar-overlay" *ngIf="modalImg">
+                <i class="fas fa-camera"></i>
+              </div>
+
+              <img
+                *ngIf="previewUrl"
+                [src]="previewUrl"
+                alt="Avatar"
+                class="avatar-image"
+              />
+            </label>
+            <input
+              type="file"
+              id="hinhAnh"
+              formControlName="hinhAnh"
+              (change)="onFileSelected($event)"
+              hidden
+            />
+          </div>
+        </div>
+
+        <!-- CÁC TRƯỜNG THÔNG TIN -->
+        <div class="bg-input row">
+          <div class="col-md-12">
+            <label for="tenBaiViet" class="form-label">Tên bài đăng</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="tenBaiViet"
+            />
+          </div>
+
+          <div class="col-md-12">
+            <label for="noiDung" class="form-label">Nội dung</label>
+            <textarea
+              type="text"
+              formControlName="noiDung"
+              class="form-control"
+              placeholder="Nội dung bài đăng"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</ng-template>
+
+<div class="list-button mt-4">
+  <button
+    nz-button
+    type="button"
+    class="btn btn-danger"
+    (click)="closeDialog()"
+  >
+    <i class="isax-close-circle1 mr-2"></i>Đóng
+  </button>
+
+  <ng-container *ngIf="initForm">
+    <button
+      nz-button
+      type="button"
+      class="btn btn-primary"
+      (click)="saveData()"
+    >
+      <i class="isax-add-circle1 mr-2"></i>Ghi
+    </button>
+  </ng-container>
+</div>

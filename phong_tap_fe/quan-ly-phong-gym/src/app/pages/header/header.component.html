@@ -1,0 +1,222 @@
+<div class="header-container" [ngClass]="{ scrolled: isScrolled }">
+  <div class="popup-layout">
+    <nav class="navbar-layout navbar-expand-lg">
+      <!-- Logo -->
+      <a
+        class="navbar-brand animate__animated animate__bounceIn"
+        [routerLink]="['/home']"
+      >
+        <img
+          src="assets/img/logo-fitness.png"
+          alt="Food Logo"
+          class="logo-img"
+          [ngClass]="{ scrolled: isScrolled }"
+        />
+      </a>
+      <!-- Toggle button for mobile -->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <ul class="navbar-nav nav-layout">
+        <li class="nav-item" *ngIf="!this.isAdmin || !this.isEmployee">
+          <a class="nav-link" [routerLink]="['/manager']">Quản lý</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/home']">Trang chủ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/introduction']">Giới thiệu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/forum']">Diễn đàn</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/menu']">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a
+            *ngIf="!this.isAdmin() && !this.isEmployee()"
+            class="nav-link"
+            [routerLink]="['/cart']"
+            >Giỏ hàng</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/book']">Liên hệ</a>
+        </li>
+      </ul>
+
+      <!-- Navigation links -->
+    </nav>
+
+    <div class="nav-display" id="navbarNav">
+      <form class="">
+        <input
+          class="form-control search-input"
+          type="search"
+          name="searchKeyword"
+          placeholder="Tìm kiếm..."
+          aria-label="Search"
+          (onChange)="getData()"
+        />
+      </form>
+
+      <!-- Right side icons -->
+      <div class="d-flex align-items-center ms-3">
+        <!-- <div class="dropdown">
+          <a
+            href="#"
+            class="nav-icon me-4 position-relative"
+            id="notificationDropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fas fa-utensils fa-lg"></i>
+            <span
+              *ngIf="!hasNewNotification"
+              class="badge rounded-circle position-absolute animate__animated animate__bounce"
+            >
+              <i
+                class="fa-solid fa-bell"
+                [ngClass]="{
+                  'animate__animated animate__shakeX': hasNewNotification,
+                }"
+              ></i>
+            </span>
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn noti mt-3"
+            aria-labelledby="notificationDropdown"
+          >
+            <li class="notification-item" *ngFor="let Donhang of donhang">
+              <div class="notification-title">
+                Đơn hàng: {{ Donhang.IDDonHang }}
+              </div>
+              <div>Trạng thái: {{ Donhang.TrangThaiSanPham }}</div>
+              <div class="notification-time">
+                Ngày đặt: {{ Donhang.NgayDatHang | date: "dd/MM/yyyy" }}
+              </div>
+              <div class="notification-btn">
+                <button class="btn btn-success">Chi tiết</button>
+              </div>
+            </li>
+            <li
+              *ngIf="donhang.length === 0"
+              class="dropdown-item no-notifications"
+              id="noNotifications"
+            >
+              Không có thông báo mới
+            </li>
+          </ul>
+        </div> -->
+        <ng-container *ngIf="!currentUser">
+          <a
+            [routerLink]="['/login']"
+            class="btn btn-outline-light logout-btn animate__animated animate__fadeInRight"
+            >Đăng ký/Đăng nhập</a
+          >
+        </ng-container>
+
+        <ng-container *ngIf="currentUser">
+          <div
+            class="user-info d-flex align-items-center animate__animated animate__fadeInRight"
+          >
+            <a
+              [routerLink]="['/personalPage']"
+              class="text-light me-3 nav-link"
+              *ngIf="!this.isAdmin() && !this.isEmployee()"
+            >
+              <i class="fa fa-user-circle fs-5 text-light"></i>
+              {{ currentUser.name }}
+            </a>
+            <button class="btn btn-outline-light logout-btn" (click)="logout()">
+              <i class="fa fa-sign-out-alt me-1"></i> Đăng xuất
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <!-- Search popup -->
+  <div
+    class="search-popup"
+    *ngIf="showSearch"
+    [ngClass]="{
+      'animate__animated animate__fadeIn': showSearch,
+      animate__fadeOut: !showSearch,
+    }"
+  >
+    <div class="search-content">
+      <button class="close-btn" (click)="toggleSearch()">
+        <i class="fas fa-times"></i>
+      </button>
+      <form class="d-flex align-items-center">
+        <input
+          class="form-control search-input"
+          type="search"
+          name="searchKeyword"
+          placeholder="Tìm món ăn..."
+          aria-label="Search"
+        />
+        <button class="btn btn-search ms-2" type="submit">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- <div
+  class="modal fade show d-block bg-modal"
+  *ngIf="isModalOpen"
+  style="background-color: rgba(0, 0, 0, 0.5)"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" *ngFor="let order of orders">
+      <div class="modal-header">
+        <h4 class="modal-title fw-bold">
+          Chi tiết đơn hàng #{{ order.IDDonHang }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-dark">
+              <tr>
+                <th>ID Đơn Hàng</th>
+                <th>Tên Sản phẩm</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center" style="font-size: 25px">
+                  {{ order.IDDonHang }}
+                </td>
+                <td>
+                  <ul class="mb-0">
+                    <li *ngFor="let item of order.items">
+                      {{ item.product.product.TenSanPham }} (x{{
+                        item.SoLuong
+                      }})
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

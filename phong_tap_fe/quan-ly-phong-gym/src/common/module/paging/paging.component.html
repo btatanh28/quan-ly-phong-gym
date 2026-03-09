@@ -1,0 +1,50 @@
+<nav class="pagination" aria-label="Pagination" *ngIf="totalPages > 1">
+  <button
+    class="page-btn"
+    (click)="goTo(1)"
+    [disabled]="currentPage === 1"
+    aria-label="First"
+  >
+    «
+  </button>
+  <button
+    class="page-btn"
+    (click)="prev()"
+    [disabled]="currentPage === 1"
+    aria-label="Previous"
+  >
+    ‹
+  </button>
+
+  <ng-container *ngIf="pages.length">
+    <button
+      *ngFor="let p of pages"
+      class="page-number"
+      [class.active]="p === currentPage"
+      (click)="goTo(p)"
+      [attr.aria-current]="p === currentPage ? 'page' : null"
+    >
+      {{ p }}
+    </button>
+  </ng-container>
+
+  <button
+    class="page-btn"
+    (click)="next()"
+    [disabled]="currentPage === totalPages"
+    aria-label="Next"
+  >
+    ›
+  </button>
+  <button
+    class="page-btn"
+    (click)="goTo(totalPages)"
+    [disabled]="currentPage === totalPages"
+    aria-label="Last"
+  >
+    »
+  </button>
+  <span class="page-info"
+    >Trang {{ currentPage }} / {{ totalPages }} — Tổng: {{ totalRecords }}</span
+  >
+</nav>

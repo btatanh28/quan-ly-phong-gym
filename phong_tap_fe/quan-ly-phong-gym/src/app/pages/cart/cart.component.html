@@ -1,0 +1,191 @@
+<!-- cart.component.html -->
+<div class="cart-page">
+  <div class="container content">
+    <h2 class="text-center mb-4 fw-bold">Giỏ hàng</h2>
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th scope="col">Sản phẩm</th>
+                    <th scope="col">Hình ảnh</th>
+                    <th scope="col">Giá</th>
+                    <th scope="col">Số lượng</th>
+                    <th scope="col">Giảm giá</th>
+                    <th scope="col">Giá sau giảm</th>
+                    <th scope="col">Tổng</th>
+                    <th scope="col">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of cartItems">
+                    <td>{{ item.product.tenGoiTap }}</td>
+                    <td>
+                      <img
+                        [src]="baseUrl + item.product.hinhAnh"
+                        alt="Hình ảnh sản phẩm"
+                        width="110px"
+                        height="100px"
+                      />
+                    </td>
+                    <td>{{ item.product.gia | moneyPipe }}</td>
+                    <td align="center">
+                      <input
+                        type="number"
+                        class="form-control w-75"
+                        [(ngModel)]="item.soLuong"
+                        min="1"
+                        (change)="updateQuantity(item)"
+                      />
+                    </td>
+                    <td>
+                      {{ item.product.giamGia | labelValue: listGiamGia }}
+                    </td>
+                    <td>
+                      {{ item.product.giaSauGiam | moneyPipe }}
+                    </td>
+                    <td>
+                      {{
+                        (item.product.giaSauGiam || item.product.gia) *
+                          item.soLuong | moneyPipe
+                      }}
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-danger btn-sm"
+                        (click)="removeFromCart(item)"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="cartItems.length === 0">
+                    <td colspan="8" class="text-center">Giỏ hàng trống</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+              <h5 class="fw-bold">
+                Tổng cộng: {{ getTotalPrice() | moneyPipe }}
+              </h5>
+              <button
+                class="btn btn-success"
+                [disabled]="cartItems.length === 0"
+                (click)="openCheckoutModal()"
+              >
+                Đặt hàng
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal xác nhận đơn hàng -->
+    <div
+      class="modal fade show d-block bg-modal"
+      *ngIf="isModalOpen && myForm"
+      [formGroup]="myForm"
+      style="background-color: rgba(0, 0, 0, 0.5)"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold">Xác nhận đặt hàng</h5>
+            <button
+              type="button"
+              class="btn-close"
+              (click)="closeModal()"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th class="text-center">Tên sản phẩm</th>
+                    <th class="text-center">Giá</th>
+                    <th class="text-center">Số lượng</th>
+                    <th class="text-center">Giảm giá</th>
+                    <th class="text-center">Giá sau giảm</th>
+                    <th class="text-center">Tổng tiền</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of cartItems">
+                    <td class="text-center">{{ item.product.tenGoiTap }}</td>
+                    <td class="text-center">
+                      {{ item.product.gia | moneyPipe }}
+                    </td>
+                    <td class="text-center">{{ item.soLuong }}</td>
+                    <td class="text-center">
+                      {{ item.product.giamGia | labelValue: listGiamGia }}
+                    </td>
+                    <td class="text-center">
+                      {{ item.product.giaSauGiam | moneyPipe }}
+                    </td>
+                    <td class="text-center">
+                      {{
+                        (item.product.giaSauGiam || item.product.gia) *
+                          item.soLuong | moneyPipe
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-end fw-bold mt-3">
+              Tổng cộng:
+              <span class="text-success">{{
+                getTotalPrice() | moneyPipe
+              }}</span>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Email</label>
+
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Số điện thoại</label>
+
+              <input
+                type="text"
+                class="form-control"
+                formControlName="soDienThoai"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Phương thức thanh toán:</label>
+
+              <input-select
+                formControlName="hinhThucThanhToan"
+                [items]="paymentMethod"
+              />
+            </div>
+
+            <!-- QR chuyển khoản -->
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeModal()">
+              Hủy
+            </button>
+            <button class="btn btn-success btn-sm" (click)="handleCheckout()">
+              Kiểm tra và xác nhận thanh toán
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

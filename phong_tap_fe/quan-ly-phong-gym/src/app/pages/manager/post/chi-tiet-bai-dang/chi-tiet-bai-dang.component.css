@@ -1,0 +1,105 @@
+.popup-layout {
+  margin-top: -20px;
+}
+
+.title-layout {
+  color: #b8860b !important;
+}
+
+.form-label {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.avatar-section {
+  text-align: center;
+}
+
+.avatar-wrapper {
+  position: relative;
+  /* display: inline-block; */
+  overflow: hidden;
+  cursor: pointer;
+  width: 350px;
+  height: 350px;
+}
+
+.avatar-img {
+  width: 350px;
+  height: 350px;
+  object-fit: cover;
+  border: 6px solid #fff;
+  transition: all 0.3s ease;
+}
+
+.avatar-image {
+  width: 350px;
+  height: 350px;
+  object-fit: cover;
+  border: 6px solid #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.avatar-wrapper:hover .avatar-img {
+  transform: scale(1.05);
+}
+
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.avatar-wrapper:hover .avatar-overlay {
+  opacity: 1;
+}
+
+.avatar-overlay i {
+  color: white;
+  font-size: 32px;
+}
+
+.change-photo-text a {
+  color: #667eea;
+  text-decoration: underline;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.change-photo-text a:hover {
+  color: #5a67d8;
+}
+
+/* Tinh chỉnh form */
+.form-label {
+  font-weight: 600;
+  color: #ffff;
+}
+
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.bg-display-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.bg-input {
+  width: 100%;
+  padding-left: 20px;
+}

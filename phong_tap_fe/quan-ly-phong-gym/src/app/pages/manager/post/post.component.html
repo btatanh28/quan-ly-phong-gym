@@ -1,0 +1,126 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Quản lý bài đăng</h5>
+  </div>
+
+  <div class="mb-4">
+    <div class="card-body">
+      <form *ngIf="formSearch" [formGroup]="formSearch" (ngSubmit)="getData()">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="tenNguoiDung" class="form-label">Tên Nhân viên</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="tenNguoiDung"
+              placeholder="Tên Nhân viên"
+            />
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="tenBaiViet" class="form-label">Tên bài viết</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="tenBaiViet"
+              placeholder="Tên bài viết"
+            />
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="ngayDangBai" class="form-label">Ngày đăng bài</label>
+            <input-date type="text" formControlName="ngayDangBai" />
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="ngayCapNhat" class="form-label">Ngày cập nhật</label>
+            <input-date type="text" formControlName="ngayCapNhat" />
+          </div>
+        </div>
+
+        <div class="list-button">
+          <button
+            nz-button
+            type="button"
+            class="btn btn-primary btn-search"
+            (click)="getData()"
+          >
+            <i nz-icon nzType="search" nzTheme="outline"></i>Tìm kiếm
+          </button>
+
+          <button
+            nz-button
+            type="button"
+            class="btn btn-primary btn-search"
+            (click)="onReset()"
+          >
+            <i nz-icon nzType="reload" nzTheme="outline"></i>Làm mới
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="data-table">
+      <div class="hearder-table mt-m-15">
+        <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
+          <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
+        </nz-tabset>
+        <div class="lst-controls">
+          <button
+            nz-button
+            type="button"
+            class="btn btn-primary"
+            (click)="handlerOpenDialog()"
+          >
+            <i class="isax-add-circle1 mr-2"></i>Thêm mới
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th class="text-center">Tên người dùng</th>
+                <th class="text-center">Tên bài viết</th>
+                <th class="text-center">Ngày đăng bài</th>
+                <td class="text-center">Ngày cập nhật</td>
+                <th class="text-center">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of listOfData">
+                <td class="text-center">{{ item.tenNguoiDung }}</td>
+                <td class="text-center">{{ item.tenBaiViet }}</td>
+                <td class="text-center">{{ item.ngayDangBai | dateFormat }}</td>
+                <td class="text-center">{{ item.ngayCapNhat | dateFormat }}</td>
+                <td class="text-center">
+                  <button
+                    class="btn btn-custom btn-sm me-2"
+                    (click)="handlerOpenDialog(item, 'view')"
+                  >
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+
+                  <button
+                    class="btn btn-custom btn-sm me-2"
+                    (click)="handlerOpenDialog(item, 'edit')"
+                  >
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    (click)="deleteData(item.id)"
+                  >
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

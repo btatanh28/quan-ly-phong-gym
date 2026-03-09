@@ -1,0 +1,26 @@
+.card-header {
+  background-color: #001628;
+  border-bottom: none;
+  padding: 8px;
+  height: 56px;
+}
+
+h5 {
+  color: #fffff2;
+}
+
+.table-responsive {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 1200px;
+  table-layout: fixed;
+}
+
+.table th,
+.table td {
+  text-align: center;
+  vertical-align: middle;
+}

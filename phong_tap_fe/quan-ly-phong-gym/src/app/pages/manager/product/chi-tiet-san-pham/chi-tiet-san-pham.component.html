@@ -1,0 +1,103 @@
+<nz-tabset [(nzSelectedIndex)]="indexTab" class="popup-layout">
+  <nz-tab class="title-layout" nzTitle="Thông tin">
+    <ng-container *ngIf="!initForm">
+      <nz-skeleton [nzParagraph]="{ rows: 10 }"></nz-skeleton>
+    </ng-container>
+    <ng-template nz-tab *ngTemplateOutlet="tab1"></ng-template>
+  </nz-tab>
+</nz-tabset>
+
+<ng-template #tab1>
+  <ng-container *ngIf="initForm">
+    <form *ngIf="myForm" [formGroup]="myForm" (ngSubmit)="saveData()">
+      <div class="bg-display-flex">
+        <!-- PHẦN ẢNH ĐẠI DIỆN TRÒN GIỮA -->
+        <div class="avatar-section">
+          <div class="avatar-wrapper">
+            <label for="hinhAnh" class="avatar-label">
+              <div class="avatar-overlay" *ngIf="modalImg">
+                <i class="fas fa-camera"></i>
+              </div>
+
+              <img
+                *ngIf="previewUrl"
+                [src]="previewUrl"
+                alt="Avatar"
+                class="avatar-image"
+              />
+            </label>
+            <input
+              type="file"
+              id="hinhAnh"
+              formControlName="hinhAnh"
+              (change)="onFileSelected($event)"
+              hidden
+            />
+          </div>
+        </div>
+
+        <!-- CÁC TRƯỜNG THÔNG TIN -->
+        <div class="row">
+          <div class="col-md-6">
+            <label for="tenGoiTap" class="form-label">Tên gói tập</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="tenGoiTap"
+            />
+          </div>
+
+          <div class="col-md-6">
+            <label for="gia" class="form-label">Giá</label>
+            <input-moneny type="number" formControlName="gia" />
+          </div>
+
+          <div class="col-md-6">
+            <label for="gia" class="form-label">Thời hạn ngày</label>
+            <input-select
+              [items]="listThoiHanNgay"
+              formControlName="thoiHanNgay"
+            />
+          </div>
+
+          <div class="col-md-6">
+            <label for="gia" class="form-label">Giảm giá</label>
+            <input-select [items]="listGiamGia" formControlName="giamGia" />
+          </div>
+
+          <div class="col-md-12">
+            <label for="moTa" class="form-label">Mô tả</label>
+            <textarea
+              type="text"
+              formControlName="moTa"
+              class="form-control"
+              placeholder="Mô tả sản phẩm"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</ng-template>
+
+<div class="list-button mt-4">
+  <button
+    nz-button
+    type="button"
+    class="btn btn-danger"
+    (click)="closeDialog()"
+  >
+    <i class="isax-close-circle1 mr-2"></i>Đóng
+  </button>
+
+  <ng-container *ngIf="initForm">
+    <button
+      nz-button
+      type="button"
+      class="btn btn-primary"
+      (click)="saveData()"
+    >
+      <i class="isax-add-circle1 mr-2"></i>Ghi
+    </button>
+  </ng-container>
+</div>

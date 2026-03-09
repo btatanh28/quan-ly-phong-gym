@@ -1,0 +1,56 @@
+<div class="auth-modal" [ngClass]="{ scrolled: isScrolled }">
+  <div class="auth-content">
+    <div class="container">
+      <form *ngIf="myForm" [formGroup]="myForm" (ngSubmit)="verifySubmit()">
+        <h2 class="text-center mb-4">Xác nhận Email</h2>
+
+        <div class="d-flex justify-content-between mb-3">
+          <input
+            type="text"
+            maxlength="1"
+            class="form-control text-center"
+            formControlName="otp1"
+            (input)="moveNext($event, 1)"
+          />
+          <input
+            type="text"
+            maxlength="1"
+            class="form-control text-center"
+            formControlName="otp2"
+            (input)="moveNext($event, 2)"
+          />
+          <input
+            type="text"
+            maxlength="1"
+            class="form-control text-center"
+            formControlName="otp3"
+            (input)="moveNext($event, 3)"
+          />
+          <input
+            type="text"
+            maxlength="1"
+            class="form-control text-center"
+            formControlName="otp4"
+            (input)="moveNext($event, 4)"
+          />
+          <input
+            type="text"
+            maxlength="1"
+            class="form-control text-center"
+            formControlName="otp5"
+            (input)="moveNext($event, 5)"
+          />
+          <input
+            type="text"
+            maxlength="1"
+            class="form-control text-center"
+            formControlName="otp6"
+            (input)="moveNext($event, 6)"
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Xác nhận</button>
+      </form>
+    </div>
+  </div>
+</div>

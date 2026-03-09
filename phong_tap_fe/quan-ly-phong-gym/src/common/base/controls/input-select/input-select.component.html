@@ -1,0 +1,13 @@
+<div class="form-group">
+  <select
+    class="form-control"
+    [disabled]="disabled"
+    [ngModel]="value"
+    (ngModelChange)="handleChange($event)"
+  >
+    <option class="option-layout" [value]="null">Tất cả</option>
+    <option class="option-layout" *ngFor="let opt of options" [value]="opt.value">
+      {{ opt.label }}
+    </option>
+  </select>
+</div>

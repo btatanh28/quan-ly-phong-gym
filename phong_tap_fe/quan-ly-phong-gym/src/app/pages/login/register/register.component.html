@@ -1,0 +1,43 @@
+<div class="container">
+  <!-- Register Form -->
+  <form
+    *ngIf="myForm && !showVerify"
+    [formGroup]="myForm"
+    (ngSubmit)="onRegisterSubmit()"
+  >
+    <div class="mb-3">
+      <label for="tenKhachHang" class="form-label">Họ và tên</label>
+      <input type="text" class="form-control" formControlName="tenKhachHang" />
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" formControlName="email" />
+    </div>
+    <div class="mb-3">
+      <label for="matKhau" class="form-label">Mật khẩu</label>
+      <input type="password" class="form-control" formControlName="matKhau" />
+    </div>
+    <div class="mb-3">
+      <label for="xacNhanMatKhau" class="form-label">Xác nhận mật khẩu</label>
+      <input
+        type="password"
+        class="form-control"
+        formControlName="xacNhanMatKhau"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="soDienThoai" class="form-label">Số điện thoại</label>
+      <input type="text" class="form-control" formControlName="soDienThoai" />
+    </div>
+    <div class="mb-3">
+      <label for="diaChi" class="form-label">Địa chỉ</label>
+      <input type="text" class="form-control" formControlName="diaChi" />
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+  </form>
+</div>
+
+<app-verify-email
+  *ngIf="showVerify"
+  [email]="emailForVerify"
+></app-verify-email>

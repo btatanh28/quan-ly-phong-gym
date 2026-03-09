@@ -1,0 +1,239 @@
+<div class="card">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        (click)="selectTab('Nhân Viên')"
+        [class.active]="activeTab === 'Nhân Viên'"
+      >
+        Nhân Viên
+      </button>
+    </li>
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        (click)="selectTab('Khách Hàng')"
+        [class.active]="activeTab === 'Khách Hàng'"
+      >
+        Khách Hàng
+      </button>
+    </li>
+  </ul>
+
+  <div class="user-bg" *ngIf="activeTab === 'Nhân Viên' && this.isAdmin()">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Quản lý tài khoản</h5>
+    </div>
+
+    <div class="mb-4">
+      <div class="card-body">
+        <form
+          *ngIf="formSearch"
+          [formGroup]="formSearch"
+          (ngSubmit)="getData()"
+        >
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="tenNguoiDung" class="form-label">Tên Nhân viên</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="tenNguoiDung"
+                placeholder="Tên Nhân viên"
+              />
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="cccd" class="form-label">Căn cước công dân</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="cccd"
+                placeholder="CCCD/CMND"
+              />
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                placeholder="Email"
+              />
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="soDienThoai" class="form-label">Số điện thoại</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="soDienThoai"
+                placeholder="Số điện thoại"
+              />
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="diaChi" class="form-label">Địa chỉ</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="diaChi"
+                placeholder="Địa chỉ"
+              />
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="diaChi" class="form-label">Chức vụ</label>
+              <input-select
+                type="text"
+                formControlName="vaiTro"
+                placeholder="Địa chỉ"
+                [items]="listVaiTro"
+              />
+            </div>
+          </div>
+
+          <div class="list-button">
+            <button
+              nz-button
+              type="button"
+              class="btn btn-primary btn-search"
+              (click)="getData()"
+            >
+              <i nz-icon nzType="search" nzTheme="outline"></i>Tìm kiếm
+            </button>
+
+            <button
+              nz-button
+              type="button"
+              class="btn btn-primary btn-search"
+              (click)="onReset()"
+            >
+              <i nz-icon nzType="reload" nzTheme="outline"></i>Làm mới
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="data-table">
+        <div class="hearder-table mt-m-15">
+          <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
+            <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
+          </nz-tabset>
+          <div class="lst-controls">
+            <button
+              nz-button
+              type="button"
+              class="btn btn-primary"
+              (click)="handlerOpenDialog()"
+            >
+              <i class="isax-add-circle1 mr-2"></i>Thêm mới
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="text-center">Họ và tên</th>
+                  <th class="text-center">Căn cước công dân</th>
+                  <th class="text-center">Email</th>
+                  <td class="text-center">Số điện thoại</td>
+                  <th class="text-center">Địa chỉ</th>
+                  <th class="text-center">Lương tháng</th>
+                  <th class="text-center">Vai trò</th>
+                  <th class="text-center">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of listOfData">
+                  <td class="text-center">{{ item.tenNguoiDung }}</td>
+                  <td class="text-center">{{ item.cccd }}</td>
+                  <td class="text-center">{{ item.email }}</td>
+                  <td class="text-center">{{ item.soDienThoai }}</td>
+                  <td class="text-center">{{ item.diaChi }}</td>
+                  <td class="text-center">{{ item.luong | moneyPipe }}</td>
+                  <td class="text-center">
+                    {{ item.vaiTro | labelValue: listVaiTro }}
+                  </td>
+                  <td class="text-center">
+                    <button
+                      class="btn btn-custom btn-sm me-2"
+                      (click)="handlerOpenDialog(item, 'view')"
+                    >
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+
+                    <button
+                      class="btn btn-custom btn-sm me-2"
+                      (click)="handlerOpenDialog(item, 'edit')"
+                    >
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      (click)="deleteData(item.id)"
+                    >
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="user-bg" *ngIf="activeTab === 'Khách Hàng' && this.isAdmin()">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Quản lý tài khoản</h5>
+    </div>
+
+    <div class="mb-4">
+      <div class="data-table">
+        <div class="hearder-table mt-m-15">
+          <nz-tabset (nzSelectedIndexChange)="changeTabKhachHang($event)">
+            <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
+          </nz-tabset>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="text-center">Họ và tên</th>
+                  <th class="text-center">Email</th>
+                  <td class="text-center">Số điện thoại</td>
+                  <th class="text-center">Địa chỉ</th>
+                  <th class="text-center">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of listOfDataKhachHang">
+                  <td class="text-center">{{ item.tenKhachHang }}</td>
+                  <td class="text-center">{{ item.email }}</td>
+                  <td class="text-center">{{ item.soDienThoai }}</td>
+                  <td class="text-center">{{ item.diaChi }}</td>
+                  <td class="text-center">
+                    <button
+                      class="btn btn-danger btn-sm"
+                      (click)="deleteDataKhachHang(item.id)"
+                    >
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

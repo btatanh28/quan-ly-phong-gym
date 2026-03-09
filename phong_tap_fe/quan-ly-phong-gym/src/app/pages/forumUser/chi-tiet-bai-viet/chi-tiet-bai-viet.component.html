@@ -1,0 +1,120 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <!-- <div class="modal-header">
+      <h5 class="modal-title">Đăng bài viết mới</h5>
+      <button type="button" class="close-btn" (click)="closeDialog()">✖</button>
+    </div> -->
+
+    <div class="modal-body">
+      <form *ngIf="myForm" [formGroup]="myForm" (ngSubmit)="saveData()">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="idGoiTap" class="form-label">Chọn sản phẩm</label>
+            <input-select-api
+              formControlName="idGoiTap"
+              [apiService]="productService"
+            >
+            </input-select-api>
+          </div>
+
+          <!-- Star Rating -->
+          <div class="col-md-12 mt-4">
+            <label for="danhGia" class="form-label">Đánh giá</label>
+            <input-danh-gia formControlName="danhGia"></input-danh-gia>
+          </div>
+
+          <div class="col-md-12 mt-3">
+            <label for="binhLuan" class="form-label">Nội dung đánh giá</label>
+            <textarea
+              class="form-control"
+              formControlName="binhLuan"
+            ></textarea>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="mb-3">
+            <label class="form-label">Hình ảnh</label>
+            <input
+              type="file"
+              class="form-control"
+              formControlName="hinhAnh"
+              (change)="onFileSelected($event)"
+              multiple
+            />
+            <div class="mt-2 d-flex flex-wrap gap-2">
+              <img
+                style="width: 100%; height: auto"
+                *ngIf="previewUrl"
+                [src]="previewUrl"
+                width="100"
+                class="img-thumbnail"
+              />
+            </div>
+          </div>
+
+          <div class="bg-btn col-md-12 mt-3">
+            <button type="button" (click)="saveData()" class="btn btn-primary">
+              Đăng đánh giá
+            </button>
+
+            <button
+              style="margin-left: 10px"
+              type="button"
+              (click)="closeDialog()"
+              class="btn btn-primary"
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="card mb-4">
+    <div class="card-body">
+      <h2 class="card-title h4 mb-4">Đánh giá sản phẩm</h2>
+      <form (ngSubmit)="onSubmit()" class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Chọn sản phẩm</label>
+          <select [(ngModel)]="selectedProduct" name="product" class="form-select" required>
+            <option value="" disabled>Chọn sản phẩm</option>
+            <option *ngFor="let product of products" [value]="product.id">{{ product.name }}</option>
+          </select>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Đánh giá</label>
+          <div class="d-flex gap-1 fs-4">
+            <span *ngFor="let star of [1,2,3,4,5]"
+                  (click)="setRating(star)"
+                  (mouseenter)="hoverRating(star)"
+                  (mouseleave)="resetHover()"
+                  class="cursor-pointer"
+                  [class.text-warning]="star <= (hoveredRating || rating)"
+                  [class.text-muted]="star > (hoveredRating || rating)">
+              {{ star <= (hoveredRating || rating) ? '★' : '☆' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Nội dung đánh giá</label>
+          <textarea [(ngModel)]="reviewContent" name="content" rows="4" class="form-control"></textarea>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Hình ảnh</label>
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" multiple class="form-control">
+          <div class="mt-2 d-flex flex-wrap gap-2">
+            <img *ngFor="let image of previewImages" [src]="image" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+          </div>
+        </div>
+
+        <div class="col-12">
+          <button type="submit" [disabled]="!selectedProduct" class="btn btn-primary">Đăng đánh giá</button>
+        </div>
+      </form>
+    </div>
+</div> -->

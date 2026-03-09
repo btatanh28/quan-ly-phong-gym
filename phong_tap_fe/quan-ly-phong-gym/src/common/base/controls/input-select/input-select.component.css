@@ -1,0 +1,10 @@
+option.option-layout {
+  padding: 0.5rem;
+  color: #333;
+}
+
+/* Option "Tất cả" in đậm */
+option.option-layout[value="null"] {
+  font-weight: bold;
+  color: #555;
+}

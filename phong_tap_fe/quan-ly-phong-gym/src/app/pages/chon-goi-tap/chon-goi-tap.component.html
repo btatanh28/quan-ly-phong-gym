@@ -1,0 +1,58 @@
+<div class="card">
+  <div class="user-bg">
+    <div class="mb-4">
+      <div class="data-table">
+        <div class="hearder-table mt-m-15">
+          <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
+            <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
+          </nz-tabset>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="text-center">Tên Gói tập</th>
+                  <th class="text-center">Giá</th>
+                  <td class="text-center">Giảm giá</td>
+                  <th class="text-center">Giá sau giảm</th>
+                  <th class="text-center">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of listOfData">
+                  <td class="text-center">{{ item.tenGoiTap }}</td>
+                  <td class="text-center">{{ item.gia }}</td>
+                  <td class="text-center">
+                    {{ item.giamGia | labelValue: listGiamGia }}
+                  </td>
+                  <td class="text-center">{{ item.giaSauGiam }}</td>
+                  <td class="text-center">
+                    <button
+                      class="btn btn-custom btn-sm me-2"
+                      (click)="chon(item)"
+                    >
+                      <i class="fa-solid fa-circle-plus"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="list-button mt-4">
+  <button
+    nz-button
+    type="button"
+    class="btn btn-danger"
+    (click)="closeDialogcd()"
+  >
+    <i class="isax-close-circle1 mr-2"></i>Đóng
+  </button>
+</div>

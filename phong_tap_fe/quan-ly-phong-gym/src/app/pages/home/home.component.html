@@ -1,0 +1,218 @@
+<div class="home-container">
+  <!-- Banner -->
+  <section>
+    <div class="banner-section">
+      <img
+        style="width: 100%; height: 100%"
+        src="assets/img/banner.jpg"
+        alt=""
+      />
+    </div>
+    <div class="container">
+      <div class="banner-content animate__animated animate__fadeInDown">
+        <a [routerLink]="['/menu']" class="btn btn-primary btn-lg">Đặt ngay</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Dishes -->
+  <!-- <section class="dishes-section py-5">
+    <div class="container">
+      <h2
+        class="section-title text-center mb-4 animate__animated animate__fadeIn"
+      >
+        Món ăn nổi bật
+      </h2>
+      <div class="row g-4">
+        <div
+          class="col-lg-4 col-md-6 col-sm-12"
+          *ngFor="let product of products.slice(0, 3)"
+        >
+          <div class="dish-card animate__animated animate__zoomIn">
+            <img
+              [src]="baseUrl + product.HinhAnh"
+              alt="Hình ảnh sản phẩm"
+              width="100"
+              *ngIf="product.HinhAnh"
+              class="dish-image"
+            />
+            <div class="dish-info">
+              <h5 class="dish-name">{{ product.TenSanPham }}</h5>
+              <p class="dish-price">{{ product.Gia | moneyPipe }}</p>
+              <button class="btn btn-cart" (click)="addToCart(product)">
+                Thêm vào giỏ
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <section class="bmi-section py-5 bg-dark">
+    <div class="container">
+      <h2 class="text-center mb-4 text-light animate__animated animate__fadeIn">
+        Đo chỉ số BMI
+      </h2>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <img src="assets/img/bmi-image.png" alt="" class="img-fluid" />
+          </div>
+          <div class="col-md-6">
+            <h5 class="bmi-text text-light text-center mb-4">
+              Tính chỉ số BMI của bạn để biết tình trạng sức khỏe!
+            </h5>
+            <div *ngIf="myForm" [formGroup]="myForm">
+              <input
+                type="number"
+                class="form-control mb-3"
+                formControlName="chieuCao"
+                min="0"
+                placeholder="Nhập chiều cao (cm)"
+              />
+              <input
+                type="number"
+                class="form-control mb-3"
+                formControlName="canNang"
+                placeholder="Nhập cân nặng (kg)"
+                min="0"
+              />
+              <button
+                style="width: 200px"
+                (click)="resetBMI()"
+                class="btn btn-secondary me-2"
+              >
+                Đặt lại
+              </button>
+              <button
+                style="width: 200px"
+                (click)="calculateBMI()"
+                class="btn btn-primary"
+              >
+                Xem kết quả
+              </button>
+              <div
+                *ngIf="bmi !== null && bmiResultBoolean === true"
+                class="alert alert-info mt-3"
+              >
+                <b>BMI:</b> {{ bmi | number: "1.1-2" }} <br />
+                <b>Đánh giá:</b> {{ bmiResult }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="knowledge-bg">
+    <div class="container">
+      <h2 class="text-left mb-4 animate__animated animate__fadeIn">
+        Dinh dưỡng và kiến thức
+      </h2>
+      <h6 class="text-left mb-4 animate__animated animate__fadeIn">
+        Bổ sung kiến thức về dinh dưỡng để nâng cấp bản thân nhé bạn ơi...
+      </h6>
+      <div class="row">
+        <div class="col-md-5">
+          <a class="nav-link mb-3">
+            <img
+              style="width: 100%; height: 100%; object-fit: cover"
+              src="assets/img/thit-bo-giau-protein.png"
+              alt="Kiến thức tập luyện"
+            />
+            <h5 class="mt-2">Tập gym nên ăn gì? Uống gì?</h5>
+          </a>
+          <p class="infor-title mt-2">
+            Tập gym là một phương pháp luyện tập hiệu quả giúp tăng cường sức
+            khỏe, cải thiện vóc dáng và nâng cao...
+          </p>
+        </div>
+        <div class="col-md-7">
+          <div class="knowledge-card animate__animated animate__fadeInUp">
+            <div class="row">
+              <div *ngFor="let knowledge of listOfData" class="col-md-6">
+                <a class="nav-link knowledge-link">
+                  <img
+                    style="width: 140px; height: 140px; object-fit: cover"
+                    [src]="baseUrl + knowledge.hinhAnh"
+                    alt="Hình ảnh kiến thức"
+                    class="knowledge-image mb-3"
+                  />
+                  <div>
+                    <p class="knowledge-title">
+                      {{ knowledge.tenBaiViet }}
+                    </p>
+
+                    <span
+                      ><i class="fa-solid fa-calendar-days"></i>
+                      {{ knowledge.ngayDangBai | dateFormat }}</span
+                    >
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer Reviews -->
+  <section class="reviews-section py-5">
+    <div class="container">
+      <h2 class="text-left mb-4 animate__animated animate__fadeIn">
+        Đánh giá từ khách hàng
+      </h2>
+      <div class="row g-4">
+        <div
+          class="col-lg-4 col-md-6 col-sm-12"
+          *ngFor="let forum of listOfDataForum.slice(0, 3); let i = index"
+        >
+          <div
+            class="review-card animate__animated animate__fadeInUp"
+            [style.animation-delay]="i * 0.2 + 's'"
+          >
+            <img
+              *ngIf="forum.hinhAnhKhachHang; else defaultAvatar"
+              [src]="baseUrl + forum.hinhAnhKhachHang"
+              alt="Hình ảnh"
+              class="rounded-circle profile-img"
+              style="width: 60px; height: 60px"
+            />
+            <ng-template #defaultAvatar>
+              <i
+                class="fa fa-user-circle text-secondary"
+                style="font-size: 60px"
+              ></i>
+            </ng-template>
+            <h4 class="review-name">{{ forum.tenKhachHang }}</h4>
+            <h5 class="review-text">{{ forum.tenGoiTap }}</h5>
+            <p class="review-text">"{{ forum.binhLuan }}"</p>
+            <div class="review-rating">
+              <span
+                class="text-warning fs-5"
+                *ngFor="let star of [1, 2, 3, 4, 5]"
+              >
+                {{ forum.danhGia >= star ? "★" : "☆" }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta-section py-5">
+    <div class="bg container text-center animate__animated animate__fadeIn">
+      <h2 class="mb-3">Bạn đã sẵn sàng chưa?</h2>
+      <p class="mb-4">
+        Đặt lịch tập luyện ngay hôm nay để trải nghiệm dịch vụ chuyên nghiệp và
+        không gian tập luyện hiện đại tại phòng gym của chúng tôi!
+      </p>
+      <a [routerLink]="['/book']" class="btn btn-lg">Đặt ngay</a>
+    </div>
+  </section>
+</div>

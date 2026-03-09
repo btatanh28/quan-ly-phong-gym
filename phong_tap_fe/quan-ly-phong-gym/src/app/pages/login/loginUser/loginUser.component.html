@@ -1,0 +1,26 @@
+<div class="container">
+  <!-- Login Form -->
+  <form
+    *ngIf="myForm && !showVerify"
+    [formGroup]="myForm"
+    (ngSubmit)="onLoginSubmit()"
+  >
+    <div class="mb-3">
+      <label for="loginEmail" class="form-label">Email</label>
+      <input type="email" class="form-control" formControlName="email" />
+    </div>
+    <div class="mb-3">
+      <label for="loginPassword" class="form-label">Mật khẩu</label>
+      <input type="password" class="form-control" formControlName="matKhau" />
+    </div>
+    <div class="mb-3 text-end">
+      <a (click)="changePassWord()" class="text-light">Quên mật khẩu?</a>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+  </form>
+</div>
+
+<app-verify-email
+  *ngIf="showVerify"
+  [email]="emailForVerify"
+></app-verify-email>

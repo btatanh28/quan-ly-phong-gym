@@ -1,0 +1,23 @@
+.popup-layout {
+  margin-top: -20px;
+}
+
+.title-layout {
+  color: #b8860b !important;
+}
+
+.form-label {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Tinh chỉnh form */
+.form-label {
+  font-weight: 600;
+  color: #ffff;
+}
+
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}

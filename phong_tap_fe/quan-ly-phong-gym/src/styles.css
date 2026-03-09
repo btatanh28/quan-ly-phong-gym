@@ -1,0 +1,168 @@
+/* You can add global styles to this file, and also import other style files */
+.main {
+  width: 100%;
+  height: auto;
+}
+
+.ant-layout {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.list-button {
+  text-align: center;
+  padding: 15px;
+
+  .btn {
+    min-width: 120px;
+    padding: 6px 25px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #ffff;
+    background: #0b5ed7;
+    border-radius: 10px;
+
+    margin-right: 12px;
+
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
+}
+
+.hearder-table {
+  position: relative;
+
+  nz-tabs-nav {
+    margin-bottom: 5px !important;
+  }
+
+  .lst-controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+
+    .btn {
+      height: 30px;
+      padding: 0px 20px;
+      color: #ffff;
+      background: #b8860b;
+      border-radius: 10px;
+    }
+
+    button:not(:last-child) {
+      margin-right: 7px;
+    }
+
+    .paging-result {
+      padding-top: 10px;
+
+      span {
+        color: #d76c2d;
+      }
+    }
+  }
+}
+
+body {
+  .dialog-ms {
+    width: 414px !important;
+
+    @include tablet-and-mobile {
+      width: 100% !important;
+    }
+  }
+
+  .dialog-md {
+    top: 150px;
+    width: 768px !important;
+
+    @include tablet-and-mobile {
+      width: 90% !important;
+    }
+  }
+
+  .dialog-lg {
+    width: 70% !important;
+
+    @include tablet-and-mobile {
+      width: 90% !important;
+    }
+  }
+
+  .dialog-max-lg {
+    width: 80% !important;
+
+    @include tablet-and-mobile {
+      width: 100% !important;
+    }
+  }
+
+  .dialog-max-xxl-lg {
+    width: 90% !important;
+
+    @include tablet-and-mobile {
+      width: 100% !important;
+    }
+  }
+
+  .dialog-full {
+    width: calc(100% - 10px) !important;
+
+    @include tablet-and-mobile {
+      width: 100% !important;
+    }
+  }
+
+  .dialog-tab {
+    width: 100% !important;
+    top: 0;
+    right: 0;
+    background-color: #2e2e2e;
+    padding: 20px;
+    min-height: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .modal-data {
+    width: 70% !important;
+    top: 60px;
+
+    @include tablet-and-mobile {
+      width: 100% !important;
+    }
+  }
+
+  .modal-data-center {
+    width: 70% !important;
+  }
+
+  &.sidebar-xs {
+    .dialog-tab {
+      width: 100% !important;
+    }
+  }
+}
+
+.ant-modal-content {
+  border-radius: 10px !important;
+}
+
+.ant-modal-header {
+  border-radius: 10px !important;
+}
+
+.ant-modal-body {
+  padding: 20px 24px;
+  background-color: #2e2e2e;
+}
+
+.ant-tabs-tab-btn {
+  font-size: 16px !important;
+}
+
+.ant-modal-title {
+  font-size: 18px !important;
+}

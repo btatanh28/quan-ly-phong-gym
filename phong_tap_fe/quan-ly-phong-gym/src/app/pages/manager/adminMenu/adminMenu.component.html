@@ -1,0 +1,142 @@
+<nz-layout class="app-layout">
+  <nz-sider
+    class="menu-sidebar"
+    nzCollapsible
+    nzWidth="256px"
+    nzBreakpoint="md"
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+  >
+    <div class="sidebar-logo">
+      <a href="https://ng.ant.design/" target="_blank">
+        <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo" />
+        <h1>GYM DASHBOARD</h1>
+      </a>
+    </div>
+    <ul
+      nz-menu
+      nzTheme="dark"
+      nzMode="inline"
+      [nzInlineCollapsed]="isCollapsed"
+    >
+      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a
+              class="nav-link"
+              [class.active]="currentTab === 'welcome'"
+              (click)="setTab('welcome')"
+            >
+              <i class="fa-solid fa-door-open"></i>
+              Chào mừng
+            </a>
+            <!-- <a routerLink="/welcome">Welcome</a> -->
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a
+              class="nav-link"
+              [class.active]="currentTab === 'users'"
+              (click)="setTab('users')"
+            >
+              <i class="fa-solid fa-users"></i>
+              Quản lý tài khoản
+            </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a
+              class="nav-link"
+              [class.active]="currentTab === 'posts'"
+              (click)="setTab('posts')"
+            >
+              <i class="fa-solid fa-blog"></i>
+              Quản lý bài viết
+            </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a
+              class="nav-link"
+              [class.active]="currentTab === 'forums'"
+              (click)="setTab('forums')"
+            >
+              <i class="fa-solid fa-rectangle-list"></i>
+              Quản lý diễn đàn
+            </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a
+              class="nav-link"
+              [class.active]="currentTab === 'products'"
+              (click)="setTab('products')"
+            >
+              <i class="fa-solid fa-dumbbell"></i>
+              Quản lý sản phẩm
+            </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a
+              class="nav-link"
+              [class.active]="currentTab === 'orders'"
+              (click)="setTab('orders')"
+            >
+              <i class="fa-solid fa-cart-shopping"></i>
+              Quản lý đơn hàng
+            </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a
+              class="nav-link"
+              [class.active]="currentTab === 'scan-checkin'"
+              (click)="setTab('scan-checkin')"
+            >
+              <i class="fa-solid fa-qrcode"></i>
+              Check in
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <a (click)="logout()">Đăng xuất</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <div class="app-header">
+        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+          <nz-icon
+            class="trigger"
+            [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+          />
+        </span>
+        <span>
+          <h5>
+            <i class="fa-solid fa-circle-user"></i>
+            Người dùng: {{ user.role | labelValue: listVaiTro }} -
+            {{ user.name }}
+          </h5>
+        </span>
+      </div>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <ng-container [ngSwitch]="currentTab">
+          <app-welcome *ngIf="currentTab === 'welcome'"></app-welcome>
+          <app-account *ngIf="currentTab === 'users'"></app-account>
+          <app-post *ngIf="currentTab === 'posts'"></app-post>
+          <app-forum *ngIf="currentTab === 'forums'"></app-forum>
+          <app-product *ngIf="currentTab === 'products'"></app-product>
+          <app-order *ngIf="currentTab === 'orders'"></app-order>
+          <app-scan-checkin
+            *ngIf="currentTab === 'scan-checkin'"
+          ></app-scan-checkin>
+        </ng-container>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

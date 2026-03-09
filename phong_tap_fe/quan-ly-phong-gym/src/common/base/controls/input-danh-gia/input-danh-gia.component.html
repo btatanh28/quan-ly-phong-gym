@@ -1,0 +1,12 @@
+<div class="star-wrapper">
+  <span
+    *ngFor="let star of [].constructor(max); let i = index"
+    (click)="setRating(i + 1)"
+    (mouseenter)="hoverRating(i + 1)"
+    (mouseleave)="resetHover()"
+    class="star"
+    [class.active]="i + 1 <= (hovered || rating)"
+  >
+    ★
+  </span>
+</div>
