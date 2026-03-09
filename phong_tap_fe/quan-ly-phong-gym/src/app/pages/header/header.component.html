@@ -1,61 +1,82 @@
 <div class="header-container" [ngClass]="{ scrolled: isScrolled }">
   <div class="popup-layout">
-    <nav class="navbar-layout navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbar-layout">
       <!-- Logo -->
-      <a
-        class="navbar-brand animate__animated animate__bounceIn"
-        [routerLink]="['/home']"
-      >
+      <a class="navbar-brand" [routerLink]="['/home']">
         <img
           src="assets/img/logo-fitness.png"
-          alt="Food Logo"
+          alt="Logo"
           class="logo-img"
           [ngClass]="{ scrolled: isScrolled }"
         />
       </a>
-      <!-- Toggle button for mobile -->
+
+      <!-- Toggle mobile -->
       <button
         class="navbar-toggler"
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <ul class="navbar-nav nav-layout">
-        <li class="nav-item" *ngIf="!this.isAdmin || !this.isEmployee">
-          <a class="nav-link" [routerLink]="['/manager']">Quản lý</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/home']">Trang chủ</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/introduction']">Giới thiệu</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/forum']">Diễn đàn</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/menu']">Menu</a>
-        </li>
-        <li class="nav-item">
-          <a
-            *ngIf="!this.isAdmin() && !this.isEmployee()"
-            class="nav-link"
-            [routerLink]="['/cart']"
-            >Giỏ hàng</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/book']">Liên hệ</a>
-        </li>
-      </ul>
+      <!-- Menu -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav nav-layout me-auto">
+          <li class="nav-item" *ngIf="!isAdmin() && !isEmployee()">
+            <a class="nav-link" routerLink="/manager">Quản lý</a>
+          </li>
 
-      <!-- Navigation links -->
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/home">Trang chủ</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/introduction">Giới thiệu</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/forum">Diễn đàn</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/menu">Menu</a>
+          </li>
+
+          <li class="nav-item" *ngIf="!isAdmin() && !isEmployee()">
+            <a class="nav-link" routerLink="/cart">Giỏ hàng</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/book">Liên hệ</a>
+          </li>
+        </ul>
+
+        <!-- Right side -->
+        <div class="d-flex align-items-center">
+          <input
+            class="form-control search-input me-3"
+            type="search"
+            placeholder="Tìm kiếm..."
+          />
+
+          <ng-container *ngIf="!currentUser">
+            <a routerLink="/login" class="btn btn-outline-light"> Đăng nhập </a>
+          </ng-container>
+
+          <ng-container *ngIf="currentUser">
+            <span class="text-light me-3">
+              <i class="fa fa-user-circle"></i>
+              {{ currentUser.name }}
+            </span>
+
+            <button class="btn btn-outline-light" (click)="logout()">
+              Đăng xuất
+            </button>
+          </ng-container>
+        </div>
+      </div>
     </nav>
 
     <div class="nav-display" id="navbarNav">
