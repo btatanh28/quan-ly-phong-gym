@@ -1,7 +1,7 @@
 // src/app/services/api-base.ts
 export const API_BASE = {
   local: 'http://localhost:8080',
-  prod: 'https://quan-ly-phong-gym.onrender.com/api',
+  prod: 'https://quan-ly-phong-gym.onrender.com',
 };
 
 export const IMAGE_BASE = {
