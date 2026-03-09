@@ -1,12 +1,12 @@
 // src/app/services/api-base.ts
 export const API_BASE = {
   local: 'http://localhost:8080',
-  prod: ' https://quan-ly-phong-gym.onrender.com/api',
+  prod: 'https://quan-ly-phong-gym.onrender.com/api',
 };
 
 export const IMAGE_BASE = {
   local: 'http://localhost:8080',
-  prod: ' https://quan-ly-phong-gym.onrender.com/uploads/',
+  prod: 'https://quan-ly-phong-gym.onrender.com/uploads/',
 };
 
 // Đổi môi trường ở đây
