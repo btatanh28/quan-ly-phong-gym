@@ -24,7 +24,7 @@
       <!-- Menu -->
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav nav-layout me-auto">
-          <li class="nav-item" *ngIf="!isAdmin() && !isEmployee()">
+          <li class="nav-item" *ngIf="isAdmin() && isEmployee()">
             <a class="nav-link" routerLink="/manager">Quản lý</a>
           </li>
 
@@ -53,8 +53,99 @@
           </li>
         </ul>
 
+        <div class="nav-display" id="navbarNav">
+          <form class="">
+            <input
+              class="form-control search-input"
+              type="search"
+              name="searchKeyword"
+              placeholder="Tìm kiếm..."
+              aria-label="Search"
+              (onChange)="getData()"
+            />
+          </form>
+
+          <!-- Right side icons -->
+          <div class="d-flex align-items-center ms-3">
+            <!-- <div class="dropdown">
+            <a
+              href="#"
+              class="nav-icon me-4 position-relative"
+              id="notificationDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="fas fa-utensils fa-lg"></i>
+              <span
+                *ngIf="!hasNewNotification"
+                class="badge rounded-circle position-absolute animate__animated animate__bounce"
+              >
+                <i
+                  class="fa-solid fa-bell"
+                  [ngClass]="{
+                    'animate__animated animate__shakeX': hasNewNotification,
+                  }"
+                ></i>
+              </span>
+            </a>
+            <ul
+              class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn noti mt-3"
+              aria-labelledby="notificationDropdown"
+            >
+              <li class="notification-item" *ngFor="let Donhang of donhang">
+                <div class="notification-title">
+                  Đơn hàng: {{ Donhang.IDDonHang }}
+                </div>
+                <div>Trạng thái: {{ Donhang.TrangThaiSanPham }}</div>
+                <div class="notification-time">
+                  Ngày đặt: {{ Donhang.NgayDatHang | date: "dd/MM/yyyy" }}
+                </div>
+                <div class="notification-btn">
+                  <button class="btn btn-success">Chi tiết</button>
+                </div>
+              </li>
+              <li
+                *ngIf="donhang.length === 0"
+                class="dropdown-item no-notifications"
+                id="noNotifications"
+              >
+                Không có thông báo mới
+              </li>
+            </ul>
+          </div> -->
+            <ng-container *ngIf="!currentUser">
+              <a
+                [routerLink]="['/login']"
+                class="btn btn-outline-light logout-btn animate__animated animate__fadeInRight"
+                >Đăng ký/Đăng nhập</a
+              >
+            </ng-container>
+
+            <ng-container *ngIf="currentUser">
+              <div
+                class="user-info d-flex align-items-center animate__animated animate__fadeInRight"
+              >
+                <a
+                  [routerLink]="['/personalPage']"
+                  class="text-light me-3 nav-link"
+                  *ngIf="!this.isAdmin() && !this.isEmployee()"
+                >
+                  <i class="fa fa-user-circle fs-5 text-light"></i>
+                  {{ currentUser.name }}
+                </a>
+                <button
+                  class="btn btn-outline-light logout-btn"
+                  (click)="logout()"
+                >
+                  <i class="fa fa-sign-out-alt me-1"></i> Đăng xuất
+                </button>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
         <!-- Right side -->
-        <div class="d-flex align-items-center">
+        <!-- <div class="d-flex align-items-center">
           <input
             class="form-control search-input me-3"
             type="search"
@@ -75,97 +166,9 @@
               Đăng xuất
             </button>
           </ng-container>
-        </div>
+        </div> -->
       </div>
     </nav>
-
-    <div class="nav-display" id="navbarNav">
-      <form class="">
-        <input
-          class="form-control search-input"
-          type="search"
-          name="searchKeyword"
-          placeholder="Tìm kiếm..."
-          aria-label="Search"
-          (onChange)="getData()"
-        />
-      </form>
-
-      <!-- Right side icons -->
-      <div class="d-flex align-items-center ms-3">
-        <!-- <div class="dropdown">
-          <a
-            href="#"
-            class="nav-icon me-4 position-relative"
-            id="notificationDropdown"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <i class="fas fa-utensils fa-lg"></i>
-            <span
-              *ngIf="!hasNewNotification"
-              class="badge rounded-circle position-absolute animate__animated animate__bounce"
-            >
-              <i
-                class="fa-solid fa-bell"
-                [ngClass]="{
-                  'animate__animated animate__shakeX': hasNewNotification,
-                }"
-              ></i>
-            </span>
-          </a>
-          <ul
-            class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn noti mt-3"
-            aria-labelledby="notificationDropdown"
-          >
-            <li class="notification-item" *ngFor="let Donhang of donhang">
-              <div class="notification-title">
-                Đơn hàng: {{ Donhang.IDDonHang }}
-              </div>
-              <div>Trạng thái: {{ Donhang.TrangThaiSanPham }}</div>
-              <div class="notification-time">
-                Ngày đặt: {{ Donhang.NgayDatHang | date: "dd/MM/yyyy" }}
-              </div>
-              <div class="notification-btn">
-                <button class="btn btn-success">Chi tiết</button>
-              </div>
-            </li>
-            <li
-              *ngIf="donhang.length === 0"
-              class="dropdown-item no-notifications"
-              id="noNotifications"
-            >
-              Không có thông báo mới
-            </li>
-          </ul>
-        </div> -->
-        <ng-container *ngIf="!currentUser">
-          <a
-            [routerLink]="['/login']"
-            class="btn btn-outline-light logout-btn animate__animated animate__fadeInRight"
-            >Đăng ký/Đăng nhập</a
-          >
-        </ng-container>
-
-        <ng-container *ngIf="currentUser">
-          <div
-            class="user-info d-flex align-items-center animate__animated animate__fadeInRight"
-          >
-            <a
-              [routerLink]="['/personalPage']"
-              class="text-light me-3 nav-link"
-              *ngIf="!this.isAdmin() && !this.isEmployee()"
-            >
-              <i class="fa fa-user-circle fs-5 text-light"></i>
-              {{ currentUser.name }}
-            </a>
-            <button class="btn btn-outline-light logout-btn" (click)="logout()">
-              <i class="fa fa-sign-out-alt me-1"></i> Đăng xuất
-            </button>
-          </div>
-        </ng-container>
-      </div>
-    </div>
   </div>
   <!-- Search popup -->
   <div
@@ -185,7 +188,7 @@
           class="form-control search-input"
           type="search"
           name="searchKeyword"
-          placeholder="Tìm món ăn..."
+          placeholder="Tìm kiếm"
           aria-label="Search"
         />
         <button class="btn btn-search ms-2" type="submit">
