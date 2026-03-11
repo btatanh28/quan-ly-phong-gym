@@ -31,6 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Bỏ qua endpoint public
         if ("OPTIONS".equalsIgnoreCase(request.getMethod()) ||
                 path.startsWith("/user/register") ||
+                path.startsWith("/khach-hang/register-client") ||
                 path.startsWith("/auth/login") ||
                 path.startsWith("/uploads/") ||
                 path.startsWith("/danh-gia") || // thêm tất cả CRUD user
