@@ -6,7 +6,7 @@ export const API_BASE = {
 
 export const IMAGE_BASE = {
   local: 'http://localhost:8080',
-  prod: 'https://quan-ly-phong-gym.onrender.com/uploads/',
+  prod: 'https://quan-ly-phong-gym.onrender.com',
 };
 
 // Đổi môi trường ở đây
