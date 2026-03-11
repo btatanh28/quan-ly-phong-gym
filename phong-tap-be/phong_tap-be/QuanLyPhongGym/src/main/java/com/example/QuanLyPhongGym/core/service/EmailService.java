@@ -1,28 +1,50 @@
 package com.example.QuanLyPhongGym.core.service;
 
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
-    private final JavaMailSender mailSender;
+    @Value("${sendgrid.api.key}")
+    private String apiKey;
 
-    @Value("${spring.mail.username}")
+    @Value("${email.from}")
     private String fromEmail;
 
-    public EmailService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
-    }
-
     public void sendVerificationEmail(String to, String code) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(to);
-        message.setSubject("Mã xác nhận đăng ký");
-        message.setText("Mã xác nhận của bạn là: " + code);
 
-        mailSender.send(message);
+        Email from = new Email(fromEmail);
+        Email toEmail = new Email(to);
+
+        String subject = "Mã xác nhận đăng ký";
+
+        Content content = new Content(
+                "text/plain",
+                "Mã xác nhận của bạn là: " + code);
+
+        Mail mail = new Mail(from, subject, toEmail, content);
+
+        SendGrid sg = new SendGrid(apiKey);
+
+        Request request = new Request();
+
+        try {
+
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+
+            Response response = sg.api(request);
+
+            System.out.println("Status code: " + response.getStatusCode());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
