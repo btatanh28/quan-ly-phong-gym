@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class CheckInController {
     private final CheckInCommandHandler checkInCommandHandler;
 
-    @PostMapping("/check-in")
+    @PostMapping()
     public ResponseEntity<ApiResponse<String>> checkIn(
             @RequestBody CheckInCommand request) {
 
