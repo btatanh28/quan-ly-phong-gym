@@ -21,7 +21,7 @@ import { MoneyPipe } from '../../../common/base/pipe/moneny/moneyPipe.component'
 import { ChiTietDonHangComponent } from '../manager/order/chi-tiet-don-hang/chi-tiet-don-hang.component';
 import { DateFormatPipe } from '../../../common/base/pipe/dateFormat/dateFormat.component';
 import { ChinhSuaThongTinComponent } from './chinh-sua-thong-tin/chinh-sua-thong-tin.component';
-import { QRCodeModule } from 'angularx-qrcode';
+import { QRCodeComponent } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-personal',
@@ -34,7 +34,7 @@ import { QRCodeModule } from 'angularx-qrcode';
     LabelValuePipe,
     MoneyPipe,
     DateFormatPipe,
-    QRCodeModule,
+    QRCodeComponent,
   ],
   templateUrl: './personalPage.component.html',
   styleUrl: './personalPage.component.css',
