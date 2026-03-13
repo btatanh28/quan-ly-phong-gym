@@ -12,6 +12,6 @@ export class CheckInService {
   constructor(private http: HttpClient) {}
 
   checkIn(data: any): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}`);
+    return this.http.get<any>(`${this.apiUrl}/check-in`);
   }
 }
