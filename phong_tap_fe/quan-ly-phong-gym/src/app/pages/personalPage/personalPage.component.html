@@ -12,7 +12,7 @@
             [src]="baseUrl + user.hinhAnh"
             alt="Hình ảnh sản phẩm"
             class="rounded-circle profile-img"
-            style="width: 150px; height: 150px; object-fit: cover;"
+            style="width: 150px; height: 150px; object-fit: cover"
           />
 
           <ng-template #defaultAvatar>
@@ -64,6 +64,15 @@
         [class.active]="activeTab === 'Bài Đăng'"
       >
         Bài Đăng
+      </button>
+    </li>
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        (click)="selectTab('Code')"
+        [class.active]="activeTab === 'Code'"
+      >
+        QR code
       </button>
     </li>
   </ul>
@@ -158,6 +167,34 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === 'Code'">
+    <div class="card profile-card">
+      <div class="card-body text-center">
+        <h4 class="mb-3">
+          <i class="fa-solid fa-qrcode me-2"></i>
+          QR Thẻ Tập
+        </h4>
+
+        <div *ngIf="qrCode; else noCard">
+          <qrcode
+            [qrdata]="qrCode"
+            [width]="250"
+            [errorCorrectionLevel]="'M'"
+            class="qr-img"
+          ></qrcode>
+
+          <p class="mt-3 text-success fw-bold">
+            Còn lại {{ soNgayConLai }} ngày
+          </p>
+        </div>
+
+        <ng-template #noCard>
+          <p class="text-danger">Bạn chưa có thẻ tập</p>
+        </ng-template>
       </div>
     </div>
   </div>

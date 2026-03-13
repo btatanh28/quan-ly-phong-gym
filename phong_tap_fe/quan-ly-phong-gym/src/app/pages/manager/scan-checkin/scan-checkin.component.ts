@@ -1,3 +1,4 @@
+import { CheckInService } from './../../../../common/shared/service/application/CheckInService';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { Component, OnInit } from '@angular/core';
 import { FormModule } from '../../../../common/module/forms.module';
@@ -13,6 +14,8 @@ import { CommonModule } from '@angular/common';
 export class ScanCheckinComponent implements OnInit {
   scanResult: string = '';
 
+  constructor(private checkInService: CheckInService) {}
+
   ngOnInit(): void {
     const scanner = new Html5QrcodeScanner(
       'reader',
@@ -23,9 +26,9 @@ export class ScanCheckinComponent implements OnInit {
     scanner.render(
       (decodedText: string) => {
         console.log('QR:', decodedText);
+
         this.scanResult = decodedText;
 
-        // gọi API checkin
         this.checkin(decodedText);
       },
       (error: any) => {
@@ -35,6 +38,18 @@ export class ScanCheckinComponent implements OnInit {
   }
 
   checkin(code: string) {
-    console.log('Checkin:', code);
+    const body = {
+      qrCode: code,
+      thietBi: 'WEB_CAMERA',
+    };
+
+    this.checkInService.checkIn(body).subscribe({
+      next: (res: any) => {
+        alert('✅ Check-in thành công');
+      },
+      error: (err) => {
+        alert('❌ Check-in thất bại');
+      },
+    });
   }
 }

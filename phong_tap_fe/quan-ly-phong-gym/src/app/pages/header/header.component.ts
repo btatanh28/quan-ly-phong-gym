@@ -41,6 +41,8 @@ export class HeaderComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.router.events.subscribe((event) => {
         if (event instanceof NavigationEnd) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
           const navbar = document.querySelector('#navbarNav');
           if (navbar && navbar.classList.contains('show')) {
             const bsCollapse = new bootstrap.Collapse(navbar, {

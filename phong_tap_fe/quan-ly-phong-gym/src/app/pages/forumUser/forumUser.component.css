@@ -10,6 +10,12 @@ h4 {
   color: #1f2937;
 }
 
+.bg-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 /* Card bài viết */
 .card {
   border-radius: 14px;
@@ -134,9 +140,42 @@ h4 {
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .bg-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 990px) {
+  .bg-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 768px) {
   .post-image {
     width: 100% !important;
     height: auto !important;
+  }
+
+  .bg-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 500px) {
+  .bg-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 }

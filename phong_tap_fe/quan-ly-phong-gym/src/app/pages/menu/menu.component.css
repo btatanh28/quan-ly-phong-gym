@@ -1,7 +1,7 @@
 /* Background ngoài */
 .bg-ngoai {
   background: #f5f7fa;
-  margin-top: 130px;
+  margin-top: 110px;
 }
 
 /* Banner */
@@ -12,10 +12,10 @@
 }
 
 /* Layout menu */
-.bg-menu {
+/* .bg-menu {
   max-width: 1200px;
   margin: auto;
-}
+} */
 
 /* Card sản phẩm */
 .card {
@@ -186,6 +186,21 @@
   transform: scale(1.2);
 }
 
-.modal-content{
+.modal-content {
   margin-top: 220px;
+}
+
+@media (max-width: 1200px) {
+}
+
+@media (max-width: 990px) {
+}
+
+@media (max-width: 768px) {
+}
+
+@media (max-width: 500px) {
+  .bg-ngoai {
+    margin-top: 90px;
+  }
 }

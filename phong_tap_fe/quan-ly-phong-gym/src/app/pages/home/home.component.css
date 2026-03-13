@@ -218,12 +218,30 @@
 }
 
 /* Responsive */
-@media (max-width: 767px) {
-  .banner-section {
-    padding: 100px 0;
-  }
+@media (max-width: 1200px) {
+}
 
+@media (max-width: 990px) {
+  .bmi-section {
+    background: #2e2e2e;
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 768px) {
   .section-title {
     font-size: 16px;
+  }
+
+  .bmi-section {
+    background: #2e2e2e;
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 500px) {
+  .bmi-section {
+    background: #2e2e2e;
+    margin-top: 50px;
   }
 }

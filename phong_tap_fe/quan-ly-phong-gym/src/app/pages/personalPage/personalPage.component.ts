@@ -1,3 +1,4 @@
+import { TheTapService } from './../../../common/shared/service/application/theTapService';
 import {
   DialogMode,
   DialogService,
@@ -20,6 +21,7 @@ import { MoneyPipe } from '../../../common/base/pipe/moneny/moneyPipe.component'
 import { ChiTietDonHangComponent } from '../manager/order/chi-tiet-don-hang/chi-tiet-don-hang.component';
 import { DateFormatPipe } from '../../../common/base/pipe/dateFormat/dateFormat.component';
 import { ChinhSuaThongTinComponent } from './chinh-sua-thong-tin/chinh-sua-thong-tin.component';
+import { QRCodeModule } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-personal',
@@ -32,24 +34,25 @@ import { ChinhSuaThongTinComponent } from './chinh-sua-thong-tin/chinh-sua-thong
     LabelValuePipe,
     MoneyPipe,
     DateFormatPipe,
+    QRCodeModule,
   ],
   templateUrl: './personalPage.component.html',
   styleUrl: './personalPage.component.css',
 })
 export class PersonalPageComponent implements OnInit {
-  activeTab: string = 'Đơn Hàng';
-  donhang: any[] = [];
-
-  isModalOpen2: boolean = false;
-
-  selectedFile: File | null = null;
-  baseUrl = IMAGE_CURRENT;
-
+  public activeTab: string = 'Đơn Hàng';
+  public donhang: any[] = [];
+  public isModalOpen2: boolean = false;
+  public selectedFile: File | null = null;
+  public baseUrl = IMAGE_CURRENT;
   public userData: any[] = [];
   public listOfData: any[] = [];
   public forums: any[] = [];
   public currentUser: any;
   public listTrangThaiSanPham: any[] = trangThaiDonHang;
+
+  public qrCode: string = '';
+  public soNgayConLai: number = 0;
 
   constructor(
     private authService: AuthService,
@@ -57,6 +60,7 @@ export class PersonalPageComponent implements OnInit {
     private dialogService: DialogService,
     private forumService: ForumService,
     private customerService: CustomerService,
+    private theTapService: TheTapService,
   ) {}
 
   async ngOnInit() {
@@ -88,6 +92,12 @@ export class PersonalPageComponent implements OnInit {
       this.customerService.getKhachHangById(uers.id),
     );
     this.userData = [userRes];
+
+    const qr = await firstValueFrom(
+      this.theTapService.getTheTapByKhachHang(uers.id),
+    );
+    this.qrCode = qr.data.qrCode;
+    this.soNgayConLai = qr.data.soNgayConLai;
   }
 
   handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {

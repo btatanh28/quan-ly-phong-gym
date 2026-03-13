@@ -1,50 +1,53 @@
 .cart-page {
-  background-color: #f8f9fa;
   height: 100%;
   width: 100%;
-  padding: 76px 0 76px 0;
+  padding: 170px 0 86px 0;
+}
 
-  .content {
-    position: relative;
-  }
+.card {
+  border: none;
+  border-radius: 10px;
+}
 
-  /* .bg-modal{
-      padding: 200px 200px;
-    } */
+.cart-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+}
 
-  .card {
-    border: none;
-    border-radius: 10px;
-  }
+.table {
+  min-width: 1000px;
+  white-space: nowrap;
+}
 
-  .container {
-    padding: 130px 0 0 0;
-  }
+.table td {
+  max-width: 120px;
+  white-space: normal;
+  word-break: break-word;
+}
 
-  .cart-img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 5px;
-  }
+.btn-success {
+  border-radius: 20px;
+  padding: 7px 25px;
+}
 
-  .table {
-    th,
-    td {
-      vertical-align: middle;
-    }
+.table-responsive {
+  max-width: 100%;
+  overflow-x: auto;
+}
 
-    .form-control {
-      max-width: 100px;
-    }
+@media (max-width: 1200px) {
+}
 
-    .btn-danger {
-      padding: 0.25rem 0.5rem;
-    }
-  }
+@media (max-width: 990px) {
+}
 
-  .btn-success {
-    border-radius: 20px;
-    padding: 0.5rem 2rem;
+@media (max-width: 768px) {
+}
+
+@media (max-width: 500px) {
+  .bg-ngoai {
+    margin-top: 90px;
   }
 }
