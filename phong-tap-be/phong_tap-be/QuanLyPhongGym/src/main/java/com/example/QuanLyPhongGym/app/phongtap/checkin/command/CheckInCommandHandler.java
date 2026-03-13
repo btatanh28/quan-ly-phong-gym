@@ -22,7 +22,7 @@ public class CheckInCommandHandler {
 
     public ApiResponse<String> handle(CheckInCommand request) {
 
-        TheTap theTap = theTapRespository.findFirstById(request.getQrCode());
+        TheTap theTap = theTapRespository.findFirstByQrCode(request.getQrCode());
 
         if (theTap == null) {
             throw new RuntimeException("QR không hợp lệ");
