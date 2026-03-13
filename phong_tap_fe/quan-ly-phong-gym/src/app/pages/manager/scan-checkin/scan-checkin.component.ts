@@ -3,6 +3,8 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 import { Component, OnInit } from '@angular/core';
 import { FormModule } from '../../../../common/module/forms.module';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-scan-checkin',
@@ -12,7 +14,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./scan-checkin.component.css'],
 })
 export class ScanCheckinComponent implements OnInit {
-  scanResult: string = '';
+  public scanResult: string = '';
 
   constructor(private checkInService: CheckInService) {}
 
@@ -25,9 +27,11 @@ export class ScanCheckinComponent implements OnInit {
 
     scanner.render(
       (decodedText: string) => {
-        console.log('QR:', decodedText);
+        if (this.scanResult) return;
 
         this.scanResult = decodedText;
+
+        scanner.clear();
 
         this.checkin(decodedText);
       },
@@ -37,19 +41,23 @@ export class ScanCheckinComponent implements OnInit {
     );
   }
 
-  checkin(code: string) {
+  async checkin(code: string) {
     const body = {
       qrCode: code,
       thietBi: 'WEB_CAMERA',
     };
 
-    this.checkInService.checkIn(body).subscribe({
-      next: (res: any) => {
-        alert('✅ Check-in thành công');
-      },
-      error: (err) => {
-        alert('❌ Check-in thất bại');
-      },
-    });
+    const response = await firstValueFrom(this.checkInService.checkIn(body));
+    if (response) {
+      {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Check-in thành công',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+    }
   }
 }
