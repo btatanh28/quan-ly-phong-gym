@@ -10,7 +10,7 @@ export const IMAGE_BASE = {
 };
 
 // Đổi môi trường ở đây
-export const ENVIRONMENT: 'local' | 'prod' = 'local';
+export const ENVIRONMENT: 'local' | 'prod' = 'prod';
 
 // Xuất ra biến dùng trong toàn app
 export const API_CURRENT = API_BASE[ENVIRONMENT];
