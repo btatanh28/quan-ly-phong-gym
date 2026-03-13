@@ -6,4 +6,6 @@ import com.example.QuanLyPhongGym.domain.entity.app.thetapgoitap.TheTapGoiTap;
 
 public interface TheTapGoiTapRepository extends JpaRepository<TheTapGoiTap, String> {
     TheTapGoiTap findFirstById(String id);
+
+    TheTapGoiTap findFirstByIdTheTap(String idTheTap);
 }

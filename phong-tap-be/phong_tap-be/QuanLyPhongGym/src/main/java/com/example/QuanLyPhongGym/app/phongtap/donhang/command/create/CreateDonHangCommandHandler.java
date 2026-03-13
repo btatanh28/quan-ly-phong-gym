@@ -102,9 +102,9 @@ public class CreateDonHangCommandHandler {
             // nếu chưa có thì tạo thẻ
             if (theTap == null) {
                 theTap = new TheTap();
-                theTap.setId(GenarateCode.generate());
+                theTap.setId(Generator.generate());
                 theTap.setIdKhachHang(donDangKy.getIdKhachHang());
-                theTap.setQrCode(System.currentTimeMillis());
+                theTap.setQrCode(GenarateCode.generate());
                 theTap.setTrangThai(1);
                 theTap.setNgayTao(nowTime);
 

@@ -8,4 +8,6 @@ public interface TheTapRespository extends JpaRepository<TheTap, String> {
     TheTap findFirstById(String id);
 
     TheTap findFirstByIdKhachHang(String idKhachHang);
+
+    TheTap findFirstByQrCode(String qrCode);
 }
