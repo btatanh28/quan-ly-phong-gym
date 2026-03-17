@@ -7,8 +7,10 @@ import com.example.QuanLyPhongGym.core.model.response.ApiResponse;
 import com.example.QuanLyPhongGym.core.service.Generator;
 import com.example.QuanLyPhongGym.domain.entity.app.checkin.CheckIn;
 import com.example.QuanLyPhongGym.domain.entity.app.thetap.TheTap;
+import com.example.QuanLyPhongGym.domain.entity.app.thetapgoitap.TheTapGoiTap;
 import com.example.QuanLyPhongGym.domain.repository.app.checkin.CheckInRepository;
 import com.example.QuanLyPhongGym.domain.repository.app.thetap.TheTapRespository;
+import com.example.QuanLyPhongGym.domain.repository.app.thetapgoitap.TheTapGoiTapRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class CheckInCommandHandler {
     private final TheTapRespository theTapRespository;
     private final CheckInRepository checkInRepository;
+    private final TheTapGoiTapRepository theTapGoiTapRepository;
 
     public ApiResponse<String> handle(CheckInCommand request) {
 
@@ -53,6 +56,12 @@ public class CheckInCommandHandler {
         checkIn.setTrangThai(1);
 
         checkInRepository.save(checkIn);
+
+        TheTapGoiTap theTapGoiTap = theTapGoiTapRepository.findFirstByIdTheTap(theTap.getId());
+
+        theTapGoiTap.setSoNgayConLai(theTapGoiTap.getSoNgayConLai() - 1);
+
+        theTapGoiTapRepository.save(theTapGoiTap);
 
         return new ApiResponse<>("Check-in thành công");
     }

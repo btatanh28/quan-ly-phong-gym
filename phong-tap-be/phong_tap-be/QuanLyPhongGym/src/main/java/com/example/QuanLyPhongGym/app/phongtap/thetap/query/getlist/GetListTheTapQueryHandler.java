@@ -1,4 +1,4 @@
-package com.example.QuanLyPhongGym.app.phongtap.sanpham.query.getlist;
+package com.example.QuanLyPhongGym.app.phongtap.thetap.query.getlist;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +16,11 @@ import lombok.RequiredArgsConstructor;
 @Lazy
 @RequiredArgsConstructor
 
-public class GetListSanPhamQueryHandler implements IRequestHandler<GetListSanPhamQuery, ListResponse> {
+public class GetListTheTapQueryHandler implements IRequestHandler<GetListTheTapQuery, ListResponse> {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public ListResponse handle(GetListSanPhamQuery request) {
+    public ListResponse handle(GetListTheTapQuery request) {
         StringBuilder sql = new StringBuilder(
                 "SELECT " +
                         "    gt.ID, " +
@@ -32,9 +32,12 @@ public class GetListSanPhamQueryHandler implements IRequestHandler<GetListSanPha
                         "    kh.EMAIL, " +
                         "    ct.SO_NGAY_CON_LAI " +
                         "FROM THE_TAP tp " +
-                        "JOIN KHACH_HANG kh ON tp.ID_KHACH_HANG = kh.ID " +
-                        "LEFT JOIN THE_TAP_GOI_TAP ct ON ct.ID_THE_TAP = tp.ID " +
-                        "LEFT JOIN GOI_TAP gt ON ct.ID_GOI_TAP = gt.ID " +
+                        "JOIN KHACH_HANG kh " +
+                        " ON tp.ID_KHACH_HANG = kh.ID " +
+                        "LEFT JOIN THE_TAP_GOI_TAP ct " +
+                        " ON ct.ID_THE_TAP = tp.ID " +
+                        "LEFT JOIN GOI_TAP gt " +
+                        " ON ct.ID_GOI_TAP = gt.ID " +
                         "WHERE 1=1 ");
 
         StringBuilder countSql = new StringBuilder("""
@@ -48,16 +51,22 @@ public class GetListSanPhamQueryHandler implements IRequestHandler<GetListSanPha
 
         boolean isFilter = false;
 
-        if (request.getTenGoiTap() != null && !request.getTenGoiTap().isEmpty()) {
+        if (request.getTenKhachHang() != null && !request.getTenKhachHang().isEmpty()) {
             isFilter = true;
-            sql.append(" AND gt.TEN_GOI_TAP LIKE ?");
-            params.add("%" + request.getTenGoiTap() + "%");
+            sql.append(" AND kh.TEN_KHACH_HANG LIKE ?");
+            params.add("%" + request.getTenKhachHang() + "%");
         }
 
-        if (request.getGia() != null) {
+        if (request.getSoDienThoai() != null) {
             isFilter = true;
-            sql.append(" AND GIA = ?");
-            params.add(request.getGia());
+            sql.append(" AND kh.SO_DIEN_THOAI = ?");
+            params.add(request.getSoDienThoai());
+        }
+
+        if (request.getEmail() != null) {
+            isFilter = true;
+            sql.append(" AND kh.EMAIL = ?");
+            params.add(request.getEmail());
         }
 
         int page = 1;
@@ -76,20 +85,17 @@ public class GetListSanPhamQueryHandler implements IRequestHandler<GetListSanPha
             sql.append(" ORDER BY gt.ID DESC");
         }
 
-        List<GetListSanPhamQueryDTO> items = jdbcTemplate.query(
+        List<GetListTheTapQueryDTO> items = jdbcTemplate.query(
                 sql.toString(),
                 params.toArray(),
                 (rs, rowNum) -> {
-                    GetListSanPhamQueryDTO dto = new GetListSanPhamQueryDTO();
+                    GetListTheTapQueryDTO dto = new GetListTheTapQueryDTO();
                     dto.setId(rs.getString("ID"));
+                    dto.setTenKhachHang(rs.getString("TEN_KHACH_HANG"));
                     dto.setTenGoiTap(rs.getString("TEN_GOI_TAP"));
-                    dto.setGia(rs.getBigDecimal("GIA"));
-                    dto.setGiaSauGiam(rs.getBigDecimal("GIA_SAU_GIAM"));
-                    dto.setMoTa(rs.getString("MO_TA"));
-                    dto.setGiamGia(rs.getInt("GIAM_GIA"));
-                    dto.setThoiHanNgay(rs.getInt("THOI_HAN_NGAY"));
-                    dto.setSoNgay(rs.getInt("SO_NGAY"));
-                    dto.setHinhAnh(rs.getString("HINH_ANH"));
+                    dto.setEmail(rs.getString("EMAIL"));
+                    dto.setSoDienThoai(rs.getString("SO_DIEN_THOAI"));
+                    dto.setSoNgayConLai(rs.getInt("SO_NGAY_CON_LAI"));
                     return dto;
                 });
 
