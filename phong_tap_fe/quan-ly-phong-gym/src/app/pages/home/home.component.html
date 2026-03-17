@@ -51,7 +51,9 @@
 
   <section class="bmi-section py-5 bg-dark">
     <div class="container">
-      <h2 class="text-center mt-4 mb-4 text-light animate__animated animate__fadeIn">
+      <h2
+        class="text-center mt-4 mb-4 text-light animate__animated animate__fadeIn"
+      >
         Đo chỉ số BMI
       </h2>
       <div class="container">
@@ -78,20 +80,22 @@
                 placeholder="Nhập cân nặng (kg)"
                 min="0"
               />
-              <button
-                style="width: 200px"
-                (click)="resetBMI()"
-                class="btn btn-secondary me-2"
-              >
-                Đặt lại
-              </button>
-              <button
-                style="width: 200px"
-                (click)="calculateBMI()"
-                class="btn btn-primary"
-              >
-                Xem kết quả
-              </button>
+              <div class="button-check">
+                <button
+                  style="width: 200px"
+                  (click)="resetBMI()"
+                  class="btn btn-secondary me-2"
+                >
+                  Đặt lại
+                </button>
+                <button
+                  style="width: 200px"
+                  (click)="calculateBMI()"
+                  class="btn btn-primary"
+                >
+                  Xem kết quả
+                </button>
+              </div>
               <div
                 *ngIf="bmi !== null && bmiResultBoolean === true"
                 class="alert alert-info mt-3"

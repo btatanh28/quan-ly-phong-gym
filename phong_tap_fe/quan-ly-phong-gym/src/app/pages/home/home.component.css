@@ -226,6 +226,14 @@
     background: #2e2e2e;
     margin-top: 50px;
   }
+
+  .button-check {
+    display: flex;
+    flex-direction: column;
+    gap: 10px 0;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 @media (max-width: 768px) {
@@ -237,11 +245,27 @@
     background: #2e2e2e;
     margin-top: 50px;
   }
+
+  .button-check {
+    display: flex;
+    flex-direction: column;
+    gap: 10px 0;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 @media (max-width: 500px) {
   .bmi-section {
     background: #2e2e2e;
     margin-top: 50px;
+  }
+
+  .button-check {
+    display: flex;
+    flex-direction: column;
+    gap: 10px 0;
+    justify-content: center;
+    align-items: center;
   }
 }

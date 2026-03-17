@@ -1,0 +1,157 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Quản lý sản phẩm</h5>
+  </div>
+
+  <div class="card-body">
+    <form *ngIf="formSearch" [formGroup]="formSearch" (ngSubmit)="getData()">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="tenGoiTap" class="form-label">Tên khách hàng</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="tenKhachHang"
+            placeholder="Tên khách hàng"
+            required
+          />
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="gia" class="form-label">Số điện thoại</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="soDienThoai"
+            placeholder="Số điện thoại"
+            required
+          />
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="gia" class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            formControlName="email"
+            placeholder="Email"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="list-button">
+        <button
+          nz-button
+          type="button"
+          class="btn btn-primary btn-search"
+          (click)="getData()"
+        >
+          <i nz-icon nzType="search" nzTheme="outline"></i>Tìm kiếm
+        </button>
+
+        <button
+          nz-button
+          type="button"
+          class="btn btn-primary btn-search"
+          (click)="onReset()"
+        >
+          <i nz-icon nzType="reload" nzTheme="outline"></i>Làm mới
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="user-bg">
+    <div class="mb-4">
+      <div class="data-table">
+        <div class="hearder-table mt-m-15">
+          <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
+            <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
+          </nz-tabset>
+          <!-- <div class="lst-controls">
+            <button
+              nz-button
+              type="button"
+              class="btn btn-primary"
+              (click)="handlerOpenDialog()"
+            >
+              <i class="isax-add-circle1 mr-2"></i>Thêm mới sản phẩm
+            </button>
+          </div> -->
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="text-center">Tên khách hàng</th>
+                  <th class="text-center">Số điện thoại</th>
+                  <th class="text-center">Email</th>
+                  <th class="text-center">Tên gói tập</th>
+                  <th class="text-center">Số ngày còn lại</th>
+                  <th class="text-center">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of listOfData">
+                  <td class="text-center">{{ item.tenKhachHang }}</td>
+                  <td class="text-center">{{ item.soDienThoai }}</td>
+                  <td class="text-center">{{ item.email }}</td>
+                  <td class="text-center">{{ item.tenGoiTap }}</td>
+                  <td class="text-center">{{ item.soNgayConLai }}</td>
+                  <td class="text-center">
+                    <button
+                      class="btn btn-custom btn-sm me-2"
+                      (click)="handlerOpenDialog(item, 'view')"
+                    >
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+
+                    <button
+                      class="btn btn-custom btn-sm me-2"
+                      (click)="handlerOpenDialog(item, 'edit')"
+                    >
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button
+                      class="btn btn-danger btn-sm"
+                      (click)="deleteData(item.id)"
+                    >
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div
+      class="pagination d-flex align-items-center justify-content-center py-4"
+    >
+      <button
+        class="btn btn-primary mx-2"
+        [disabled]="page === 0"
+        (click)="onPageChange(page - 1)"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+
+      <span class="text-white bg-dark px-3 py-2 rounded">
+        {{ page + 1 }} / {{ totalPages }}
+      </span>
+
+      <button
+        class="btn btn-primary mx-2"
+        [disabled]="page + 1 >= totalPages"
+        (click)="onPageChange(page + 1)"
+      >
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div> -->
+  </div>
+</div>

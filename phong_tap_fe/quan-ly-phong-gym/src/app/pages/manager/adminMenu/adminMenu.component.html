@@ -86,6 +86,16 @@
             <a
               class="nav-link"
               [class.active]="currentTab === 'scan-checkin'"
+              (click)="setTab('card')"
+            >
+              <i class="fa-solid fa-id-card"></i>
+              Quản lý thẻ tập
+            </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a
+              class="nav-link"
+              [class.active]="currentTab === 'scan-checkin'"
               (click)="setTab('scan-checkin')"
             >
               <i class="fa-solid fa-qrcode"></i>
@@ -132,6 +142,7 @@
           <app-forum *ngIf="currentTab === 'forums'"></app-forum>
           <app-product *ngIf="currentTab === 'products'"></app-product>
           <app-order *ngIf="currentTab === 'orders'"></app-order>
+          <app-exercise-card *ngIf="currentTab === 'card'"></app-exercise-card>
           <app-scan-checkin
             *ngIf="currentTab === 'scan-checkin'"
           ></app-scan-checkin>
