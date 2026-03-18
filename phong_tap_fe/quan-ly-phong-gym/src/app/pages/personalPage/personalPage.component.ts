@@ -65,11 +65,11 @@ export class PersonalPageComponent implements OnInit {
 
   async ngOnInit() {
     this.currentUser = this.authService.getUserCurrent();
-
-    await this.getData();
+    await this.getDataUser();
+    await this.getData('Đơn Hàng'); // chỉ load tab đầu
   }
 
-  async getData() {
+  async getDataUser() {
     const params = {
       idKhachHang: this.currentUser?.id,
     };
@@ -78,26 +78,42 @@ export class PersonalPageComponent implements OnInit {
       id: this.currentUser?.id,
     };
 
-    const res = await firstValueFrom(
-      this.donHangService.getDonHangByIdKhachHang(params.idKhachHang),
-    );
-    this.listOfData = res.items;
-
-    const response = await firstValueFrom(
-      this.forumService.getForumByIdKhachHang(params.idKhachHang),
-    );
-    this.forums = response.items;
-
     const userRes = await firstValueFrom(
       this.customerService.getKhachHangById(uers.id),
     );
     this.userData = [userRes];
+  }
 
-    const qr = await firstValueFrom(
-      this.theTapService.getTheTapByKhachHang(uers.id),
-    );
-    this.qrCode = qr.data.qrCode;
-    this.soNgayConLai = qr.data.soNgayConLai;
+  async getData(tab?: string) {
+    const params = {
+      idKhachHang: this.currentUser?.id,
+    };
+
+    const uers = {
+      id: this.currentUser?.id,
+    };
+
+    if (!tab || tab === 'Đơn Hàng') {
+      const res = await firstValueFrom(
+        this.donHangService.getDonHangByIdKhachHang(params.idKhachHang),
+      );
+      this.listOfData = res.items;
+    }
+
+    if (!tab || tab === 'Bài Đăng') {
+      const response = await firstValueFrom(
+        this.forumService.getForumByIdKhachHang(params.idKhachHang),
+      );
+      this.forums = response.items;
+    }
+
+    if (!tab || tab === 'Code') {
+      const qr = await firstValueFrom(
+        this.theTapService.getTheTapByKhachHang(uers.id),
+      );
+      this.qrCode = qr.data.qrCode;
+      this.soNgayConLai = qr.data.soNgayConLai;
+    }
   }
 
   handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {
@@ -155,7 +171,9 @@ export class PersonalPageComponent implements OnInit {
     );
   }
 
-  selectTab(tab: string) {
+  async selectTab(tab: string) {
     this.activeTab = tab;
+
+    await this.getData(tab);
   }
 }

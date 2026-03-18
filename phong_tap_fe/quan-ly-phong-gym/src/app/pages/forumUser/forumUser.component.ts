@@ -204,6 +204,60 @@ export class ForumUserComponent implements OnInit {
     await this.getData();
   }
 
+  async deleteData(val: any) {
+    const result = await Swal.fire({
+      title: 'Bạn có chắc chắn muốn xóa không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Không',
+      confirmButtonText: 'Có',
+    });
+
+    if (result.isConfirmed) {
+      const response = await firstValueFrom(this.forumService.deleteForum(val));
+
+      if (response) {
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Xóa dữ liệu thành công',
+          icon: 'success',
+        });
+      }
+    }
+
+    await this.getData();
+  }
+
+  async deleteComment(val: any) {
+    const result = await Swal.fire({
+      title: 'Bạn có chắc chắn muốn xóa không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Không',
+      confirmButtonText: 'Có',
+    });
+
+    if (result.isConfirmed) {
+      const response = await firstValueFrom(
+        this.commentService.deleteComment(val),
+      );
+
+      if (response) {
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Xóa dữ liệu thành công',
+          icon: 'success',
+        });
+      }
+    }
+
+    await this.getData();
+  }
+
   handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {
     const dialog = this.dialogService.openDialog(
       (option) => {

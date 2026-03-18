@@ -121,7 +121,11 @@
                             >
                           </li>
                           <li>
-                            <a class="dropdown-item text-danger">Xóa</a>
+                            <a
+                              (click)="deleteComment(comment)"
+                              class="dropdown-item text-danger"
+                              >Xóa</a
+                            >
                           </li>
                         </ul>
                       </div>
@@ -212,6 +216,14 @@
                       class="btn btn-primary"
                     >
                       Sửa bài viết
+                    </button>
+
+                    <button
+                      type="button"
+                      (click)="deleteData(post)"
+                      class="btn btn-danger"
+                    >
+                      Xóa bài viết
                     </button>
                   </div>
                 </form>

@@ -84,7 +84,7 @@
                 <button
                   style="width: 200px"
                   (click)="resetBMI()"
-                  class="btn btn-secondary me-2"
+                  class="btn btn-secondary"
                 >
                   Đặt lại
                 </button>
@@ -164,7 +164,7 @@
   </section>
 
   <!-- Customer Reviews -->
-  <section class="reviews-section py-5">
+  <section class="reviews-section py-4">
     <div class="container">
       <h2 class="text-left mb-4 animate__animated animate__fadeIn">
         Đánh giá từ khách hàng
@@ -209,14 +209,16 @@
   </section>
 
   <!-- Call to Action -->
-  <section class="cta-section py-5">
-    <div class="bg container text-center animate__animated animate__fadeIn">
-      <h2 class="mb-3">Bạn đã sẵn sàng chưa?</h2>
-      <p class="mb-4">
-        Đặt lịch tập luyện ngay hôm nay để trải nghiệm dịch vụ chuyên nghiệp và
-        không gian tập luyện hiện đại tại phòng gym của chúng tôi!
-      </p>
-      <a [routerLink]="['/book']" class="btn btn-lg">Đặt ngay</a>
+  <section class="cta-section py-4">
+    <div class="container">
+      <div class="bg text-center animate__animated animate__fadeIn">
+        <h2 class="mb-3">Bạn đã sẵn sàng chưa?</h2>
+        <p class="mb-4">
+          Đặt lịch tập luyện ngay hôm nay để trải nghiệm dịch vụ chuyên nghiệp
+          và không gian tập luyện hiện đại tại phòng gym của chúng tôi!
+        </p>
+        <a [routerLink]="['/menu']" class="btn btn-lg">Đặt ngay</a>
+      </div>
     </div>
   </section>
 </div>
