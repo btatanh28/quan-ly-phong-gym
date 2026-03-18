@@ -1,10 +1,12 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   Component,
+  ElementRef,
   HostListener,
   Inject,
   OnInit,
   PLATFORM_ID,
+  ViewChild,
 } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { FormModule } from '../../../common/module/forms.module';
@@ -22,6 +24,8 @@ declare var bootstrap: any;
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
+  @ViewChild('navbarCollapse') navbarCollapse!: ElementRef;
+
   public isScrolled = false;
   public showSearch = false;
   public currentUser: { name: string; role: string } | null = null;
@@ -30,6 +34,7 @@ export class HeaderComponent implements OnInit {
   // public orders: DonHang[] = [];
   public searchKeyword = '';
   public hasNewNotification: boolean = false;
+  public isMenuOpen = false;
 
   constructor(
     private authService: AuthService,
@@ -59,9 +64,29 @@ export class HeaderComponent implements OnInit {
     await this.getData();
   }
 
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
   @HostListener('window:scroll', [])
   onWindowScroll() {
     this.isScrolled = window.pageYOffset > 50;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    const navbar = this.navbarCollapse?.nativeElement;
+
+    if (
+      navbar &&
+      navbar.classList.contains('show') &&
+      !navbar.contains(event.target)
+    ) {
+      const bsCollapse = new bootstrap.Collapse(navbar, {
+        toggle: false,
+      });
+      bsCollapse.hide();
+    }
   }
 
   isAdmin(): boolean {
@@ -93,5 +118,16 @@ export class HeaderComponent implements OnInit {
 
   closeModal() {
     this.isModalOpen = false;
+  }
+
+  closeMenu() {
+    const navbar = this.navbarCollapse?.nativeElement;
+
+    if (navbar && navbar.classList.contains('show')) {
+      const bsCollapse = new bootstrap.Collapse(navbar, {
+        toggle: false,
+      });
+      bsCollapse.hide();
+    }
   }
 }

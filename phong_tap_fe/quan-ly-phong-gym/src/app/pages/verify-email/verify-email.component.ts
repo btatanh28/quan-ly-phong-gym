@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  ElementRef,
   HostListener,
   Input,
   OnInit,
+  QueryList,
   SimpleChanges,
+  ViewChildren,
 } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import Swal from 'sweetalert2';
 import { Route, Router } from '@angular/router';
@@ -21,6 +24,7 @@ import { VerifyService } from '../../../common/shared/service/application/verify
   styleUrls: ['./verify-email.component.css'],
 })
 export class VerifyEmailComponent implements OnInit {
+  @ViewChildren('otpInput') inputs!: QueryList<ElementRef>;
   @Input() email!: string;
   public myForm?: FormGroup;
   public isScrolled = false;
@@ -40,6 +44,10 @@ export class VerifyEmailComponent implements OnInit {
     this.initForm();
   }
 
+  ngAfterViewInit() {
+    this.inputs.first.nativeElement.focus();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['email'] && !changes['email'].firstChange) {
       this.myForm?.get('email')?.setValue(this.email);
@@ -48,23 +56,84 @@ export class VerifyEmailComponent implements OnInit {
 
   private initForm() {
     this.myForm = this.fb.group({
-      otp1: [''],
-      otp2: [''],
-      otp3: [''],
-      otp4: [''],
-      otp5: [''],
-      otp6: [''],
+      otp1: ['', Validators.required],
+      otp2: ['', Validators.required],
+      otp3: ['', Validators.required],
+      otp4: ['', Validators.required],
+      otp5: ['', Validators.required],
+      otp6: ['', Validators.required],
       email: [this.email],
     });
   }
 
-  moveNext(event: any, index: number) {
-    const input = event.target;
-    const value = input.value;
+  onInput(event: any, index: number) {
+    const value = event.target.value;
 
-    if (value.length === 1 && index < 6) {
-      const nextInput = input.parentElement.children[index] as HTMLInputElement;
-      nextInput.focus();
+    // 👉 paste nhiều ký tự
+    if (value.length > 1) {
+      this.handlePaste(value);
+      return;
+    }
+
+    // 👉 nhập bình thường → sang ô tiếp
+    if (value && index < 5) {
+      this.inputs.toArray()[index + 1].nativeElement.focus();
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent, index: number) {
+    const input = event.target as HTMLInputElement;
+
+    if (event.key === 'Backspace') {
+      if (!input.value && index > 0) {
+        const prev = this.inputs.toArray()[index - 1].nativeElement;
+        prev.focus();
+        prev.value = '';
+        this.setFormValue(index - 1, '');
+      }
+    }
+  }
+
+  setFormValue(index: number, value: string) {
+    const controlName = `otp${index + 1}`;
+    this.myForm?.get(controlName)?.setValue(value);
+  }
+
+  handlePaste(value: string) {
+    const chars = value.replace(/\D/g, '').slice(0, 6).split('');
+
+    chars.forEach((char, i) => {
+      const input = this.inputs.toArray()[i].nativeElement;
+      input.value = char;
+      this.setFormValue(i, char);
+    });
+
+    const lastIndex = chars.length - 1;
+    if (lastIndex >= 0) {
+      this.inputs.toArray()[lastIndex].nativeElement.focus();
+    }
+  }
+
+  onPaste(event: ClipboardEvent) {
+    event.preventDefault();
+
+    const pasteData = event.clipboardData?.getData('text') || '';
+
+    const chars = pasteData.replace(/\D/g, '').slice(0, 6).split('');
+
+    chars.forEach((char, i) => {
+      const input = this.inputs.toArray()[i].nativeElement;
+      input.value = char;
+      this.setFormValue(i, char);
+    });
+
+    if (chars.length === 6) {
+      setTimeout(() => this.verifySubmit(), 3000);
+    } else {
+      const lastIndex = chars.length - 1;
+      if (lastIndex >= 0) {
+        this.inputs.toArray()[lastIndex].nativeElement.focus();
+      }
     }
   }
 

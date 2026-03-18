@@ -26,6 +26,7 @@
       <button
         class="navbar-toggler"
         type="button"
+        (click)="toggleMenu()"
         data-bs-toggle="collapse"
         data-bs-target="#navbarNav"
       >
@@ -33,7 +34,7 @@
       </button>
 
       <!-- Menu -->
-      <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="collapse navbar-collapse" id="navbarNav" #navbarCollapse>
         <ul class="navbar-nav nav-layout me-auto">
           <li class="nav-item" *ngIf="isAdmin() && isEmployee()">
             <a class="nav-link" routerLink="/manager">Quản lý</a>
