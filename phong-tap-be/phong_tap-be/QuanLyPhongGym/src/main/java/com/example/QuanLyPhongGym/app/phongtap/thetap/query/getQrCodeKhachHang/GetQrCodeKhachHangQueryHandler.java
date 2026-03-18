@@ -1,5 +1,7 @@
 package com.example.QuanLyPhongGym.app.phongtap.thetap.query.getQrCodeKhachHang;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -39,9 +41,14 @@ public class GetQrCodeKhachHangQueryHandler {
         GetQrCodeResponse response = new GetQrCodeResponse();
         response.setQrCode(theTap.getQrCode());
 
-        TheTapGoiTap theTapGoiTap = theTapGoiTapRepository.findFirstByIdTheTap(theTap.getId());
+        List<TheTapGoiTap> list = theTapGoiTapRepository.findAllByIdTheTap(theTap.getId());
 
-        response.setSoNgayConLai(theTapGoiTap.getSoNgayConLai());
+        int tongNgay = 0;
+        for (TheTapGoiTap item : list) {
+            tongNgay += item.getSoNgayConLai();
+        }
+
+        response.setSoNgayConLai(tongNgay);
 
         return new ApiResponse<>(response);
     }

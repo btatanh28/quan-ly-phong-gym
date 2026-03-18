@@ -24,17 +24,16 @@ public class GetListSanPhamQueryHandler implements IRequestHandler<GetListSanPha
         StringBuilder sql = new StringBuilder(
                 "SELECT " +
                         "    gt.ID, " +
-                        "    tp.ID_KHACH_HANG, " +
-                        "    kh.TEN_KHACH_HANG, " +
                         "    gt.TEN_GOI_TAP, " +
-                        "    ct.ID_GOI_TAP, " +
-                        "    kh.SO_DIEN_THOAI, " +
-                        "    kh.EMAIL, " +
-                        "    ct.SO_NGAY_CON_LAI " +
-                        "FROM THE_TAP tp " +
-                        "JOIN KHACH_HANG kh ON tp.ID_KHACH_HANG = kh.ID " +
-                        "LEFT JOIN THE_TAP_GOI_TAP ct ON ct.ID_THE_TAP = tp.ID " +
-                        "LEFT JOIN GOI_TAP gt ON ct.ID_GOI_TAP = gt.ID " +
+                        "    gt.HINH_ANH, " +
+                        "    gt.GIA, " +
+                        "    gt.THOI_HAN_NGAY, " +
+                        "    gt.GIAM_GIA, " +
+                        "    gt.MO_TA, " +
+                        "    gt.SO_NGAY, " +
+                        "    gt.GIA_SAU_GIAM " +
+                        "FROM GOI_TAP gt " +
+
                         "WHERE 1=1 ");
 
         StringBuilder countSql = new StringBuilder("""
