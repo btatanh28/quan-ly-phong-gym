@@ -9,6 +9,8 @@ import { ForumUserComponent } from './pages/forumUser/forumUser.component';
 import { MenuComponent } from './pages/menu/menu.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { PersonalPageComponent } from './pages/personalPage/personalPage.component';
+import { IntroductionComponent } from './pages/introduction/introduction.component';
+import { ContactComponent } from './pages/contact/contact.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +21,8 @@ export const routes: Routes = [
   { path: 'menu', component: MenuComponent },
   { path: 'cart', component: CartComponent },
   { path: 'personalPage', component: PersonalPageComponent },
+  { path: 'introduction', component: IntroductionComponent },
+  { path: 'contact', component: ContactComponent },
   // { path: '', pathMatch: 'full', redirectTo: '/welcome' },
   // { path: 'welcome', loadChildren: () => import('./pages/manager/welcome/welcome.routes').then(m => m.WELCOME_ROUTES) }
 ];

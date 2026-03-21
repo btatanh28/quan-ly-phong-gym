@@ -1,0 +1,67 @@
+.contact-hero {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("/assets/img/contact-bg.png") center/cover no-repeat;
+  color: white;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 100px 15px;
+  margin-top: 110px;
+}
+
+.contact-hero h1 {
+  font-size: 3.2rem;
+  font-weight: 800;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.btn-primary-custom {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  border-radius: 50px;
+  transition: all 0.3s;
+}
+
+.btn-primary-custom:hover {
+  background-color: #d00000;
+  border-color: #d00000;
+  color: #f8f9fa;
+  transform: translateY(-3px);
+}
+
+.info-icon {
+  font-size: 2.5rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.info-card {
+  transition: all 0.3s;
+  border: none;
+  background: #f8f9fa;
+}
+
+.info-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.map-wrapper {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  height: 450px;
+}
+
+@media (max-width: 768px) {
+  .contact-hero h1 {
+    font-size: 2.4rem;
+  }
+  .map-wrapper {
+    height: 350px;
+  }
+}

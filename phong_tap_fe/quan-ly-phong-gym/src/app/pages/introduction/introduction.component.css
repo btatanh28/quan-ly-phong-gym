@@ -1,0 +1,68 @@
+.hero {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
+    url("/assets/img/introduction-bg.png") center/cover no-repeat;
+  color: white;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 0px 15px 0px 15px;
+  margin-top: 113px;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+.btn-primary-custom {
+  background-color: #d00000;
+  border-color: #d00000;
+  padding: 0.8rem 2rem;
+  color: #ffff;
+  font-weight: 600;
+  border-radius: 50px;
+  transition: all 0.3s;
+}
+
+.btn-primary-custom:hover {
+  transform: translateY(-3px);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  color: var(--primary);
+  margin-bottom: 1.2rem;
+}
+
+.card-feature {
+  transition: all 0.3s;
+  border: none;
+  background: #f8f9fa;
+}
+
+.card-feature:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12) !important;
+}
+
+.map-wrapper {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.ratio-16x9-custom {
+  --bs-aspect-ratio: calc(9 / 16 * 100%);
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.6rem;
+  }
+  .hero {
+    padding: 0px 15px;
+  }
+}

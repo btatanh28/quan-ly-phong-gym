@@ -3,25 +3,11 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_CURRENT } from './api-base';
 
-export interface DatBan {
-  IDDatBan: number;
-  IDKhachHang: number;
-  TenKhachHang: string;
-  ThoiGianDatBan: string;
-  SoDienThoai: string;
-  Email: string | null;
-  IDCoSo: number;
-  CoSoNhaHang: string;
-  SoLuongNguoi: number;
-  GhiChu: string | null;
-  TrangThaiDatBan: string;
-}
-
 @Injectable({
   providedIn: 'root',
 })
-export class DatBanService {
-  private apiUrl = `${API_CURRENT}/datban`;
+export class ContactService {
+  private apiUrl = `${API_CURRENT}/lien-he`;
 
   constructor(private http: HttpClient) {}
 
@@ -37,8 +23,8 @@ export class DatBanService {
     return this.http.get<any>(`${this.apiUrl}/khachhang/${id}`);
   }
 
-  createDatBan(DatBan: DatBan): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}`, DatBan);
+  createLienHe(lienHe: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}`, lienHe);
   }
 
   updateDatBan(id: number, DatBanData: any): Observable<any> {
@@ -51,7 +37,7 @@ export class DatBanService {
 
   XacNhanDatBan(
     id: number,
-    DataTrangThai: { TrangThaiDatBan: string }
+    DataTrangThai: { TrangThaiDatBan: string },
   ): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/xacnhan/${id}`, DataTrangThai, {
       headers: { 'Content-Type': 'application/json' },
