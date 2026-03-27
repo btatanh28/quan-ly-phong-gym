@@ -1,4 +1,4 @@
-package com.example.QuanLyPhongGym.app.phongtap.khachhang.query.getlist;
+package com.example.QuanLyPhongGym.app.phongtap.lienhe.query.getlist;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,49 +16,57 @@ import lombok.RequiredArgsConstructor;
 @Lazy
 @RequiredArgsConstructor
 
-public class GetListKhachHangQueryHandler implements IRequestHandler<GetListKhachHangQuery, ListResponse> {
-
+public class GetListLienHeQueryHandler implements IRequestHandler<GetListLienHeQuery, ListResponse> {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public ListResponse handle(GetListKhachHangQuery request) {
-        StringBuilder sql = new StringBuilder(
-                "SELECT ID, TEN_KHACH_HANG, DIA_CHI, EMAIL, SO_DIEN_THOAI, Da_XAC_NHAN " +
-                        "FROM KHACH_HANG WHERE 1=1");
+    public ListResponse handle(GetListLienHeQuery request) {
+        StringBuilder sql = new StringBuilder("""
+                    SELECT
+                        lh.ID,
+                        lh.ID_KHACH_HANG,
+                        lh.TEN_KHACH_HANG,
+                        kh.TEN_KHACH_HANG as khachHang,
+                        lh.SO_DIEN_THOAI,
+                        lh.EMAIL,
+                        lh.NOI_DUNG,
+                        lh.NGAY_GUI
+                    FROM LIEN_HE lh
+                    LEFT JOIN KHACH_HANG kh ON lh.ID_KHACH_HANG = kh.ID
+                    WHERE 1=1
+                """);
 
         List<Object> params = new ArrayList<>();
 
         if (request.getTenKhachHang() != null && !request.getTenKhachHang().isEmpty()) {
-            sql.append(" AND TEN_KHACH_HANG LIKE ?");
+            sql.append(" AND lh.TEN_KHACH_HANG LIKE ?");
             params.add("%" + request.getTenKhachHang() + "%");
         }
 
         if (request.getEmail() != null && !request.getEmail().isEmpty()) {
-            sql.append(" AND EMAIL LIKE ?");
+            sql.append(" AND lh.EMAIL LIKE ?");
             params.add("%" + request.getEmail() + "%");
         }
 
         if (request.getSoDienThoai() != null && !request.getSoDienThoai().isEmpty()) {
-            sql.append(" AND SO_DIEN_THOAI LIKE ?");
+            sql.append(" AND lh.SO_DIEN_THOAI LIKE ?");
             params.add("%" + request.getSoDienThoai() + "%");
         }
 
-        if (request.getDiaChi() != null && !request.getDiaChi().isEmpty()) {
-            sql.append(" AND DIA_CHI LIKE ?");
-            params.add("%" + request.getDiaChi() + "%");
-        }
+        sql.append(" ORDER BY lh.NGAY_GUI DESC");
 
-        List<GetListKhachHangQueryDTO> items = jdbcTemplate.query(
+        List<GetListLienHeQueryDTO> items = jdbcTemplate.query(
                 sql.toString(),
                 params.toArray(),
                 (rs, rowNum) -> {
-                    GetListKhachHangQueryDTO dto = new GetListKhachHangQueryDTO();
+                    GetListLienHeQueryDTO dto = new GetListLienHeQueryDTO();
                     dto.setId(rs.getString("ID"));
                     dto.setTenKhachHang(rs.getString("TEN_KHACH_HANG"));
-                    dto.setDiaChi(rs.getString("DIA_CHI"));
+                    dto.setNoiDung(rs.getString("NOI_DUNG"));
                     dto.setEmail(rs.getString("EMAIL"));
                     dto.setSoDienThoai(rs.getString("SO_DIEN_THOAI"));
-                    dto.setDaXacNhan(rs.getInt("Da_XAC_NHAN"));
+                    dto.setNgayGui(rs.getLong("NGAY_GUI"));
+                    dto.setIdKhachHang(rs.getString("ID_KHACH_HANG"));
                     return dto;
                 });
 

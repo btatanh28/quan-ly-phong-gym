@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 public class QuanLyPhongGymApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(QuanLyPhongGymApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(QuanLyPhongGymApplication.class, args);
+    }
 
 }

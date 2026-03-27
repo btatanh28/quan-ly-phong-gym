@@ -1,4 +1,4 @@
-package com.example.QuanLyPhongGym.app.phongtap.khachhang.query.getlist;
+package com.example.QuanLyPhongGym.app.phongtap.lienhe.query.getlist;
 
 import com.example.QuanLyPhongGym.core.annotation.Response;
 import com.example.QuanLyPhongGym.core.model.response.ListResponse;
@@ -10,13 +10,12 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class GetListKhachHangQuery {
+public class GetListLienHeQuery {
     private String id;
+    private String idKhachHang;
     private String tenKhachHang;
-    private String matKhau;
-    private String email;
     private String soDienThoai;
-    private String diaChi;
-    private String hinhAnh;
-    private Integer daXacNhan;
+    private String noiDung;
+    private String email;
+    private Long ngayGui;
 }

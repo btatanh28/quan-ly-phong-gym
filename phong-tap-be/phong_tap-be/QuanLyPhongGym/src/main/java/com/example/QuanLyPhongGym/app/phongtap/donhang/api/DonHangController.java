@@ -1,6 +1,7 @@
 package com.example.QuanLyPhongGym.app.phongtap.donhang.api;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,9 +16,13 @@ import com.example.QuanLyPhongGym.app.phongtap.donhang.command.create.CreateDonH
 import com.example.QuanLyPhongGym.app.phongtap.donhang.command.create.CreateDonHangCommandHandler;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.command.update.UpdateDonHangCommand;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.command.update.UpdateDonHangCommandHandler;
+import com.example.QuanLyPhongGym.app.phongtap.donhang.query.exportDoanhThu.ExportDoanhThuQuery;
+import com.example.QuanLyPhongGym.app.phongtap.donhang.query.exportDoanhThu.ExportDoanhThuQueryHandler;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.query.get.GetDonHangQuery;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.query.get.GetDonHangQueryDTO;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.query.get.GetDonHangQueryHandler;
+import com.example.QuanLyPhongGym.app.phongtap.donhang.query.getDoanhThu.GetDoanhThuQuery;
+import com.example.QuanLyPhongGym.app.phongtap.donhang.query.getDoanhThu.GetDoanhThuQueryHandler;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.query.getkhachhang.GetListDonHangKhachHangQuery;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.query.getkhachhang.GetListDonHangKhachHangQueryHandler;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.query.getlist.GetListDonHangQuery;
@@ -26,6 +31,8 @@ import com.example.QuanLyPhongGym.core.model.response.DataResponse;
 import com.example.QuanLyPhongGym.core.model.response.ListResponse;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 @RestController
 @Lazy
@@ -38,6 +45,8 @@ public class DonHangController {
     private final GetDonHangQueryHandler getDonHangQueryHandler;
     private final UpdateDonHangCommandHandler updateDonHangCommandHandler;
     private final GetListDonHangKhachHangQueryHandler getListDonHangKhachHangQueryHandler;
+    private final GetDoanhThuQueryHandler getDoanhThuQueryHandler;
+    private final ExportDoanhThuQueryHandler exportDoanhThuQueryHandler;
 
     @GetMapping("list")
     public ResponseEntity<ListResponse> getList(@ModelAttribute GetListDonHangQuery request) {
@@ -73,5 +82,22 @@ public class DonHangController {
     public ResponseEntity<DataResponse> update(@RequestBody UpdateDonHangCommand request) {
         DataResponse response = updateDonHangCommandHandler.handle(request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("doanh-thu")
+    public ResponseEntity<ListResponse> getDoanhThu(@ModelAttribute GetDoanhThuQuery request) {
+        ListResponse response = getDoanhThuQueryHandler.handle(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<InputStreamResource> export(ExportDoanhThuQuery request) {
+
+        InputStreamResource file = exportDoanhThuQueryHandler.export(request);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=doanh-thu.csv")
+                .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+                .body(file);
     }
 }
