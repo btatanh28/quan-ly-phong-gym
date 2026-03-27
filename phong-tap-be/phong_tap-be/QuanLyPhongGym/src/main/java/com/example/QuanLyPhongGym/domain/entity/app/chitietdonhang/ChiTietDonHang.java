@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity(name = "Chi_TIET_DON_HANG")
+@Entity(name = "CHI_TIET_DON_HANG")
 @Getter
 @Setter
 
