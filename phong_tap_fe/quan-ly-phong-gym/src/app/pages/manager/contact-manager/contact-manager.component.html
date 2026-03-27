@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">Quản lý thẻ tập</h5>
+    <h5 class="mb-0">Liên hệ khách hàng</h5>
   </div>
 
   <div class="card-body">
@@ -79,8 +79,8 @@
                   <th class="text-center">Tên khách hàng</th>
                   <th class="text-center">Số điện thoại</th>
                   <th class="text-center">Email</th>
-                  <th class="text-center">Tên gói tập</th>
-                  <th class="text-center">Số ngày còn lại</th>
+                  <th class="text-center">Nội dung</th>
+                  <th class="text-center">Ngày gửi</th>
                   <th class="text-center">Hành động</th>
                 </tr>
               </thead>
@@ -89,10 +89,10 @@
                   <td class="text-center">{{ item.tenKhachHang }}</td>
                   <td class="text-center">{{ item.soDienThoai }}</td>
                   <td class="text-center">{{ item.email }}</td>
-                  <td class="text-center">{{ item.tenGoiTap }}</td>
-                  <td class="text-center">{{ item.soNgayConLai }}</td>
+                  <td class="text-center">{{ item.noiDung }}</td>
+                  <td class="text-center">{{ item.ngayGui | dateTimeFormat }}</td>
                   <td class="text-center">
-                    <button
+                    <!-- <button
                       class="btn btn-custom btn-sm me-2"
                       (click)="handlerOpenDialog(item, 'view')"
                     >
@@ -104,7 +104,7 @@
                       (click)="handlerOpenDialog(item, 'edit')"
                     >
                       <i class="fa-solid fa-pen-to-square"></i>
-                    </button>
+                    </button> -->
                     <button
                       class="btn btn-danger btn-sm"
                       (click)="deleteData(item.id)"

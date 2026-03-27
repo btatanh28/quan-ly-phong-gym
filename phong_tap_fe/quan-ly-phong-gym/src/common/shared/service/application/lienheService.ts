@@ -11,36 +11,19 @@ export class ContactService {
 
   constructor(private http: HttpClient) {}
 
-  getAllDatBan(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}`);
-  }
-
-  getDatBanById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
-  }
-
-  getDatBanByIdKhachHang(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/khachhang/${id}`);
+  getAllLienHe(params: any): Observable<any> {
+    Object.keys(params).forEach(
+      (key) =>
+        (params[key] == null || params[key] === '') && delete params[key],
+    );
+    return this.http.get<any>(`${this.apiUrl}/list`, { params });
   }
 
   createLienHe(lienHe: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}`, lienHe);
   }
 
-  updateDatBan(id: number, DatBanData: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, DatBanData);
-  }
-
-  deleteDatBan(id: number): Observable<any> {
+  deleteLienHe(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
-  }
-
-  XacNhanDatBan(
-    id: number,
-    DataTrangThai: { TrangThaiDatBan: string },
-  ): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/xacnhan/${id}`, DataTrangThai, {
-      headers: { 'Content-Type': 'application/json' },
-    });
   }
 }

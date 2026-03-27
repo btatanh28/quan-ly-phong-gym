@@ -211,6 +211,7 @@
                   <th class="text-center">Email</th>
                   <td class="text-center">Số điện thoại</td>
                   <th class="text-center">Địa chỉ</th>
+                  <th class="text-center">Xác nhận</th>
                   <th class="text-center">Hành động</th>
                 </tr>
               </thead>
@@ -220,6 +221,9 @@
                   <td class="text-center">{{ item.email }}</td>
                   <td class="text-center">{{ item.soDienThoai }}</td>
                   <td class="text-center">{{ item.diaChi }}</td>
+                  <td class="text-center">
+                    {{ item.daXacNhan | labelValue: listXacNhan }}
+                  </td>
                   <td class="text-center">
                     <button
                       class="btn btn-danger btn-sm"

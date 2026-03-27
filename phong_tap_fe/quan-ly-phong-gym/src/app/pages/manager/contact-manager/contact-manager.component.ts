@@ -1,23 +1,27 @@
-import { TheTapService } from './../../../../common/shared/service/application/theTapService';
-import {
-  DialogMode,
-  DialogService,
-  DialogSize,
-} from './../../../../common/shared/service/base/dialogservice';
+import { ContactService } from './../../../../common/shared/service/application/lienheService';
 import { Component, OnInit } from '@angular/core';
 import { FormModule } from '../../../../common/module/forms.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import {
+  DialogMode,
+  DialogService,
+  DialogSize,
+} from '../../../../common/shared/service/base/dialogservice';
+import { TheTapService } from '../../../../common/shared/service/application/theTapService';
 import { firstValueFrom } from 'rxjs';
+import { DateFormatPipe } from '../../../../common/base/pipe/dateFormat/dateFormat.component';
+import Swal from 'sweetalert2';
+import { DateTimeFormatPipe } from '../../../../common/base/pipe/dateTimeFormat/dateTimeForm.component';
 
 @Component({
-  selector: 'app-exercise-card',
+  selector: 'app-contact-manager',
   standalone: true,
-  imports: [FormModule, CommonModule],
-  templateUrl: './exercise-card.component.html',
-  styleUrls: ['./exercise-card.component.css'],
+  imports: [FormModule, CommonModule, DateTimeFormatPipe],
+  templateUrl: './contact-manager.component.html',
+  styleUrls: ['./contact-manager.component.css'],
 })
-export class ExerciseCardComponent implements OnInit {
+export class ContactManagerComponent implements OnInit {
   public formSearch?: FormGroup;
   public listOfData: any[] = [];
   public page = 0;
@@ -28,7 +32,7 @@ export class ExerciseCardComponent implements OnInit {
   constructor(
     private dialogService: DialogService,
     private fb: FormBuilder,
-    private theTapService: TheTapService,
+    private contactService: ContactService,
   ) {
     this.formSearch = fb.group({
       id: [null],
@@ -50,9 +54,7 @@ export class ExerciseCardComponent implements OnInit {
     };
 
     const res = await firstValueFrom(
-      this.theTapService.getAllTheTap({
-        page: this.page,
-        size: this.pageSize,
+      this.contactService.getAllLienHe({
         ...this.formSearch.value,
       }),
     );
@@ -60,7 +62,33 @@ export class ExerciseCardComponent implements OnInit {
     this.listOfData = res.items;
   }
 
-  deleteData(val: any) {}
+  async deleteData(val: any) {
+    const result = await Swal.fire({
+      title: 'Bạn có chắc chắn muốn xóa không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Không',
+      confirmButtonText: 'Có',
+    });
+
+    if (result.isConfirmed) {
+      const response = await firstValueFrom(
+        this.contactService.deleteLienHe(val),
+      );
+
+      if (response) {
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Xóa dữ liệu thành công',
+          icon: 'success',
+        });
+      }
+    }
+
+    await this.getData();
+  }
 
   handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {
     console.log('mode', mode);

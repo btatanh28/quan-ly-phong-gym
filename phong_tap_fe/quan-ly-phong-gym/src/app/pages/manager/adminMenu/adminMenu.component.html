@@ -45,6 +45,16 @@
           <li nz-menu-item nzMatchRouter>
             <a
               class="nav-link"
+              [class.active]="currentTab === 'scan-checkin'"
+              (click)="setTab('contact')"
+            >
+              <i class="fa-solid fa-envelope"></i>
+              Liên hệ khách hàng
+            </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a
+              class="nav-link"
               [class.active]="currentTab === 'posts'"
               (click)="setTab('posts')"
             >
@@ -90,6 +100,16 @@
             >
               <i class="fa-solid fa-id-card"></i>
               Quản lý thẻ tập
+            </a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a
+              class="nav-link"
+              [class.active]="currentTab === 'revenue'"
+              (click)="setTab('revenue')"
+            >
+              <i class="fa-solid fa-chart-pie"></i>
+              Doanh thu
             </a>
           </li>
           <li nz-menu-item nzMatchRouter>
@@ -146,6 +166,10 @@
           <app-scan-checkin
             *ngIf="currentTab === 'scan-checkin'"
           ></app-scan-checkin>
+          <app-contact-manager
+            *ngIf="currentTab === 'contact'"
+          ></app-contact-manager>
+          <app-revenue *ngIf="currentTab === 'revenue'"></app-revenue>
         </ng-container>
       </div>
     </nz-content>

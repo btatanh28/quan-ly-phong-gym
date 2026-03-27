@@ -22,6 +22,7 @@ import { MoneyPipe } from '../../../../common/base/pipe/moneny/moneyPipe.compone
 import { LabelValuePipe } from '../../../../common/base/pipe/labelValue/labelValue.component';
 import { InputSelectComponent } from '../../../../common/base/controls/input-select/input-select.component';
 import { ChiTietNguoiDungComponent } from './chi-tiet-nguoi-dung/chi-tiet-nguoi-dung.component';
+import { xacNhan } from '../../../../common/shared/enums/xacNhan.enums';
 
 @Component({
   selector: 'app-account',
@@ -46,6 +47,7 @@ export class AccountComponent implements OnInit {
   public listOfData: any[] = [];
   public listVaiTro: any[] = vaiTroOptions;
   public listOfDataKhachHang: any[] = [];
+  public listXacNhan: any[] = xacNhan;
 
   selectTab(tab: string) {
     this.activeTab = tab;

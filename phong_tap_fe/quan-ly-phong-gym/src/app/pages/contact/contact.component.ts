@@ -17,6 +17,7 @@ import { firstValueFrom } from 'rxjs';
 })
 export class ContactComponent implements OnInit {
   public myForm?: FormGroup;
+  public currentUser: any;
   constructor(
     private fb: FormBuilder,
     private ex: ExtentionService,
@@ -32,7 +33,14 @@ export class ContactComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.currentUser = this.authService.getUserCurrent();
+
+    if (this.currentUser) {
+      this.myForm?.get('tenKhachHang')?.patchValue(this.currentUser.name);
+      this.myForm?.get('soDienThoai')?.patchValue(this.currentUser.soDienThoai);
+    }
+  }
 
   async saveData() {
     const soDienThoaiValue = this.myForm?.get('soDienThoai')?.value;
@@ -41,6 +49,32 @@ export class ContactComponent implements OnInit {
         position: 'center',
         icon: 'warning',
         title: 'Thiếu số điện thoại',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    if (
+      this.myForm?.get('soDienThoai')?.value.length > 10 ||
+      this.myForm?.get('soDienThoai')?.value.length <= 9
+    ) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Số điện thoại không hợp lệ',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    const noiDungValue = this.myForm?.get('noiDung')?.value;
+    if (!noiDungValue) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Thiếu nội dung',
         showConfirmButton: false,
         timer: 2000,
       });

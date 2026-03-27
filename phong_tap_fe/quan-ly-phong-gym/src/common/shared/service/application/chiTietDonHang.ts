@@ -21,4 +21,8 @@ export class ChiTietDonHangService {
   getChiTietDonHangId(id: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
+
+  getChiTietDoanhThu(doanhThu: any): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/list/doanh-thu`, doanhThu);
+  }
 }

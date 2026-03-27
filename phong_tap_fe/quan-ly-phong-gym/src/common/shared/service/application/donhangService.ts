@@ -37,4 +37,25 @@ export class DonHangService {
   DeleteDonHang(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
+
+  getDoanhThu(params: any): Observable<any> {
+    Object.keys(params).forEach(
+      (key) =>
+        (params[key] == null || params[key] === '') && delete params[key],
+    );
+
+    return this.http.get<any>(`${this.apiUrl}/doanh-thu`, { params });
+  }
+
+  exportDoanhThu(params: any) {
+    Object.keys(params).forEach(
+      (key) =>
+        (params[key] == null || params[key] === '') && delete params[key],
+    );
+
+    return this.http.get(`${this.apiUrl}/export`, {
+      params,
+      responseType: 'blob',
+    });
+  }
 }

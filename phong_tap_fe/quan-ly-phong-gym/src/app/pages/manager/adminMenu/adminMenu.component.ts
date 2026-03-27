@@ -17,6 +17,8 @@ import { ProductComponent } from '../product/product.component';
 import { OrderComponent } from '../order/order.component';
 import { ScanCheckinComponent } from '../scan-checkin/scan-checkin.component';
 import { ExerciseCardComponent } from '../exercise-card/exercise-card.component';
+import { ContactManagerComponent } from '../contact-manager/contact-manager.component';
+import { RevenueComponent } from '../revenue/revenue.component';
 
 @Component({
   selector: 'app-adminMenu',
@@ -33,6 +35,8 @@ import { ExerciseCardComponent } from '../exercise-card/exercise-card.component'
     OrderComponent,
     ScanCheckinComponent,
     ExerciseCardComponent,
+    ContactManagerComponent,
+    RevenueComponent,
   ],
   templateUrl: './adminMenu.component.html',
   styleUrls: ['./adminMenu.component.css'],
@@ -80,6 +84,10 @@ export class AdminMenuComponent implements OnInit {
         return 'Thẻ tập';
       case 'scan-checkin':
         return 'Check In';
+      case 'contact':
+        return 'Liên hệ khách hàng';
+      case 'revenue':
+        return 'Doanh thu';
       default:
         return 'users';
     }
