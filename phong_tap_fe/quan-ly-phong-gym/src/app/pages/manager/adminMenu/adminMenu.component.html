@@ -32,7 +32,7 @@
             </a>
             <!-- <a routerLink="/welcome">Welcome</a> -->
           </li>
-          <li nz-menu-item nzMatchRouter>
+          <li *ngIf="isAdmin()" nz-menu-item nzMatchRouter>
             <a
               class="nav-link"
               [class.active]="currentTab === 'users'"
@@ -52,7 +52,7 @@
               Liên hệ khách hàng
             </a>
           </li>
-          <li nz-menu-item nzMatchRouter>
+          <li *ngIf="isAdmin()" nz-menu-item nzMatchRouter>
             <a
               class="nav-link"
               [class.active]="currentTab === 'posts'"
@@ -72,7 +72,7 @@
               Quản lý diễn đàn
             </a>
           </li>
-          <li nz-menu-item nzMatchRouter>
+          <li *ngIf="isAdmin()" nz-menu-item nzMatchRouter>
             <a
               class="nav-link"
               [class.active]="currentTab === 'products'"
@@ -157,7 +157,7 @@
       <div class="inner-content">
         <ng-container [ngSwitch]="currentTab">
           <app-welcome *ngIf="currentTab === 'welcome'"></app-welcome>
-          <app-account *ngIf="currentTab === 'users'"></app-account>
+          <app-account *ngIf="currentTab === 'users' && isAdmin()"></app-account>
           <app-post *ngIf="currentTab === 'posts'"></app-post>
           <app-forum *ngIf="currentTab === 'forums'"></app-forum>
           <app-product *ngIf="currentTab === 'products'"></app-product>

@@ -3,12 +3,23 @@
     <h5 class="mb-0">Quản lý diễn đàn</h5>
   </div>
 
-  <div class="mb-4">
+  <div class="mt-4">
     <div class="data-table">
       <div class="hearder-table mt-m-15">
         <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
           <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
         </nz-tabset>
+
+        <div class="lst-controls">
+          <button
+            nz-button
+            type="button"
+            class="btn btn-primary"
+            (click)="handlerOpenDialog()"
+          >
+            <i class="fa-solid fa-eye"></i> Xem diễn đàn
+          </button>
+        </div>
       </div>
 
       <div class="card-body">
@@ -37,7 +48,7 @@
                 <td class="text-center">{{ item.binhLuan }}</td>
                 <td class="text-center">{{ item.ngayDanhGia | dateFormat }}</td>
                 <td class="text-center">
-                  <button
+                  <!-- <button
                     class="btn btn-custom btn-sm me-2"
                     (click)="handlerOpenDialog(item, 'view')"
                   >
@@ -49,7 +60,7 @@
                     (click)="handlerOpenDialog(item, 'edit')"
                   >
                     <i class="fa-solid fa-pen-to-square"></i>
-                  </button>
+                  </button> -->
                   <button
                     class="btn btn-danger btn-sm"
                     (click)="deleteData(item.id)"

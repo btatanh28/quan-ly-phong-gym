@@ -93,6 +93,14 @@ export class AdminMenuComponent implements OnInit {
     }
   }
 
+  isAdmin(): boolean {
+    return this.user?.role === 1;
+  }
+
+  isEmployee(): boolean {
+    return this.user?.role === 4;
+  }
+
   logout() {
     this.authService.logOut();
     this.router.navigate(['/login']);

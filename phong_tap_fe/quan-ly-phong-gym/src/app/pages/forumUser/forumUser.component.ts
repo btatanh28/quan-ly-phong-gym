@@ -114,7 +114,7 @@ export class ForumUserComponent implements OnInit {
       req.idNguoiDung = null;
     }
 
-    if (user?.role === 2 || user?.role === 4) {
+    if (user?.role === 1 || user?.role === 4) {
       req.idNguoiDung = user.id;
       req.idKhachHang = null;
     }
@@ -146,7 +146,7 @@ export class ForumUserComponent implements OnInit {
       req.idNguoiDung = null;
     }
 
-    if (user?.role === 2 || user?.role === 4) {
+    if (user?.role === 1 || user?.role === 4) {
       req.idNguoiDung = user.id;
       req.idKhachHang = null;
     }

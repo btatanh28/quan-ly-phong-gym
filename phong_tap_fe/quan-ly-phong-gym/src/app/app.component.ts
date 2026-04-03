@@ -25,18 +25,20 @@ import { AuthService } from '../common/shared/service/application/authService';
 export class AppComponent implements OnInit {
   title = 'Quản lý phòng Gym';
   public isCollapsed = false;
-  public isAdmin: boolean = false;
+  public isUsers: boolean = false;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    // Subscribe vào user hiện tại
     this.authService.currentUserSubject$.subscribe((user) => {
       if (user) {
-        // role = 1 hoặc 2 => admin
-        this.isAdmin = user.role === 1 || user.role === 2;
+        if (user.role === 1) {
+          this.isUsers = true;
+        } else if (user.role === 4) {
+          this.isUsers = true;
+        }
       } else {
-        this.isAdmin = false;
+        this.isUsers = false;
       }
     });
   }

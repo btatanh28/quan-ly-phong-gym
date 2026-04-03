@@ -11,6 +11,7 @@ import {
 } from '../../../../common/shared/service/base/dialogservice';
 import { DateFormatPipe } from '../../../../common/base/pipe/dateFormat/dateFormat.component';
 import Swal from 'sweetalert2';
+import { ForumUserComponent } from '../../forumUser/forumUser.component';
 
 @Component({
   selector: 'app-forum',
@@ -51,13 +52,10 @@ export class ForumComponent implements OnInit {
     console.log('mode', mode);
     const dialog = this.dialogService.openDialog(
       (option) => {
-        option.title =
-          mode === 'view'
-            ? 'Xem chi tiết thông tin diễn đàn'
-            : 'Thêm thông tin diễn đàn';
-        if (mode === 'edit') option.title = 'Cập nhật thông tin diễn đàn';
+        option.title = mode === 'view' ? 'Xem diễn đàn' : 'Xem diễn đàn';
+        if (mode === 'edit') option.title = 'Xem diễn đàn';
         option.size = DialogSize.large;
-        // option.component = ChiTietBaiDangComponent;
+        option.component = ForumUserComponent;
         option.inputs = {
           id: item?.id,
           mode: mode,

@@ -134,7 +134,7 @@ export class AuthService {
 
   isEmployee(): boolean {
     const employee = this.getUserCurrent();
-    return employee?.role === 5;
+    return employee?.role === 4;
   }
 
   getUserCurrent() {

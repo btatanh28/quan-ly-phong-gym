@@ -10,12 +10,19 @@ import Swal from 'sweetalert2';
 import { DialogMode } from '../../../../common/shared/service/base/dialogservice';
 import { firstValueFrom } from 'rxjs';
 import { ExtentionService } from '../../../../common/base/service/extention.service';
-import { InputDanhGiaComponent } from "../../../../common/base/controls/input-danh-gia/input-danh-gia.component";
+import { InputDanhGiaComponent } from '../../../../common/base/controls/input-danh-gia/input-danh-gia.component';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-chi-tiet-bai-viet',
   standalone: true,
-  imports: [FormModule, CommonModule, InputSelectApiComponent, InputDanhGiaComponent],
+  imports: [
+    FormModule,
+    CommonModule,
+    InputSelectApiComponent,
+    InputDanhGiaComponent,
+    RouterModule,
+  ],
   templateUrl: './chi-tiet-bai-viet.component.html',
   styleUrls: ['./chi-tiet-bai-viet.component.css'],
 })
@@ -35,6 +42,7 @@ export class ChiTietBaiVietComponent implements OnInit {
     public productService: ProductService,
     private authService: AuthService,
     private ex: ExtentionService,
+    private router: Router,
   ) {
     this.myForm = this.fb.group({
       id: [this.ex.newGuid()],
@@ -43,12 +51,15 @@ export class ChiTietBaiVietComponent implements OnInit {
       binhLuan: [null],
       danhGia: [null],
       idNguoiDung: [null],
-      hinhAnh: [null]
+      hinhAnh: [null],
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.idKhachHang = this.authService.getUserCurrent()?.id;
+  }
 
+  private idKhachHang: string | null = null;
   async saveData() {
     const danhGiaValue = this.myForm?.get('danhGia')?.value;
     if (!danhGiaValue) {
@@ -60,6 +71,17 @@ export class ChiTietBaiVietComponent implements OnInit {
         showConfirmButton: false,
         timer: 2000,
       });
+      return;
+    }
+
+    if (!this.idKhachHang) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Yêu cầu đăng nhập',
+        text: 'Xin vui lòng đăng nhập!',
+      });
+      this.closeDialog();
+      this.router.navigate(['/login']);
       return;
     }
 
