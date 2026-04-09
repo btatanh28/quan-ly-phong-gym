@@ -59,6 +59,7 @@ export class ScanCheckinComponent implements OnInit {
 
       setTimeout(() => {
           this.ngOnInit();
+          this.scanResult = '';
         }, 3000);
     }
   }
