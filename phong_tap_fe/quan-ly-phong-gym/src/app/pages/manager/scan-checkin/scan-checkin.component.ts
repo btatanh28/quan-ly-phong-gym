@@ -19,10 +19,6 @@ export class ScanCheckinComponent implements OnInit {
   constructor(private checkInService: CheckInService) {}
 
   ngOnInit(): void {
-    this.startScanner();
-  }
-
-  startScanner() {
     const scanner = new Html5QrcodeScanner(
       'reader',
       { fps: 10, qrbox: 250 },
@@ -62,8 +58,8 @@ export class ScanCheckinComponent implements OnInit {
       });
 
       setTimeout(() => {
-        this.startScanner();
-      }, 3000);
+          this.ngOnInit();
+        }, 3000);
     }
   }
 }
