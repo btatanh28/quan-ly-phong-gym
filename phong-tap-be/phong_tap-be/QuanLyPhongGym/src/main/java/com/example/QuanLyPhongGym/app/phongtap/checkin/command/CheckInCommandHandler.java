@@ -33,18 +33,18 @@ public class CheckInCommandHandler {
 
         long now = System.currentTimeMillis();
 
-        long start = now - (now % 86400000);
-        long end = start + 86400000;
+        // long start = now - (now % 86400000);
+        // long end = start + 86400000;
 
-        CheckIn exist = checkInRepository
-                .findFirstByIdTheTapAndThoiGianBetween(
-                        theTap.getId(),
-                        start,
-                        end);
+        // CheckIn exist = checkInRepository
+        //         .findFirstByIdTheTapAndThoiGianBetween(
+        //                 theTap.getId(),
+        //                 start,
+        //                 end);
 
-        if (exist != null) {
-            throw new RuntimeException("Hôm nay đã check-in");
-        }
+        // if (exist != null) {
+        //     throw new RuntimeException("Hôm nay đã check-in");
+        // }
 
         CheckIn checkIn = new CheckIn();
 
