@@ -37,13 +37,13 @@ public class CheckInCommandHandler {
         // long end = start + 86400000;
 
         // CheckIn exist = checkInRepository
-        //         .findFirstByIdTheTapAndThoiGianBetween(
-        //                 theTap.getId(),
-        //                 start,
-        //                 end);
+        // .findFirstByIdTheTapAndThoiGianBetween(
+        // theTap.getId(),
+        // start,
+        // end);
 
         // if (exist != null) {
-        //     throw new RuntimeException("Hôm nay đã check-in");
+        // throw new RuntimeException("Hôm nay đã check-in");
         // }
 
         CheckIn checkIn = new CheckIn();
@@ -63,6 +63,6 @@ public class CheckInCommandHandler {
 
         theTapGoiTapRepository.save(theTapGoiTap);
 
-        return new ApiResponse<>("Check-in thành công");
+        return new ApiResponse<>(theTap.getQrCode());
     }
 }
