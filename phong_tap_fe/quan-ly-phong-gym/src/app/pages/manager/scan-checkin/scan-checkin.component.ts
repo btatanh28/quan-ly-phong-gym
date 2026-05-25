@@ -5,6 +5,7 @@ import { FormModule } from '../../../../common/module/forms.module';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { firstValueFrom } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-scan-checkin',
@@ -14,11 +15,20 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./scan-checkin.component.css'],
 })
 export class ScanCheckinComponent implements OnInit {
+  public formSearch?: FormGroup;
+  public qrResult: string = '';
   public scanResult: string = '';
 
-  constructor(private checkInService: CheckInService) {}
+  constructor(
+    private checkInService: CheckInService,
+    private fb: FormBuilder,
+  ) {
+    this.formSearch = this.fb.group({
+      qrCode: [null],
+    });
+  }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     const scanner = new Html5QrcodeScanner(
       'reader',
       { fps: 10, qrbox: 250 },
@@ -41,6 +51,34 @@ export class ScanCheckinComponent implements OnInit {
     );
   }
 
+  async checkInScan() {
+    const body = {
+      qrCode: this.formSearch?.get('qrCode')?.value,
+      thietBi: 'Barcode Scanner',
+    };
+
+    const response = await firstValueFrom(this.checkInService.checkIn(body));
+
+    if (response) {
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Check-in thành công',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      if (this.qrResult) return;
+
+      this.qrResult = response.data;
+    }
+
+    setTimeout(() => {
+      this.qrResult = '';
+      this.formSearch?.reset();
+    }, 5000);
+  }
+
   async checkin(code: string) {
     const body = {
       qrCode: code,
@@ -58,9 +96,9 @@ export class ScanCheckinComponent implements OnInit {
       });
 
       setTimeout(() => {
-          this.ngOnInit();
-          this.scanResult = '';
-        }, 3000);
+        this.ngOnInit();
+        this.scanResult = '';
+      }, 3000);
     }
   }
 }
