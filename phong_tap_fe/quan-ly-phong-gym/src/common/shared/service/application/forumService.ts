@@ -4,15 +4,6 @@ import { Observable } from 'rxjs';
 import { BinhLuan } from './commentService';
 import { API_CURRENT } from './api-base';
 
-export interface DanhGia {
-  IDKhachHang: number;
-  ID: number;
-  DanhGia: number;
-  BinhLuan: string;
-  HinhAnh: string;
-  comments?: BinhLuan[];
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -46,6 +37,6 @@ export class ForumService {
   }
 
   deleteForum(forum: any): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${forum.id}`);
+    return this.http.delete<any>(`${this.apiUrl}/${forum}`);
   }
 }
