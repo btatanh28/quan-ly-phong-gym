@@ -69,7 +69,7 @@ public class ExportKhachHangQueryHandler {
 
             String title;
 
-            title = "Danh sách khách hàng";
+            title = "DANH SÁCH KHÁCH HÀNG";
 
             titleRow.getCell(0).setCellValue(title);
 
