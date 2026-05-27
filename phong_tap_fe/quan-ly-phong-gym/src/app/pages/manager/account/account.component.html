@@ -194,12 +194,23 @@
       <h5 class="mb-0">Quản lý tài khoản</h5>
     </div>
 
-    <div class="mb-4">
+    <div class="mt-4">
       <div class="data-table">
         <div class="hearder-table mt-m-15">
           <nz-tabset (nzSelectedIndexChange)="changeTabKhachHang($event)">
             <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
           </nz-tabset>
+
+          <div class="lst-controls">
+            <button
+              (click)="exportExcel()"
+              nz-button
+              type="button"
+              class="btn btn-primary"
+            >
+              <i class="isax-add-circle1 mr-2"></i>Kết xuất
+            </button>
+          </div>
         </div>
 
         <div class="card-body">
@@ -211,6 +222,7 @@
                   <th class="text-center">Email</th>
                   <td class="text-center">Số điện thoại</td>
                   <th class="text-center">Địa chỉ</th>
+                  <th class="text-center">Mã xác nhận</th>
                   <th class="text-center">Xác nhận</th>
                   <th class="text-center">Hành động</th>
                 </tr>
@@ -221,6 +233,7 @@
                   <td class="text-center">{{ item.email }}</td>
                   <td class="text-center">{{ item.soDienThoai }}</td>
                   <td class="text-center">{{ item.diaChi }}</td>
+                  <td class="text-center">{{ item.maXacNhan }}</td>
                   <td class="text-center">
                     {{ item.daXacNhan | labelValue: listXacNhan }}
                   </td>
