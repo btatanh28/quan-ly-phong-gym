@@ -1,4 +1,4 @@
-package com.example.QuanLyPhongGym.app.phongtap.donhang.query.exportDoanhThu;
+package com.example.QuanLyPhongGym.app.phongtap.khachhang.query.exportKhachHang;
 
 import java.util.List;
 
@@ -7,10 +7,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ExportDoanhThuQueryResponse {
+public class ExportKhachHangQueryResponse {
     private String ngay;
     private String thang;
     private String nam;
     private Long tongDoanhThu;
-    private List<ExportDoanhThuQueryDTO> items;
+    private List<ExportKhachHangQueryDTO> items;
 }

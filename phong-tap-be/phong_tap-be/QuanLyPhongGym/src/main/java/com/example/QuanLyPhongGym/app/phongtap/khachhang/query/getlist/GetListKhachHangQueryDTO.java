@@ -15,4 +15,5 @@ public class GetListKhachHangQueryDTO {
     private String diaChi;
     private String hinhAnh;
     private Integer daXacNhan;
+    private String maXacNhan; 
 }

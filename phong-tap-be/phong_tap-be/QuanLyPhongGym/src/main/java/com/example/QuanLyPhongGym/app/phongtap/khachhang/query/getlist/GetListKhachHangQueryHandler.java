@@ -23,7 +23,7 @@ public class GetListKhachHangQueryHandler implements IRequestHandler<GetListKhac
     @Override
     public ListResponse handle(GetListKhachHangQuery request) {
         StringBuilder sql = new StringBuilder(
-                "SELECT ID, TEN_KHACH_HANG, DIA_CHI, EMAIL, SO_DIEN_THOAI, Da_XAC_NHAN " +
+                "SELECT ID, TEN_KHACH_HANG, DIA_CHI, EMAIL, SO_DIEN_THOAI, Da_XAC_NHAN, MA_XAC_NHAN " +
                         "FROM KHACH_HANG WHERE 1=1");
 
         List<Object> params = new ArrayList<>();
@@ -59,6 +59,7 @@ public class GetListKhachHangQueryHandler implements IRequestHandler<GetListKhac
                     dto.setEmail(rs.getString("EMAIL"));
                     dto.setSoDienThoai(rs.getString("SO_DIEN_THOAI"));
                     dto.setDaXacNhan(rs.getInt("Da_XAC_NHAN"));
+                    dto.setMaXacNhan(rs.getString("MA_XAC_NHAN"));
                     return dto;
                 });
 

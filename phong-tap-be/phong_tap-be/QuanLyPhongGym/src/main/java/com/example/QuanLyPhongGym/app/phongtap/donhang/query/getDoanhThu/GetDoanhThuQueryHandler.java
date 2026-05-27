@@ -30,12 +30,14 @@ public class GetDoanhThuQueryHandler implements IRequestHandler<GetDoanhThuQuery
             sql.append("""
                         SELECT
                             DAY(FROM_UNIXTIME(dh.NGAY_MUA/1000)) AS ngay,
+                            MONTH(FROM_UNIXTIME(dh.NGAY_MUA/1000)) AS thang,
+                            YEAR(FROM_UNIXTIME(dh.NGAY_MUA/1000)) AS nam,
                             SUM(dh.TONG_TIEN) AS tongTienDoanhThu
                         FROM DON_DANG_KY dh
                         WHERE dh.TRANG_THAI_SAN_PHAM = 2
                         AND YEAR(FROM_UNIXTIME(dh.NGAY_MUA/1000)) = ?
                         AND MONTH(FROM_UNIXTIME(dh.NGAY_MUA/1000)) = ?
-                        GROUP BY ngay
+                        GROUP BY ngay, thang, nam
                         ORDER BY ngay
                     """);
 
@@ -46,11 +48,12 @@ public class GetDoanhThuQueryHandler implements IRequestHandler<GetDoanhThuQuery
             sql.append("""
                         SELECT
                             MONTH(FROM_UNIXTIME(dh.NGAY_MUA/1000)) AS thang,
+                            YEAR(FROM_UNIXTIME(dh.NGAY_MUA/1000)) AS nam,
                             SUM(dh.TONG_TIEN) AS tongTienDoanhThu
                         FROM DON_DANG_KY dh
                         WHERE dh.TRANG_THAI_SAN_PHAM = 2
                         AND YEAR(FROM_UNIXTIME(dh.NGAY_MUA/1000)) = ?
-                        GROUP BY thang
+                        GROUP BY thang, nam
                         ORDER BY thang
                     """);
 
@@ -65,8 +68,11 @@ public class GetDoanhThuQueryHandler implements IRequestHandler<GetDoanhThuQuery
 
                     if (request.getMonth() != null) {
                         dto.setNgay(rs.getInt("ngay"));
+                        dto.setThang(rs.getInt("thang"));
+                        dto.setNam(rs.getInt("nam"));
                     } else {
                         dto.setThang(rs.getInt("thang"));
+                        dto.setNam(rs.getInt("nam"));
                     }
 
                     dto.setTongTienDoanhThu(rs.getBigDecimal("tongTienDoanhThu"));
@@ -75,6 +81,7 @@ public class GetDoanhThuQueryHandler implements IRequestHandler<GetDoanhThuQuery
                 });
 
         ListResponse response = new ListResponse();
+
         response.setItems(items);
 
         return response;

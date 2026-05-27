@@ -3,9 +3,15 @@ package com.example.QuanLyPhongGym.app.phongtap.donhang.query.exportDoanhThu;
 import lombok.RequiredArgsConstructor;
 
 import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.InputStreamResource;
@@ -23,27 +29,21 @@ public class ExportDoanhThuQueryHandler {
 
         StringBuilder sql = new StringBuilder();
 
-        // ========================
-        // 🔥 SELECT
-        // ========================
         sql.append("SELECT ");
 
         if (request.getMonth() != null) {
-            sql.append(" DAY(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)) as ngay, ");
+            sql.append("DAY(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)) as ngay, ");
         } else {
-            sql.append(" NULL as ngay, "); // FIX lỗi group by
+            sql.append("NULL as ngay, ");
         }
 
-        sql.append(" MONTH(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)) as thang, ");
-        sql.append(" YEAR(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)) as nam, ");
-        sql.append(" SUM(d.TONG_TIEN) as tongTien ");
+        sql.append("MONTH(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)) as thang, ");
+        sql.append("YEAR(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)) as nam, ");
+        sql.append("SUM(d.TONG_TIEN) as tongTien ");
 
         sql.append("FROM DON_DANG_KY d ");
         sql.append("WHERE d.TRANG_THAI_SAN_PHAM = 2 ");
 
-        // ========================
-        // 🔥 PARAMS
-        // ========================
         List<Object> params = new ArrayList<>();
 
         if (request.getMonth() != null) {
@@ -56,33 +56,39 @@ public class ExportDoanhThuQueryHandler {
             params.add(request.getYear());
         }
 
-        // ========================
-        // 🔥 GROUP BY
-        // ========================
         if (request.getMonth() != null) {
-            sql.append(" GROUP BY DAY(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)), ");
-            sql.append(" MONTH(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)), ");
-            sql.append(" YEAR(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)) ");
-            sql.append(" ORDER BY nam, thang, ngay ");
+
+            sql.append("""
+                    GROUP BY
+                    DAY(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)),
+                    MONTH(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)),
+                    YEAR(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000))
+                    ORDER BY nam, thang, ngay
+                    """);
+
         } else {
-            sql.append(" GROUP BY MONTH(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)), ");
-            sql.append(" YEAR(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)) ");
-            sql.append(" ORDER BY nam, thang ");
+
+            sql.append("""
+                    GROUP BY
+                    MONTH(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000)),
+                    YEAR(FROM_UNIXTIME(d.NGAY_THANH_TOAN / 1000))
+                    ORDER BY nam, thang
+                    """);
         }
 
-        // ========================
-        // 🔥 QUERY
-        // ========================
         List<ExportDoanhThuQueryDTO> items = jdbcTemplate.query(
                 sql.toString(),
                 params.toArray(),
                 (rs, rowNum) -> {
+
                     ExportDoanhThuQueryDTO dto = new ExportDoanhThuQueryDTO();
+
                     dto.setStt(rowNum + 1);
-                    dto.setNgay(rs.getString("ngay")); // có thể null
+                    dto.setNgay(rs.getString("ngay"));
                     dto.setThang(rs.getInt("thang"));
                     dto.setNam(rs.getInt("nam"));
-                    dto.setTongTien(rs.getDouble("tongTien"));
+                    dto.setTongTienDoanhThu(rs.getDouble("tongTien"));
+
                     return dto;
                 });
 
@@ -90,50 +96,109 @@ public class ExportDoanhThuQueryHandler {
             throw new RuntimeException("Không có dữ liệu doanh thu");
         }
 
-        // ========================
-        // 🔥 BUILD CSV
-        // ========================
-        StringBuilder sb = new StringBuilder();
+        try {
 
-        // Title
-        String title;
-        if (request.getMonth() != null && request.getYear() != null) {
-            title = "Báo cáo doanh thu tháng " + request.getMonth() + " năm " + request.getYear();
-        } else if (request.getYear() != null) {
-            title = "Báo cáo doanh thu năm " + request.getYear();
-        } else {
-            title = "Báo cáo doanh thu tất cả";
-        }
+            InputStream inputStream = getClass()
+                    .getResourceAsStream("/template/doanh-thu-template.xlsx");
 
-        sb.append(title).append("\n\n");
+            Workbook workbook = new XSSFWorkbook(inputStream);
 
-        // Header
-        if (request.getMonth() != null) {
+            Sheet sheet = workbook.getSheetAt(0);
 
-            sb.append("STT,Ngày,Tháng,Năm,Tổng tiền\n");
+            // TITLE
+            Row titleRow = sheet.getRow(0);
 
-            for (ExportDoanhThuQueryDTO item : items) {
-                sb.append(item.getStt()).append(",");
-                sb.append(item.getNgay() != null ? item.getNgay() : "").append(",");
-                sb.append(item.getThang()).append(",");
-                sb.append(item.getNam()).append(",");
-                sb.append(item.getTongTien()).append("\n");
+            String title;
+
+            if (request.getMonth() != null && request.getYear() != null) {
+                title = "BÁO CÁO DOANH THU THÁNG "
+                        + request.getMonth()
+                        + " NĂM "
+                        + request.getYear();
+            } else if (request.getYear() != null) {
+                title = "BÁO CÁO DOANH THU NĂM " + request.getYear();
+            } else {
+                title = "BÁO CÁO DOANH THU";
             }
 
-        } else {
+            titleRow.getCell(0).setCellValue(title);
 
-            sb.append("STT,Năm,Tổng tiền\n");
+            // DATA
+            int startRow = 2;
 
-            for (ExportDoanhThuQueryDTO item : items) {
-                sb.append(item.getStt()).append(",");
-                sb.append(item.getNam()).append(",");
-                sb.append(item.getTongTien()).append("\n");
+            // dòng mẫu có style sẵn trong excel
+            Row templateRow = sheet.getRow(startRow);
+
+            if (items.size() > 1) {
+
+                sheet.shiftRows(
+                        startRow + 1,
+                        sheet.getLastRowNum(),
+                        items.size() - 1,
+                        true,
+                        false);
             }
+
+            for (int i = 0; i < items.size(); i++) {
+
+                ExportDoanhThuQueryDTO item = items.get(i);
+
+                Row row = sheet.getRow(startRow + i);
+
+                // nếu chưa có dòng thì tạo mới
+                if (row == null) {
+                    row = sheet.createRow(startRow + i);
+                }
+
+                row.setHeight(templateRow.getHeight());
+
+                for (int j = 0; j < templateRow.getLastCellNum(); j++) {
+
+                    // cell mẫu
+                    var templateCell = templateRow.getCell(j);
+
+                    if (templateCell == null)
+                        continue;
+
+                    // cell mới
+                    var cell = row.getCell(j);
+
+                    if (cell == null) {
+                        cell = row.createCell(j);
+                    }
+
+                    // copy style
+                    cell.setCellStyle(templateCell.getCellStyle());
+                }
+
+                // đổ dữ liệu
+                row.getCell(0).setCellValue(item.getStt());
+
+                if (request.getMonth() != null) {
+                    row.getCell(1).setCellValue(item.getNgay() == null ? "" : item.getNgay());
+                    row.getCell(2).setCellValue(item.getThang());
+                    row.getCell(3).setCellValue(item.getNam());
+                    row.getCell(4).setCellValue(item.getTongTienDoanhThu());
+
+                } else if (request.getYear() != null) {
+                    row.getCell(1).setCellValue(item.getNgay() == null ? "" : item.getNgay());
+                    row.getCell(2).setCellValue(item.getThang());
+                    row.getCell(3).setCellValue(item.getNam());
+                    row.getCell(4).setCellValue(item.getTongTienDoanhThu());
+                }
+            }
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            workbook.write(out);
+
+            workbook.close();
+
+            return new InputStreamResource(
+                    new ByteArrayInputStream(out.toByteArray()));
+
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi export excel", e);
         }
-
-        // BOM UTF-8 để Excel không lỗi font
-        byte[] bytes = ("\uFEFF" + sb.toString()).getBytes(StandardCharsets.UTF_8);
-
-        return new InputStreamResource(new ByteArrayInputStream(bytes));
     }
 }

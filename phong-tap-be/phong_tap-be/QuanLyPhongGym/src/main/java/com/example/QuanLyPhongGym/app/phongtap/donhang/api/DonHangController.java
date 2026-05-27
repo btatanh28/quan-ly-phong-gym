@@ -91,13 +91,18 @@ public class DonHangController {
     }
 
     @GetMapping("/export")
-    public ResponseEntity<InputStreamResource> export(ExportDoanhThuQuery request) {
+    public ResponseEntity<InputStreamResource> export(
+            ExportDoanhThuQuery request) {
 
         InputStreamResource file = exportDoanhThuQueryHandler.export(request);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=doanh-thu.csv")
-                .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=doanh-thu.xlsx")
+                .contentType(
+                        MediaType.parseMediaType(
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(file);
     }
 }
