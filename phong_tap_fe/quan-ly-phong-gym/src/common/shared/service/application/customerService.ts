@@ -44,4 +44,16 @@ export class CustomerService {
   deleteKhachHang(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/khach-hang/${id}`);
   }
+
+  exportKhachHang(params: any) {
+    Object.keys(params).forEach(
+      (key) =>
+        (params[key] == null || params[key] === '') && delete params[key],
+    );
+
+    return this.http.get(`${this.apiUrl}/khach-hang/export`, {
+      params,
+      responseType: 'blob',
+    });
+  }
 }

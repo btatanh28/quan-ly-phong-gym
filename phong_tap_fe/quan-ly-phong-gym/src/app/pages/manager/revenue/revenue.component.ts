@@ -146,16 +146,18 @@ export class RevenueComponent implements OnInit {
     };
 
     this.donHangService.exportDoanhThu(params).subscribe({
-      next: (res: any) => {
+      next: (res: Blob) => {
         const blob = new Blob([res], {
-          type: 'text/csv;charset=utf-8;',
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
 
         const url = window.URL.createObjectURL(blob);
 
         const a = document.createElement('a');
+
         a.href = url;
-        a.download = 'doanh-thu.csv';
+        a.download = 'doanh-thu.xlsx';
+
         a.click();
 
         window.URL.revokeObjectURL(url);
@@ -164,24 +166,13 @@ export class RevenueComponent implements OnInit {
       error: (err) => {
         console.log(err);
 
-        let message = 'Lỗi khi export';
-
-        if (err?.error instanceof Blob) {
-          // 🔥 đọc message từ BE trả về
-          const reader = new FileReader();
-          reader.onload = () => {
-            Swal.fire({
-              position: 'center',
-              icon: 'error',
-              title: 'Không có dữ liệu doanh thu',
-              showConfirmButton: false,
-              timer: 2000,
-            });
-          };
-          reader.readAsText(err.error);
-        } else {
-          alert(err?.error?.message || message);
-        }
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Không có dữ liệu doanh thu',
+          showConfirmButton: false,
+          timer: 2000,
+        });
       },
     });
   }

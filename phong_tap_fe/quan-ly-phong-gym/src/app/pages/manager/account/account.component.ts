@@ -192,6 +192,43 @@ export class AccountComponent implements OnInit {
     );
   }
 
+  exportExcel() {
+    const params = {
+      ...this.formSearch?.value,
+    };
+
+    this.customerService.exportKhachHang(params).subscribe({
+      next: (res: Blob) => {
+        const blob = new Blob([res], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+
+        a.href = url;
+        a.download = 'danh-sach-khach-hang.xlsx';
+
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+
+      error: (err) => {
+        console.log(err);
+
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Không có dữ liệu khách hàng',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      },
+    });
+  }
+
   async onReset(init: boolean = false) {
     this.formSearch?.reset();
 
