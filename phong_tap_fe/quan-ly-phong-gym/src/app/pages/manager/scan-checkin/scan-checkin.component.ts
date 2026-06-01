@@ -29,6 +29,10 @@ export class ScanCheckinComponent implements OnInit {
   }
 
   async ngOnInit() {
+    await this.startScanner();
+  }
+
+  async startScanner() {
     const scanner = new Html5QrcodeScanner(
       'reader',
       { fps: 10, qrbox: 250 },
@@ -52,53 +56,86 @@ export class ScanCheckinComponent implements OnInit {
   }
 
   async checkInScan() {
-    const body = {
-      qrCode: this.formSearch?.get('qrCode')?.value,
-      thietBi: 'Barcode Scanner',
-    };
+    try {
+      const body = {
+        qrCode: this.formSearch?.get('qrCode')?.value,
+        thietBi: 'Barcode Scanner',
+      };
 
-    const response = await firstValueFrom(this.checkInService.checkIn(body));
+      const response = await firstValueFrom(this.checkInService.checkIn(body));
 
-    if (response) {
+      if (response) {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Check-in thành công',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+
+        if (this.qrResult) return;
+
+        this.qrResult = response.data;
+      }
+
+      setTimeout(() => {
+        this.qrResult = '';
+        this.formSearch?.reset();
+      }, 5000);
+    } catch (error) {
       Swal.fire({
         position: 'center',
-        icon: 'success',
-        title: 'Check-in thành công',
-        showConfirmButton: false,
-        timer: 2000,
-      });
-
-      if (this.qrResult) return;
-
-      this.qrResult = response.data;
-    }
-
-    setTimeout(() => {
-      this.qrResult = '';
-      this.formSearch?.reset();
-    }, 5000);
-  }
-
-  async checkin(code: string) {
-    const body = {
-      qrCode: code,
-      thietBi: 'WEB_CAMERA',
-    };
-
-    const response = await firstValueFrom(this.checkInService.checkIn(body));
-    if (response) {
-      Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title: 'Check-in thành công',
+        icon: 'error',
+        title: 'Hôm nay đã check-in',
         showConfirmButton: false,
         timer: 2000,
       });
 
       setTimeout(() => {
-        this.ngOnInit();
+        this.qrResult = '';
+        this.formSearch?.reset();
+
+        const input = document.getElementById('qrCode');
+        input?.focus();
+      }, 100);
+    }
+  }
+
+  async checkin(code: string) {
+    try {
+      const body = {
+        qrCode: code,
+        thietBi: 'WEB_CAMERA',
+      };
+
+      const response = await firstValueFrom(this.checkInService.checkIn(body));
+      if (response) {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Check-in thành công',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+
+        setTimeout(() => {
+          this.startScanner();
+          this.scanResult = '';
+        }, 3000);
+      }
+    } catch (error) {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Hôm nay đã check-in',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      setTimeout(() => {
+        this.startScanner();
         this.scanResult = '';
-      }, 3000);
+      }, 2000);
     }
   }
 }

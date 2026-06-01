@@ -48,9 +48,20 @@ export class AccountComponent implements OnInit {
   public listVaiTro: any[] = vaiTroOptions;
   public listOfDataKhachHang: any[] = [];
   public listXacNhan: any[] = xacNhan;
+  public loadedKhachHang = false;
 
-  selectTab(tab: string) {
+  async selectTab(tab: string) {
     this.activeTab = tab;
+
+    if (tab === 'Nhân Viên') {
+      await this.getData();
+      this.loadedKhachHang = false;
+    }
+
+    if (tab === 'Khách Hàng' && !this.loadedKhachHang) {
+      await this.getDataKhachHang();
+      this.loadedKhachHang = true;
+    }
   }
 
   constructor(
@@ -74,8 +85,7 @@ export class AccountComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.getData();
-    await this.getDataKhachHang();
+    await this.selectTab(this.activeTab);
   }
 
   async getData() {

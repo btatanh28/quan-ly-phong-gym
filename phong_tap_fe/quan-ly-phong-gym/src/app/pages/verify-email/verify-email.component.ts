@@ -171,7 +171,7 @@ export class VerifyEmailComponent implements OnInit {
         showConfirmButton: false,
         timer: 2000,
       });
-      this.router.navigate(['/home'], { queryParams: { tab: 'login' } });
+      this.router.navigate(['/login'], { queryParams: { tab: 'login' } });
     }
   }
 }
