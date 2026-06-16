@@ -13,10 +13,18 @@ import { FormModule } from '../../../common/module/forms.module';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { DateFormatPipe } from '../../../common/base/pipe/dateFormat/dateFormat.component';
+import { ChatBotComponent } from '../chat/chat-bot/chat-bot.component';
 
 @Component({
   selector: 'app-home',
-  imports: [NgFor, CommonModule, RouterModule, FormModule, DateFormatPipe],
+  imports: [
+    NgFor,
+    CommonModule,
+    RouterModule,
+    FormModule,
+    DateFormatPipe,
+    ChatBotComponent,
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })

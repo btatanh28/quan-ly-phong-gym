@@ -1,0 +1,32 @@
+<!-- Floating Button -->
+<div class="chat-toggle" id="chatToggle" (click)="hideChat = !hideChat">🤖</div>
+
+<!-- Chat Window -->
+<div *ngIf="!hideChat" class="chat-container" id="chatContainer">
+  <div class="chat-header" (click)="hideChat = !hideChat">
+    <h3>🤖 Chatbot Hỗ Trợ</h3>
+    <span class="minimize-btn">_</span>
+  </div>
+
+  <div class="chat-body" id="chatBody" #chatBody>
+    <div *ngFor="let item of messages" class="message" [ngClass]="item.sender">
+      {{ item.content }}
+    </div>
+  </div>
+
+  <form
+    *ngIf="formChat"
+    [formGroup]="formChat"
+    (ngSubmit)="sendMessage()"
+    class="chat-footer"
+  >
+    <input
+      type="text"
+      class="form-control"
+      formControlName="message"
+      placeholder="Nhập tin nhắn..."
+      required
+    />
+    <button type="submit">↑</button>
+  </form>
+</div>

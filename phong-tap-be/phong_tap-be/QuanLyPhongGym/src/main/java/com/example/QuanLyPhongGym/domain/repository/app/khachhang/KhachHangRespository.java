@@ -1,9 +1,10 @@
 package com.example.QuanLyPhongGym.domain.repository.app.khachhang;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.QuanLyPhongGym.domain.entity.app.khachhang.KhachHang;
-
 
 public interface KhachHangRespository extends JpaRepository<KhachHang, String> {
     KhachHang findFirstById(String id);
@@ -13,4 +14,6 @@ public interface KhachHangRespository extends JpaRepository<KhachHang, String> {
     boolean existsBySoDienThoai(String soDienThoai);
 
     KhachHang findFirstByEmail(String email);
+
+    Optional<KhachHang> findById(String id);
 }

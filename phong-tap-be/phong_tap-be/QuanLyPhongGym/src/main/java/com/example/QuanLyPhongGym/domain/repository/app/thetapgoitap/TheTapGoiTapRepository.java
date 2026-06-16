@@ -13,4 +13,7 @@ public interface TheTapGoiTapRepository extends JpaRepository<TheTapGoiTap, Stri
 
     TheTapGoiTap findFirstByIdTheTap(String idTheTap);
 
+    List<TheTapGoiTap> findAllByIdTheTapAndTrangThai(
+            String idTheTap,
+            Integer trangThai);
 }
