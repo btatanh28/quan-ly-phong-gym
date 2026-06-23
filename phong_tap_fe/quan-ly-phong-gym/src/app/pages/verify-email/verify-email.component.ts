@@ -2,9 +2,11 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
+  EventEmitter,
   HostListener,
   Input,
   OnInit,
+  Output,
   QueryList,
   SimpleChanges,
   ViewChildren,
@@ -26,6 +28,7 @@ import { VerifyService } from '../../../common/shared/service/application/verify
 export class VerifyEmailComponent implements OnInit {
   @ViewChildren('otpInput') inputs!: QueryList<ElementRef>;
   @Input() email!: string;
+  @Output() verifySuccess = new EventEmitter<void>();
   public myForm?: FormGroup;
   public isScrolled = false;
 
@@ -138,40 +141,53 @@ export class VerifyEmailComponent implements OnInit {
   }
 
   async verifySubmit() {
-    if (!this.myForm?.valid) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Vui lòng nhập đầy đủ 6 chữ số',
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      return;
-    }
+    try {
+      if (!this.myForm?.valid) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Vui lòng nhập đầy đủ 6 chữ số',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
 
-    const maXacNhan =
-      this.myForm?.value.otp1 +
-      this.myForm?.value.otp2 +
-      this.myForm?.value.otp3 +
-      this.myForm?.value.otp4 +
-      this.myForm?.value.otp5 +
-      this.myForm?.value.otp6;
+      const maXacNhan =
+        this.myForm?.value.otp1 +
+        this.myForm?.value.otp2 +
+        this.myForm?.value.otp3 +
+        this.myForm?.value.otp4 +
+        this.myForm?.value.otp5 +
+        this.myForm?.value.otp6;
 
-    const req = {
-      maXacNhan: maXacNhan,
-      email: this.myForm?.value.email,
-    };
+      const req = {
+        maXacNhan: maXacNhan,
+        email: this.myForm?.value.email,
+      };
 
-    const response = await firstValueFrom(this.verifyService.verifyEmail(req));
+      const response = await firstValueFrom(
+        this.verifyService.verifyEmail(req),
+      );
 
-    if (response) {
-      Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title: 'Kích hoạt tài khoản thành công!',
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      this.router.navigate(['/login'], { queryParams: { tab: 'login' } });
+      if (response) {
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Kích hoạt tài khoản thành công!',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        this.verifySuccess.emit();
+      }
+    } catch (error: any) {
+      if (error?.error?.message === 'Mã xác nhận không đúng') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Mã xác nhận không đúng',
+          text: 'Vui lòng nhập lại mã xác nhận',
+        });
+        // this.showVerify = true;
+      }
     }
   }
 }

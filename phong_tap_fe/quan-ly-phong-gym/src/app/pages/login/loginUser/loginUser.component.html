@@ -23,4 +23,7 @@
 <app-verify-email
   *ngIf="showVerify"
   [email]="emailForVerify"
-></app-verify-email>
+  (verifySuccess)="onVerifySuccess()"
+>
+</app-verify-email>
+>

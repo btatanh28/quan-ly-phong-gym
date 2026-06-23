@@ -102,6 +102,19 @@ export class LoginUserComponent {
     }
   }
 
+  onVerifySuccess() {
+    this.showVerify = false;
+
+    this.myForm?.reset();
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Bạn có thể đăng nhập',
+      timer: 1500,
+      showConfirmButton: false,
+    });
+  }
+
   changePassWord(item: any = null, mode: string = DialogMode.add) {
     const dialog = this.dialogService.openDialog(
       (option) => {
