@@ -2,7 +2,7 @@ package com.example.QuanLyPhongGym.app.phongtap.khachhang.command.verifyEmail;
 
 import org.springframework.stereotype.Component;
 
-import com.example.QuanLyPhongGym.core.exception.NotFoundException;
+import com.example.QuanLyPhongGym.core.exception.CustomException;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
 import com.example.QuanLyPhongGym.domain.entity.app.khachhang.KhachHang;
 import com.example.QuanLyPhongGym.domain.repository.app.khachhang.KhachHangRespository;
@@ -19,11 +19,11 @@ public class VerifyEmailCommandHandler {
         KhachHang khachHang = respository.findFirstByEmail(requset.getEmail());
 
         if (khachHang.getEmail() == null) {
-            throw new NotFoundException("Email không tồn tại");
+            throw new CustomException("404", "Email không tồn tại");
         }
 
         if (!khachHang.getMaXacNhan().equals(requset.getMaXacNhan())) {
-            throw new NotFoundException("Mã xác nhận không đúng");
+            throw new CustomException("404", "Mã xác nhận không đúng");
         }
 
         khachHang.setDaXacNhan(true);

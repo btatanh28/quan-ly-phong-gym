@@ -5,7 +5,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.QuanLyPhongGym.core.exception.CustomException;
-import com.example.QuanLyPhongGym.core.exception.NotFoundException;
 import com.example.QuanLyPhongGym.core.security.JwtTokenUtil;
 import com.example.QuanLyPhongGym.domain.repository.app.khachhang.KhachHangRespository;
 import com.example.QuanLyPhongGym.domain.repository.app.user.UserRespository;
