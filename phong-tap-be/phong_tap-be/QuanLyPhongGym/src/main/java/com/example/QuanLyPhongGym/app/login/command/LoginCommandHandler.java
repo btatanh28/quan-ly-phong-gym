@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.example.QuanLyPhongGym.core.exception.CustomException;
 import com.example.QuanLyPhongGym.core.exception.NotFoundException;
 import com.example.QuanLyPhongGym.core.security.JwtTokenUtil;
 import com.example.QuanLyPhongGym.domain.repository.app.khachhang.KhachHangRespository;
@@ -46,11 +47,11 @@ public class LoginCommandHandler {
         var khachHang = khachHangRespository.findFirstByEmail(request.getEmail());
         if (khachHang != null) {
             if (!passwordEncoder.matches(request.getMatKhau(), khachHang.getMatKhau())) {
-                throw new RuntimeException("Sai mật khẩu");
+                throw new CustomException("404", "Sai mật khẩu");
             }
 
             if (khachHang.getDaXacNhan() == false) {
-                throw new NotFoundException("Tài khoản chưa kích hoạt");
+                throw new CustomException("404", "Tài khoản chưa kích hoạt");
             }
 
             String token = jwtTokenUtil.generateToken(khachHang.getEmail(), khachHang.getId(), khachHang.getVaiTro());
@@ -66,6 +67,6 @@ public class LoginCommandHandler {
 
         }
 
-        throw new RuntimeException("Email không tồn tại");
+        throw new CustomException("404", "Email không tồn tại");
     }
 }
