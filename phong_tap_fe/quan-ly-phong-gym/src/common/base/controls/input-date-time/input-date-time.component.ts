@@ -25,26 +25,40 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class InputDateTimeComponent implements ControlValueAccessor {
   @Input() value?: number;
   @Output() valueChange = new EventEmitter<number>();
+  disabled = false;
+
   constructor() {}
-  writeValue(obj: any): void {
-    throw new Error('Method not implemented.');
+
+  private onChange = (_: any) => {};
+  private onTouched = () => {};
+
+  writeValue(value: any): void {
+    this.value = value ?? null;
   }
   registerOnChange(fn: any): void {
-    throw new Error('Method not implemented.');
+    this.onChange = fn;
   }
   registerOnTouched(fn: any): void {
-    throw new Error('Method not implemented.');
+    this.onTouched = fn;
   }
   setDisabledState?(isDisabled: boolean): void {
-    throw new Error('Method not implemented.');
+    this.disabled = isDisabled;
   }
 
   onDateChange(event: any) {
-    const dateTime = new Date(event.target.value);
+    const dateStr = event.target.value;
 
-    this.value = dateTime.getTime();
+    if (!dateStr) return;
 
-    this.valueChange.emit(this.value);
+    const date = new Date(dateStr);
+
+    const timestamp = date.getTime();
+
+    this.value = timestamp;
+
+    this.onChange(this.value);
+
+    this.onTouched();
   }
 
   get dateTimeString(): string {
@@ -57,10 +71,10 @@ export class InputDateTimeComponent implements ControlValueAccessor {
     const yyyy = d.getFullYear();
     const mm = pad(d.getMonth() + 1);
     const dd = pad(d.getDate());
+
     const hh = pad(d.getHours());
     const min = pad(d.getMinutes());
-    const ss = pad(d.getSeconds());
 
-    return `${yyyy}-${mm}-${dd}T${hh}:${min}:${ss}`;
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
   }
 }

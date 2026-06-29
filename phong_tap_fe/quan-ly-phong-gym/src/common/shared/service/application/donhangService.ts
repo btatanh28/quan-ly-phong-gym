@@ -34,7 +34,7 @@ export class DonHangService {
     return this.http.put<any>(`${this.apiUrl}/xac-nhan/${donHang.id}`, donHang);
   }
 
-  DeleteDonHang(id: number): Observable<any> {
+  DeleteDonHang(id: String): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 

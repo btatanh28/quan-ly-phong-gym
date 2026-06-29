@@ -22,6 +22,7 @@ import { ChiTietDonHangComponent } from '../manager/order/chi-tiet-don-hang/chi-
 import { DateFormatPipe } from '../../../common/base/pipe/dateFormat/dateFormat.component';
 import { ChinhSuaThongTinComponent } from './chinh-sua-thong-tin/chinh-sua-thong-tin.component';
 import { QRCodeComponent } from 'angularx-qrcode';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-personal',
@@ -114,6 +115,34 @@ export class PersonalPageComponent implements OnInit {
       this.qrCode = qr.data.qrCode;
       this.soNgayConLai = qr.data.soNgayConLai;
     }
+  }
+
+  async deleteData(val: any) {
+    const result = await Swal.fire({
+      title: 'Bạn có chắc chắn muốn xóa không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Không',
+      confirmButtonText: 'Có',
+    });
+
+    if (result.isConfirmed) {
+      const response = await firstValueFrom(
+        this.donHangService.DeleteDonHang(val),
+      );
+
+      if (response) {
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Xóa dữ liệu thành công',
+          icon: 'success',
+        });
+      }
+    }
+
+    await this.getData();
   }
 
   handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {

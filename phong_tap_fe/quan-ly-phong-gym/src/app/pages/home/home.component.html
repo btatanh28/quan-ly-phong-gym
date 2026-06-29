@@ -137,7 +137,10 @@
           <div class="knowledge-card animate__animated animate__fadeInUp">
             <div class="row">
               <div *ngFor="let knowledge of listOfData" class="col-md-6">
-                <a class="nav-link knowledge-link">
+                <a
+                  [routerLink]="['/knowledge', knowledge.id]"
+                  class="nav-link knowledge-link"
+                >
                   <img
                     style="width: 140px; height: 140px; object-fit: cover"
                     [src]="baseUrl + knowledge.hinhAnh"

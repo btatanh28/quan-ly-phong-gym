@@ -20,6 +20,9 @@ import { InputSelectComponent } from '../../../../common/base/controls/input-sel
 import { ChiTietDonHangComponent } from './chi-tiet-don-hang/chi-tiet-don-hang.component';
 import { XacNhanDonHangComponent } from './xac-nhan-don-hang/xac-nhan-don-hang.component';
 import { TaoDonHangComponent } from './tao-don-hang/tao-don-hang.component';
+import Swal from 'sweetalert2';
+import { InputDateComponent } from '../../../../common/base/controls/input-date/input-date.component';
+import { InputDateTimeComponent } from '../../../../common/base/controls/input-date-time/input-date-time.component';
 
 @Component({
   selector: 'app-order',
@@ -30,7 +33,7 @@ import { TaoDonHangComponent } from './tao-don-hang/tao-don-hang.component';
     MoneyPipe,
     InputSelectComponent,
     DateTimeFormatPipe,
-    DateFormatPipe,
+    InputDateTimeComponent,
   ],
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.css'],
@@ -61,6 +64,8 @@ export class OrderComponent implements OnInit {
       tenNguoiDung: [null],
       idNguoiDung: [null],
       ngayCapNhat: [null],
+      ngayMuaTu: [null],
+      ngayMuaDen: [null],
     });
   }
 
@@ -92,6 +97,34 @@ export class OrderComponent implements OnInit {
 
       item.chiTietDonHangs = chiTiet;
     }
+  }
+
+  async deleteData(val: any) {
+    const result = await Swal.fire({
+      title: 'Bạn có chắc chắn muốn xóa không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Không',
+      confirmButtonText: 'Có',
+    });
+
+    if (result.isConfirmed) {
+      const response = await firstValueFrom(
+        this.donHangService.DeleteDonHang(val),
+      );
+
+      if (response) {
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Xóa dữ liệu thành công',
+          icon: 'success',
+        });
+      }
+    }
+
+    await this.getData();
   }
 
   handlerOpenDialogChiTietDonHang(

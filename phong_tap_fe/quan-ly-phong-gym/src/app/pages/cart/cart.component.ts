@@ -14,13 +14,20 @@ import { CartService } from '../../../common/shared/service/application/cartServ
 import { AuthService } from '../../../common/shared/service/application/authService';
 import { DonHangService } from '../../../common/shared/service/application/donhangService';
 import { MomoService } from '../../../common/shared/service/application/momoService';
-import { LabelValuePipe } from "../../../common/base/pipe/labelValue/labelValue.component";
+import { LabelValuePipe } from '../../../common/base/pipe/labelValue/labelValue.component';
 import { giamGia } from '../../../common/shared/enums/giamGia.enums';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [NgIf, CommonModule, FormModule, MoneyPipe, InputSelectComponent, LabelValuePipe],
+  imports: [
+    NgIf,
+    CommonModule,
+    FormModule,
+    MoneyPipe,
+    InputSelectComponent,
+    LabelValuePipe,
+  ],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css',
 })
@@ -51,13 +58,14 @@ export class CartComponent implements OnInit {
       idKhachHang: [null],
       soDienThoai: [null],
       email: [null],
+      soLuong: [1],
     });
     this.cartService.cartItem$.subscribe((item) => {
       this.cartItems = item;
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.idKhachHang = this.authService.getUserCurrent()?.id;
     this.soDienThoai = this.authService.getUserCurrent()?.soDienThoai;
 
@@ -125,53 +133,102 @@ export class CartComponent implements OnInit {
         title: 'Yêu cầu đăng nhập',
         text: 'Xin vui lòng đăng nhập!',
       });
+
       this.router.navigate(['/login']);
       return;
     }
 
     const req = {
       ...this.myForm?.getRawValue(),
+
+      idKhachHang: this.idKhachHang,
+
       chiTietDonHangs: this.cartItems.map((item) => ({
         idGoiTap: item.product.id,
+
         soLuong: item.soLuong,
+
         gia: item.product.gia,
       })),
     };
 
-    let response = null;
+    const hinhThucThanhToan = this.myForm?.get('hinhThucThanhToan')?.value;
 
-    if (this.myForm?.get('hinhThucThanhToan')?.value === 1) {
-      response = await firstValueFrom(this.donHangService.CreateDonHang(req));
+    try {
+      /*
+       * ===========================
+       * THANH TOÁN MOMO
+       * ===========================
+       */
 
-      Swal.fire({
-        title: 'Thanh Toán và đặt hàng thành công',
-        icon: 'success',
-        draggable: true,
-      });
+      if (hinhThucThanhToan === 1) {
+        // 1. Tạo đơn hàng trước
+        // trạng thái CHO_THANH_TOAN
 
-      this.closeModal();
-      this.cartService.clearCart();
-    } else if (this.myForm?.get('hinhThucThanhToan')?.value === 2) {
-      // 1. Tạo đơn hàng trước → trạng thái PENDING
-      const order: any = await firstValueFrom(
-        this.donHangService.CreateDonHang(req),
-      );
+        const order: any = await firstValueFrom(
+          this.donHangService.CreateDonHang(req),
+        );
 
-      const orderId = order?.id || order?.maDonHang;
+        /*
+         * Backend trả:
+         * {
+         *    data: "ID_DON_HANG"
+         * }
+         */
 
-      // 2. Gọi MoMo API
-      const momoRes = await firstValueFrom(
-        this.momoService.payMomo(this.getTotalPrice(), orderId),
-      );
+        const orderId = order.data || order.id;
 
-      // 3. Redirect sang MoMo
-      if (momoRes && momoRes.payUrl) {
-        window.location.href = momoRes.payUrl;
+        if (!orderId) {
+          Swal.fire('Lỗi', 'Không lấy được mã đơn hàng', 'error');
+
+          return;
+        }
+
+        // 2. Gọi MoMo
+
+        const momoRes: any = await firstValueFrom(
+          this.momoService.payMomo(this.getTotalPrice(), orderId),
+        );
+
+        // 3. Chuyển sang MoMo
+
+        if (momoRes?.payUrl) {
+          window.location.href = momoRes.payUrl;
+        } else {
+          Swal.fire('Lỗi', 'Không tạo được thanh toán MoMo', 'error');
+        }
+
+        return;
+      } else if (hinhThucThanhToan === 2) {
+        /*
+         * ===========================
+         * THANH TOÁN TIỀN MẶT
+         * ===========================
+         */
+        await firstValueFrom(this.donHangService.CreateDonHang(req));
+
+        Swal.fire({
+          title: 'Đặt hàng thành công',
+
+          text: 'Vui lòng thanh toán tại quầy',
+
+          icon: 'success',
+        });
+
         this.closeModal();
+
         this.cartService.clearCart();
-      } else {
-        Swal.fire('Lỗi', 'Không tạo được thanh toán MoMo', 'error');
       }
+    } catch (error) {
+      console.error(error);
+
+      Swal.fire(
+        'Lỗi',
+
+        'Không thể tạo đơn hàng',
+
+        'error',
+      );
     }
   }
 }

@@ -26,4 +26,8 @@ export class TheTapService {
   getCombobox(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/combobox`);
   }
+
+  deleteTheTap(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  }
 }

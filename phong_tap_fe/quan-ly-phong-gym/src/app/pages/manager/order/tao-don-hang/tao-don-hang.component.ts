@@ -74,6 +74,7 @@ export class TaoDonHangComponent implements OnInit {
       gia: [null],
       giamGia: [null],
       giaSauGiam: [null],
+      soLuong: [1],
       chiTietDonHangs: this.fb.array([]),
     });
   }
@@ -84,6 +85,8 @@ export class TaoDonHangComponent implements OnInit {
     }
 
     await this.handleModeDialog();
+
+    await this.disableValueForm();
 
     this.initForm = true;
   }
@@ -98,6 +101,14 @@ export class TaoDonHangComponent implements OnInit {
     if (this.mode === DialogMode.add || this.mode === DialogMode.edit) {
       this.viewButtonSave = true;
     }
+  }
+
+  async disableValueForm() {
+    this.myForm?.get('idGoiTap')?.disable();
+    this.myForm?.get('gia')?.disable();
+    this.myForm?.get('giamGia')?.disable();
+    this.myForm?.get('giaSauGiam')?.disable();
+    this.myForm?.get('soLuong')?.disable();
   }
 
   async getData() {
@@ -150,7 +161,7 @@ export class TaoDonHangComponent implements OnInit {
 
     let response = null;
 
-    if (this.myForm?.get('hinhThucThanhToan')?.value === 1) {
+    if (this.myForm?.get('hinhThucThanhToan')?.value === 2) {
       response = await firstValueFrom(this.donHangService.CreateDonHang(req));
 
       Swal.fire({
@@ -160,7 +171,7 @@ export class TaoDonHangComponent implements OnInit {
       });
 
       this.closeDialog(true);
-    } else if (this.myForm?.get('hinhThucThanhToan')?.value === 2) {
+    } else if (this.myForm?.get('hinhThucThanhToan')?.value === 1) {
       // 1. Tạo đơn hàng trước → trạng thái PENDING
       const order: any = await firstValueFrom(
         this.donHangService.CreateDonHang(req),

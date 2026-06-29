@@ -12,6 +12,7 @@ import { PersonalPageComponent } from './pages/personalPage/personalPage.compone
 import { IntroductionComponent } from './pages/introduction/introduction.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { ChatBotComponent } from './pages/chat/chat-bot/chat-bot.component';
+import { KnowledgeComponent } from './pages/knowledge/knowledge.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -25,6 +26,7 @@ export const routes: Routes = [
   { path: 'introduction', component: IntroductionComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'chat', component: ChatBotComponent },
+  { path: 'knowledge/:id', component: KnowledgeComponent },
   // { path: '', pathMatch: 'full', redirectTo: '/welcome' },
   // { path: 'welcome', loadChildren: () => import('./pages/manager/welcome/welcome.routes').then(m => m.WELCOME_ROUTES) }
 ];

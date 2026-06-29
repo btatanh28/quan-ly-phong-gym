@@ -9,6 +9,7 @@ import { FormModule } from '../../../../common/module/forms.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-exercise-card',
@@ -60,7 +61,33 @@ export class ExerciseCardComponent implements OnInit {
     this.listOfData = res.items;
   }
 
-  deleteData(val: any) {}
+  async deleteData(val: any) {
+    const result = await Swal.fire({
+      title: 'Bạn có chắc chắn muốn xóa không?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Không',
+      confirmButtonText: 'Có',
+    });
+
+    if (result.isConfirmed) {
+      const response = await firstValueFrom(
+        this.theTapService.deleteTheTap(val),
+      );
+
+      if (response) {
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Xóa dữ liệu thành công',
+          icon: 'success',
+        });
+      }
+    }
+
+    await this.getData();
+  }
 
   handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {
     console.log('mode', mode);

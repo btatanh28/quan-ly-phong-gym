@@ -40,7 +40,7 @@ export class ProductComponent implements OnInit {
   public listOfData: any[] = [];
   public img_URl = API_CURRENT;
   public page = 0;
-  public pageSize = 5;
+  public pageSize = 3;
   public totalPages = 0;
   public totalItems: number = 0;
   public listThoiHanNgay: any[] = thoiHanNgay;
@@ -65,6 +65,16 @@ export class ProductComponent implements OnInit {
   }
 
   async getData() {
+    const response = await firstValueFrom(
+      this.productService.getAllProduct({
+        page: this.page,
+        size: this.pageSize,
+      }),
+    );
+    this.listOfData = response.items || [];
+    this.totalItems = response.totalItems;
+    this.totalPages = response.totalPages;
+
     if (!this.formSearch) return;
 
     const params = {
@@ -80,6 +90,12 @@ export class ProductComponent implements OnInit {
     );
 
     this.listOfData = res.items;
+  }
+
+  onPageChange(newPage: number) {
+    if (newPage < 0 || newPage >= this.totalPages) return;
+    this.page = newPage;
+    this.getData();
   }
 
   async deleteData(val: any) {

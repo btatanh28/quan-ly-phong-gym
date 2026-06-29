@@ -42,7 +42,7 @@ export class MenuComponent implements OnInit {
   public imgUrl = API_CURRENT;
 
   public page = 0;
-  public pageSize = 6;
+  public pageSize = 4;
   public totalPages = 0;
 
   constructor(

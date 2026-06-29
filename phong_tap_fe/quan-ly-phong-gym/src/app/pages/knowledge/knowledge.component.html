@@ -1,0 +1,39 @@
+<div class="container">
+  <article class="article">
+    <img
+      [src]="baseUrl + knowledge.hinhAnh"
+      [alt]="knowledge.tenBaiViet"
+      class="featured-image"
+    />
+
+    <div class="article-header">
+      <h1 class="title">{{ knowledge.tenBaiViet }}</h1>
+
+      <div class="meta">
+        <div class="author">
+          <div class="author-avatar">NV</div>
+          <div>
+            <strong>{{ knowledge.tenNguoiDung }}</strong>
+            <br />
+            <small>{{ knowledge.ngayDangBai | dateTimeFormat }}</small>
+          </div>
+        </div>
+        <div>⏱️ 8 phút đọc</div>
+      </div>
+    </div>
+
+    <div class="content">{{ knowledge.noiDung }}</div>
+
+    <!-- Phần tương tác -->
+    <div class="actions">
+      <button
+        (click)="toggleLike()"
+        class="btn btn-like"
+        [class.liked]="isLiked"
+      >
+        ❤️ Thích (<span>{{ likeCount }}</span
+        >)
+      </button>
+    </div>
+  </article>
+</div>

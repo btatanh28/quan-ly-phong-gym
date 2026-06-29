@@ -117,7 +117,14 @@
                   {{ dhang.ngayMua | dateTimeFormat }}
                 </td>
                 <td class="text-center">
-                  <button class="btn btn-danger btn-sm">
+                  <button
+                    class="btn btn-danger btn-sm"
+                    *ngIf="
+                      dhang.trangThaiSanPham === 3 ||
+                      dhang.trangThaiSanPham === 4
+                    "
+                    (click)="deleteData(dhang.id)"
+                  >
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
                 </td>

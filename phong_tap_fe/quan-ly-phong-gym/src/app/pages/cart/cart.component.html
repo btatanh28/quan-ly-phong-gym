@@ -35,10 +35,11 @@
                     <td align="center">
                       <input
                         type="number"
-                        class="form-control w-75"
+                        class="form-control w-75 text-center"
                         [(ngModel)]="item.soLuong"
-                        min="1"
+                        max="1"
                         (change)="updateQuantity(item)"
+                        disabled
                       />
                     </td>
                     <td>
