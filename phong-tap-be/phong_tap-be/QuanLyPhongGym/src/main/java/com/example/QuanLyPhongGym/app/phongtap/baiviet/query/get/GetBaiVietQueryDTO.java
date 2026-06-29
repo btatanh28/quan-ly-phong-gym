@@ -13,4 +13,5 @@ public class GetBaiVietQueryDTO {
     private String hinhAnh;
     private Long ngayDangBai;
     private String tenBaiViet;
+    private String tenNguoiDung;
 }

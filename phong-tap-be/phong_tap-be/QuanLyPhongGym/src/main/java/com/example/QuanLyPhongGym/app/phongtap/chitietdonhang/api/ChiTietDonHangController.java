@@ -19,7 +19,6 @@ import com.example.QuanLyPhongGym.app.phongtap.chitietdonhang.query.get.GetChiTi
 import com.example.QuanLyPhongGym.app.phongtap.chitietdonhang.query.get.GetChiTietDonHangQueryHandler;
 import com.example.QuanLyPhongGym.app.phongtap.chitietdonhang.query.getChiTietDoanhThu.GetChiTietDoanhThuQuery;
 import com.example.QuanLyPhongGym.app.phongtap.chitietdonhang.query.getChiTietDoanhThu.GetChiTietDoanhThuQueryHandler;
-import com.example.QuanLyPhongGym.app.phongtap.sanpham.query.getlist.GetListSanPhamQuery;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
 import com.example.QuanLyPhongGym.core.model.response.ListResponse;
 

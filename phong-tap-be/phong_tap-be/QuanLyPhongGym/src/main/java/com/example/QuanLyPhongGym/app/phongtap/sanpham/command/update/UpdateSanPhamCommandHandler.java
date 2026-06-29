@@ -93,8 +93,8 @@ public class UpdateSanPhamCommandHandler {
                     goiTap.setSoNgay(1);
                     break;
 
-                case 2: // 2 tháng
-                    goiTap.setSoNgay(60);
+                case 2: // 1 tháng
+                    goiTap.setSoNgay(30);
                     break;
 
                 case 3: // 3 tháng

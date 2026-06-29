@@ -23,4 +23,6 @@ public class GetListDonHangQueryDTO {
     private Long ngayCapNhat;
     private String trangThaiSanPhamLabel;
     private String hinhThucThanhToanLabel;
+    private Long ngayMuaTu;
+    private Long ngayMuaDen;
 }

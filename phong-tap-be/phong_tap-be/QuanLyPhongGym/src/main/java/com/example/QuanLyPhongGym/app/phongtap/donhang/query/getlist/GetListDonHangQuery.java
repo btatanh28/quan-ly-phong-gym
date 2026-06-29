@@ -25,4 +25,6 @@ public class GetListDonHangQuery {
     private Integer trangThaiSanPham;
     private Integer hinhThucThanhToan;
     private Long ngayCapNhat;
+    private Long ngayMuaTu;
+    private Long ngayMuaDen;
 }

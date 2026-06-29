@@ -54,6 +54,23 @@ public class GetListDonHangQueryHandler implements IRequestHandler<GetListDonHan
 
         // boolean isFilter = false;
 
+        if (request.getNgayMuaTu() != null && request.getNgayMuaDen() != null) {
+
+            sql.append(" AND dh.NGAY_MUA BETWEEN ? AND ? ");
+            params.add(request.getNgayMuaTu());
+            params.add(request.getNgayMuaDen());
+
+        } else if (request.getNgayMuaTu() != null) {
+
+            sql.append(" AND dh.NGAY_MUA >= ? ");
+            params.add(request.getNgayMuaTu());
+
+        } else if (request.getNgayMuaDen() != null) {
+
+            sql.append(" AND dh.NGAY_MUA <= ? ");
+            params.add(request.getNgayMuaDen());
+        }
+
         if (request.getTenKhachHang() != null && !request.getTenKhachHang().isEmpty()) {
             // isFilter = true;
             sql.append(" AND kh.TEN_KHACH_HANG LIKE ?");
@@ -120,18 +137,18 @@ public class GetListDonHangQueryHandler implements IRequestHandler<GetListDonHan
                     dto.setEmail(rs.getString("EMAIL"));
                     dto.setTongTien(rs.getBigDecimal("TONG_TIEN"));
                     dto.setNgayMua(rs.getLong("NGAY_MUA"));
+                    dto.setNgayCapNhat(rs.getLong("NGAY_CAP_NHAT"));
                     dto.setHinhThucThanhToan(rs.getInt("HINH_THUC_THANH_TOAN"));
                     dto.setTrangThaiSanPham(rs.getInt("TRANG_THAI_SAN_PHAM"));
                     dto.setIdNguoiDung(rs.getString("ID_NGUOI_DUNG"));
                     dto.setTenNguoiDung(rs.getString("TEN_NGUOI_DUNG"));
-                    dto.setNgayCapNhat(rs.getLong("NGAY_CAP_NHAT"));
 
                     if (dto.getHinhThucThanhToan() == 1) {
-                        dto.setHinhThucThanhToanLabel("Thanh toán tiền mặt");
+                        dto.setHinhThucThanhToanLabel("Thanh toán chuyển khoản");
                     }
 
                     if (dto.getHinhThucThanhToan() == 2) {
-                        dto.setHinhThucThanhToanLabel("Thanh toán chuyển khoản");
+                        dto.setHinhThucThanhToanLabel("Thanh toán tiền mặt");
                     }
 
                     if (dto.getTrangThaiSanPham() == 1) {
@@ -141,7 +158,10 @@ public class GetListDonHangQueryHandler implements IRequestHandler<GetListDonHan
                         dto.setTrangThaiSanPhamLabel("Đã thanh toán");
                     }
                     if (dto.getTrangThaiSanPham() == 3) {
-                        dto.setTrangThaiSanPhamLabel("Đăng ký thành công");
+                        dto.setTrangThaiSanPhamLabel("Chờ thanh toán");
+                    }
+                    if (dto.getTrangThaiSanPham() == 4) {
+                        dto.setTrangThaiSanPhamLabel("Đã hủy");
                     }
 
                     return dto;

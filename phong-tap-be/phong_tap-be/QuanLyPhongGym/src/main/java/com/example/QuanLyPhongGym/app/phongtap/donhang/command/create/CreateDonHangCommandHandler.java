@@ -1,6 +1,8 @@
 package com.example.QuanLyPhongGym.app.phongtap.donhang.command.create;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -26,115 +28,238 @@ import lombok.RequiredArgsConstructor;
 @Component
 @Lazy
 @RequiredArgsConstructor
-
 public class CreateDonHangCommandHandler {
-    private final DonDangKyRespository respository;
-    private final GoiTapRespository goiTapRespository;
-    private final ChiTietDonHangRespository chiTietDonHangRespository;
-    private final TheTapRespository theTapRespository;
-    private final TheTapGoiTapRepository theTapGoiTapRepository;
 
-    public DataResponse handle(CreateDonHangCommand request) {
-        DonDangKy donDangKy = new DonDangKy();
+        private final DonDangKyRespository donDangKyRepository;
 
-        Long now = System.currentTimeMillis();
+        private final GoiTapRespository goiTapRespository;
 
-        donDangKy.setId(request.getId());
-        donDangKy.setIdKhachHang(request.getIdKhachHang());
-        donDangKy.setEmail(request.getEmail());
-        // donDangKy.setIdGoiTap(request.getIdGoiTap());
-        donDangKy.setSoDienThoai(request.getSoDienThoai());
-        donDangKy.setIdNguoiDung(request.getIdNguoiDung());
-        donDangKy.setNgayMua(now);
-        donDangKy.setNgayThanhToan(now);
-        donDangKy.setHinhThucThanhToan(request.getHinhThucThanhToan());
-        donDangKy.setTongTien(request.getTongTien());
+        private final ChiTietDonHangRespository chiTietDonHangRespository;
 
-        if (request.getHinhThucThanhToan() == 1) {
-            donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.DANGXULY.value);
-        } else if (request.getHinhThucThanhToan() == 2) {
-            donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.DATHANHTOAN.value);
+        private final TheTapRespository theTapRespository;
+
+        private final TheTapGoiTapRepository theTapGoiTapRepository;
+
+        public DataResponse handle(CreateDonHangCommand request) {
+
+                Long now = System.currentTimeMillis();
+
+                DonDangKy donDangKy = new DonDangKy();
+
+                /*
+                 * ID đơn hàng chính là orderId gửi MoMo
+                 */
+                donDangKy.setId(
+                                request.getId());
+
+                donDangKy.setIdKhachHang(
+                                request.getIdKhachHang());
+
+                donDangKy.setEmail(
+                                request.getEmail());
+
+                donDangKy.setSoDienThoai(
+                                request.getSoDienThoai());
+
+                donDangKy.setIdNguoiDung(
+                                request.getIdNguoiDung());
+
+                donDangKy.setNgayMua(
+                                now);
+
+                donDangKy.setHinhThucThanhToan(
+                                request.getHinhThucThanhToan());
+
+                /*
+                 * Xử lý trạng thái thanh toán
+                 */
+                if (request.getHinhThucThanhToan() == 1) {
+
+                        // MoMo
+                        donDangKy.setNgayThanhToan(null);
+
+                        donDangKy.setTrangThaiSanPham(
+                                        TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
+
+                } else {
+
+                        // Tiền mặt
+                        donDangKy.setNgayThanhToan(now);
+
+                        donDangKy.setTrangThaiSanPham(
+                                        TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
+
+                }
+
+                donDangKyRepository.save(
+                                donDangKy);
+
+                BigDecimal tongTien = BigDecimal.ZERO;
+
+                /*
+                 * Lưu chi tiết đơn hàng
+                 */
+                for (CreateChiTietDonHangCommand ct : request.getChiTietDonHangs()) {
+
+                        GoiTap goiTap = goiTapRespository
+                                        .findFirstById(
+                                                        ct.getIdGoiTap());
+
+                        if (goiTap == null) {
+
+                                throw new RuntimeException(
+                                                "Gói tập không tồn tại");
+
+                        }
+
+                        BigDecimal gia = goiTap.getGiaSauGiam() != null
+                                        ? goiTap.getGiaSauGiam()
+                                        : goiTap.getGia();
+
+                        BigDecimal thanhTien = gia.multiply(
+                                        BigDecimal.valueOf(
+                                                        ct.getSoLuong()));
+
+                        tongTien = tongTien.add(
+                                        thanhTien);
+
+                        ChiTietDonHang chiTiet = new ChiTietDonHang();
+
+                        chiTiet.setId(
+                                        Generator.generate());
+
+                        chiTiet.setIdDonHang(
+                                        donDangKy.getId());
+
+                        chiTiet.setIdGoiTap(
+                                        ct.getIdGoiTap());
+
+                        chiTiet.setSoLuong(
+                                        ct.getSoLuong());
+
+                        chiTiet.setGia(
+                                        gia);
+
+                        chiTiet.setGiamGia(
+                                        ct.getGiamGia());
+
+                        chiTiet.setTongTien(
+                                        thanhTien);
+
+                        chiTietDonHangRespository.save(
+                                        chiTiet);
+
+                }
+
+                donDangKy.setTongTien(
+                                tongTien);
+
+                donDangKyRepository.save(
+                                donDangKy);
+
+                /*
+                 * Nếu thanh toán tiền mặt
+                 * thì tạo thẻ ngay
+                 */
+                if (Objects.equals(
+                                donDangKy.getTrangThaiSanPham(),
+                                TrangThaiSanPhamEnums.DATHANHTOAN.value)) {
+
+                        taoTheTap(
+                                        donDangKy,
+                                        request.getChiTietDonHangs());
+
+                }
+
+                return new DataResponse(
+                                donDangKy.getId());
+
         }
 
-        respository.save(donDangKy);
+        /*
+         * Tạo thẻ tập sau khi thanh toán thành công
+         * Dùng cho:
+         * - Tiền mặt
+         * - MoMo callback
+         */
+        public void taoTheTap(
+                        DonDangKy donDangKy,
+                        List<CreateChiTietDonHangCommand> chiTietHangs) {
 
-        BigDecimal tongTien = BigDecimal.ZERO;
+                Long now = System.currentTimeMillis();
 
-        for (CreateChiTietDonHangCommand ct : request.getChiTietDonHangs()) {
+                TheTap theTap = theTapRespository
+                                .findFirstByIdKhachHang(
+                                                donDangKy.getIdKhachHang());
 
-            GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
+                if (theTap == null) {
 
-            if (goiTap == null) {
-                throw new RuntimeException("San pham khong ton tai");
-            }
+                        theTap = new TheTap();
 
-            BigDecimal gia = goiTap.getGiaSauGiam() != null
-                    ? goiTap.getGiaSauGiam()
-                    : goiTap.getGia();
+                        theTap.setId(
+                                        Generator.generate());
 
-            BigDecimal thanhTien = gia.multiply(BigDecimal.valueOf(ct.getSoLuong()));
+                        theTap.setIdKhachHang(
+                                        donDangKy.getIdKhachHang());
 
-            tongTien = tongTien.add(thanhTien);
+                        theTap.setQrCode(
+                                        GenarateCode.generate());
 
-            ChiTietDonHang chiTietDonHang = new ChiTietDonHang();
+                        theTap.setTrangThai(1);
 
-            chiTietDonHang.setId(Generator.generate());
-            chiTietDonHang.setIdDonHang(donDangKy.getId());
-            chiTietDonHang.setIdGoiTap(ct.getIdGoiTap());
-            chiTietDonHang.setSoLuong(ct.getSoLuong());
-            chiTietDonHang.setGia(gia);
-            chiTietDonHang.setGiamGia(ct.getGiamGia());
-            chiTietDonHang.setTongTien(thanhTien);
+                        theTap.setNgayTao(
+                                        now);
 
-            chiTietDonHangRespository.save(chiTietDonHang);
+                        theTapRespository.save(
+                                        theTap);
+
+                }
+
+                for (CreateChiTietDonHangCommand ct : chiTietHangs) {
+
+                        GoiTap goiTap = goiTapRespository
+                                        .findFirstById(
+                                                        ct.getIdGoiTap());
+
+                        TheTapGoiTap theTapGoiTap = new TheTapGoiTap();
+
+                        theTapGoiTap.setId(
+                                        Generator.generate());
+
+                        theTapGoiTap.setIdTheTap(
+                                        theTap.getId());
+
+                        theTapGoiTap.setIdGoiTap(
+                                        ct.getIdGoiTap());
+
+                        theTapGoiTap.setNgayBatDau(
+                                        now);
+
+                        theTapGoiTap.setNgayKetThuc(
+                                        now
+                                                        +
+                                                        (goiTap.getSoNgay()
+                                                                        *
+                                                                        24
+                                                                        *
+                                                                        60
+                                                                        *
+                                                                        60
+                                                                        *
+                                                                        1000L));
+
+                        theTapGoiTap.setSoNgayConLai(
+                                        goiTap.getSoNgay());
+
+                        theTapGoiTap.setTrangThai(1);
+
+                        theTapGoiTap.setNgayTao(
+                                        now);
+
+                        theTapGoiTapRepository.save(
+                                        theTapGoiTap);
+
+                }
+
         }
-
-        donDangKy.setTongTien(tongTien);
-        respository.save(donDangKy);
-
-        if (donDangKy.getTrangThaiSanPham() == TrangThaiSanPhamEnums.DATHANHTOAN.value) {
-
-            Long nowTime = System.currentTimeMillis();
-
-            // tìm thẻ tập của khách
-            TheTap theTap = theTapRespository.findFirstByIdKhachHang(donDangKy.getIdKhachHang());
-
-            // nếu chưa có thì tạo thẻ
-            if (theTap == null) {
-                theTap = new TheTap();
-                theTap.setId(Generator.generate());
-                theTap.setIdKhachHang(donDangKy.getIdKhachHang());
-                theTap.setQrCode(GenarateCode.generate());
-                theTap.setTrangThai(1);
-                theTap.setNgayTao(nowTime);
-
-                theTapRespository.save(theTap);
-            }
-
-            // thêm các gói tập vào bảng THE_TAP_GOI_TAP
-            for (CreateChiTietDonHangCommand ct : request.getChiTietDonHangs()) {
-
-                GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
-
-                TheTapGoiTap theTapGoiTap = new TheTapGoiTap();
-
-                theTapGoiTap.setId(Generator.generate());
-                theTapGoiTap.setIdTheTap(theTap.getId());
-                theTapGoiTap.setIdGoiTap(ct.getIdGoiTap());
-
-                theTapGoiTap.setNgayBatDau(nowTime);
-
-                Long ngayKetThuc = nowTime + (goiTap.getSoNgay() * 24 * 60 * 60 * 1000L);
-
-                theTapGoiTap.setNgayKetThuc(ngayKetThuc);
-                theTapGoiTap.setSoNgayConLai(goiTap.getSoNgay());
-                theTapGoiTap.setTrangThai(1);
-                theTapGoiTap.setNgayTao(nowTime);
-
-                theTapGoiTapRepository.save(theTapGoiTap);
-            }
-        }
-
-        return new DataResponse(donDangKy.getId());
-    }
 }

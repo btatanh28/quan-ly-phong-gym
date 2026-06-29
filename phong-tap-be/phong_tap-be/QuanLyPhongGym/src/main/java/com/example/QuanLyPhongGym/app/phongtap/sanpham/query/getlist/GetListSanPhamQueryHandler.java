@@ -60,7 +60,7 @@ public class GetListSanPhamQueryHandler implements IRequestHandler<GetListSanPha
         }
 
         int page = 1;
-        int size = 9;
+        int size = 5;
         int offset = 0;
 
         if (!isFilter) {
@@ -72,7 +72,7 @@ public class GetListSanPhamQueryHandler implements IRequestHandler<GetListSanPha
             params.add(offset);
         } else {
             // Nếu có filter, không phân trang
-            sql.append(" ORDER BY gt.ID DESC");
+            sql.append(" ORDER BY gt.ID");
         }
 
         List<GetListSanPhamQueryDTO> items = jdbcTemplate.query(

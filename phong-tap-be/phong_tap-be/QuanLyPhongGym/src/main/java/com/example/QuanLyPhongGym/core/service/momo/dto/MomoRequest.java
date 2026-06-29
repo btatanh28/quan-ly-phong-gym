@@ -10,7 +10,7 @@ public class MomoRequest {
     private String partnerCode;
     private String accessKey;
     private String requestId;
-    private String amount;
+    private Long amount;
     private String orderId;
     private String orderInfo;
     private String redirectUrl;

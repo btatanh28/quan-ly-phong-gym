@@ -23,6 +23,7 @@ public class GetListTheTapQueryHandler implements IRequestHandler<GetListTheTapQ
     public ListResponse handle(GetListTheTapQuery request) {
         StringBuilder sql = new StringBuilder("""
                     SELECT
+                        tp.ID,
                         tp.ID_KHACH_HANG,
                         kh.TEN_KHACH_HANG,
                         kh.SO_DIEN_THOAI,
@@ -74,6 +75,7 @@ public class GetListTheTapQueryHandler implements IRequestHandler<GetListTheTapQ
         // ===== GROUP BY =====
         sql.append("""
                     GROUP BY
+                        tp.ID,
                         tp.ID_KHACH_HANG,
                         kh.TEN_KHACH_HANG,
                         kh.SO_DIEN_THOAI,
@@ -95,7 +97,8 @@ public class GetListTheTapQueryHandler implements IRequestHandler<GetListTheTapQ
                 params.toArray(),
                 (rs, rowNum) -> {
                     GetListTheTapQueryDTO dto = new GetListTheTapQueryDTO();
-                    dto.setId(rs.getString("ID_KHACH_HANG"));
+                    dto.setId(rs.getString("ID"));
+                    dto.setIdKhachHang(rs.getString("ID_KHACH_HANG"));
                     dto.setTenKhachHang(rs.getString("TEN_KHACH_HANG"));
                     dto.setTenGoiTap(rs.getString("TEN_GOI_TAP")); // đã concat
                     dto.setEmail(rs.getString("EMAIL"));

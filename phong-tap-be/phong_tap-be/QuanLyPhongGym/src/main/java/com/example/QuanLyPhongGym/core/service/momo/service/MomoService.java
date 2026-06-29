@@ -60,7 +60,7 @@ public class MomoService {
         req.setPartnerCode(partnerCode);
         req.setAccessKey(accessKey);
         req.setRequestId(requestId);
-        req.setAmount(String.valueOf(amount));
+        req.setAmount(amount);
         req.setOrderId(orderId);
         req.setOrderInfo(orderInfo);
         req.setRedirectUrl(redirectUrl);

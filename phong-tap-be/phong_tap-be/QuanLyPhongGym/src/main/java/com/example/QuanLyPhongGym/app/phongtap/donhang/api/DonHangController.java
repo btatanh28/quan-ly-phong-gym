@@ -3,6 +3,7 @@ package com.example.QuanLyPhongGym.app.phongtap.donhang.api;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.QuanLyPhongGym.app.phongtap.donhang.command.create.CreateDonHangCommand;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.command.create.CreateDonHangCommandHandler;
+import com.example.QuanLyPhongGym.app.phongtap.donhang.command.delete.DeleteDonHangCommand;
+import com.example.QuanLyPhongGym.app.phongtap.donhang.command.delete.DeleteDonHangCommandHandler;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.command.update.UpdateDonHangCommand;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.command.update.UpdateDonHangCommandHandler;
 import com.example.QuanLyPhongGym.app.phongtap.donhang.query.exportDoanhThu.ExportDoanhThuQuery;
@@ -47,6 +50,7 @@ public class DonHangController {
     private final GetListDonHangKhachHangQueryHandler getListDonHangKhachHangQueryHandler;
     private final GetDoanhThuQueryHandler getDoanhThuQueryHandler;
     private final ExportDoanhThuQueryHandler exportDoanhThuQueryHandler;
+    private final DeleteDonHangCommandHandler deleteDonHangCommandHandler;
 
     @GetMapping("list")
     public ResponseEntity<ListResponse> getList(@ModelAttribute GetListDonHangQuery request) {
@@ -104,5 +108,11 @@ public class DonHangController {
                         MediaType.parseMediaType(
                                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(file);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<DataResponse> delete(DeleteDonHangCommand request) {
+        DataResponse response = deleteDonHangCommandHandler.handle(request);
+        return ResponseEntity.ok(response);
     }
 }
