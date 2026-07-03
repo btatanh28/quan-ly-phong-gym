@@ -26,6 +26,8 @@ import com.example.QuanLyPhongGym.app.phongtap.khachhang.query.exportKhachHang.E
 import com.example.QuanLyPhongGym.app.phongtap.khachhang.query.get.GetKhachHangQuery;
 import com.example.QuanLyPhongGym.app.phongtap.khachhang.query.get.GetKhachHangQueryDTO;
 import com.example.QuanLyPhongGym.app.phongtap.khachhang.query.get.GetKhachHangQueryHandler;
+import com.example.QuanLyPhongGym.app.phongtap.khachhang.query.getKhachHangTheTap.GetListKhachHangTheTapQuery;
+import com.example.QuanLyPhongGym.app.phongtap.khachhang.query.getKhachHangTheTap.GetListKhachHangTheTapQueryHandler;
 import com.example.QuanLyPhongGym.app.phongtap.khachhang.query.getlist.GetListKhachHangQuery;
 import com.example.QuanLyPhongGym.app.phongtap.khachhang.query.getlist.GetListKhachHangQueryHandler;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
@@ -43,6 +45,7 @@ import org.springframework.http.MediaType;
 
 public class KhachHangController {
     private final GetListKhachHangQueryHandler getListKhachHangQueryHandler;
+    private final GetListKhachHangTheTapQueryHandler getListKhachHangTheTapQueryHandler;
     private final CreateKhachHangCommandHandler createKhachHangCommandHandler;
     private final VerifyEmailCommandHandler verifyEmailCommandHandler;
     private final DeleteKhachHangCommandHandler deleteKhachHangCommandHandler;
@@ -53,6 +56,12 @@ public class KhachHangController {
     @GetMapping("list")
     public ResponseEntity<ListResponse> getList(@ModelAttribute GetListKhachHangQuery request) {
         ListResponse response = getListKhachHangQueryHandler.handle(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("list/khach-hang-the-tap")
+    public ResponseEntity<ListResponse> getListKhachHangTheTap(@ModelAttribute GetListKhachHangTheTapQuery request) {
+        ListResponse response = getListKhachHangTheTapQueryHandler.handle(request);
         return ResponseEntity.ok(response);
     }
 
