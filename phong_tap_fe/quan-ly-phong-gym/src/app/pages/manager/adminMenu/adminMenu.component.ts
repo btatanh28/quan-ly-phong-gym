@@ -19,6 +19,7 @@ import { ScanCheckinComponent } from '../scan-checkin/scan-checkin.component';
 import { ExerciseCardComponent } from '../exercise-card/exercise-card.component';
 import { ContactManagerComponent } from '../contact-manager/contact-manager.component';
 import { RevenueComponent } from '../revenue/revenue.component';
+import { CoachComponent } from "../coach/coach.component";
 
 @Component({
   selector: 'app-adminMenu',
@@ -37,7 +38,8 @@ import { RevenueComponent } from '../revenue/revenue.component';
     ExerciseCardComponent,
     ContactManagerComponent,
     RevenueComponent,
-  ],
+    CoachComponent
+],
   templateUrl: './adminMenu.component.html',
   styleUrls: ['./adminMenu.component.css'],
 })
@@ -88,6 +90,8 @@ export class AdminMenuComponent implements OnInit {
         return 'Liên hệ khách hàng';
       case 'revenue':
         return 'Doanh thu';
+      case 'coach':
+        return 'Huấn luyện viên';
       default:
         return 'users';
     }

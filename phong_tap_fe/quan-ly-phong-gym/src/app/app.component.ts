@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
       if (user) {
         if (user.role === 1) {
           this.isUsers = true;
-        } else if (user.role === 4) {
+        } else if (user.role === 4 || user.role === 5 || user.role === 6) {
           this.isUsers = true;
         }
       } else {

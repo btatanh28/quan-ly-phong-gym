@@ -1,4 +1,4 @@
-<nz-tabset [(nzSelectedIndex)]="indexTab" class="popup-layout">
+<nz-tabset class="popup-layout">
   <nz-tab class="title-layout" nzTitle="Thông tin">
     <ng-container *ngIf="!initForm">
       <nz-skeleton [nzParagraph]="{ rows: 10 }"></nz-skeleton>
@@ -13,27 +13,7 @@
       <div class="bg-display-flex">
         <!-- CÁC TRƯỜNG THÔNG TIN -->
         <div class="row">
-          <div class="col-md-6 mt-5">
-            <button
-              type="button"
-              class="form-control btn-primary"
-              (click)="chonKhachHang()"
-            >
-              Chọn khách hàng
-            </button>
-          </div>
-
-          <div class="col-md-6 mt-5">
-            <button
-              type="button"
-              class="form-control btn-primary"
-              (click)="chonGoiTap()"
-            >
-              Chọn gói tập
-            </button>
-          </div>
-
-          <div class="col-md-6">
+          <div class="col-md-8">
             <label for="tenKhachHang" class="form-label">Tên khách hàng</label>
             <input
               type="text"
@@ -43,27 +23,26 @@
             />
           </div>
 
-          <div class="col-md-6">
-            <label for="idGoiTap" class="form-label">Gói tập</label>
-            <input-select-api
-              formControlName="idGoiTap"
-              [apiService]="productService"
-            ></input-select-api>
+          <div class="col-md-2 mt-5">
+            <button
+            *ngIf="this.mode !== 'view'"
+              type="button"
+              class="form-control btn-primary"
+              (click)="chonKhachHang()"
+            >
+              Chọn khách hàng
+            </button>
           </div>
 
-          <div class="col-md-6">
-            <label for="email" class="form-label">Email</label>
-            <input
-              type="email"
-              class="form-control"
-              formControlName="email"
-              placeholder="Email"
-            />
-          </div>
-
-          <div class="col-md-6">
-            <label for="gia" class="form-label">Giá</label>
-            <input-moneny formControlName="gia"></input-moneny>
+          <div class="col-md-2 mt-5">
+            <button
+              *ngIf="this.mode !== 'view'"
+              type="button"
+              class="form-control btn-primary"
+              (click)="chonHuanLuyenVien()"
+            >
+              Chọn huấn luyện viên
+            </button>
           </div>
 
           <div class="col-md-6">
@@ -77,33 +56,55 @@
           </div>
 
           <div class="col-md-6">
-            <label for="giamGia" class="form-label">Giảm giá</label>
-            <input-select
-              formControlName="giamGia"
-              [items]="listGiamGia"
-            ></input-select>
-          </div>
-
-          <div class="col-md-6">
-            <label for="gia" class="form-label">Hình thức thanh toán</label>
-            <input-select
-              formControlName="hinhThucThanhToan"
-              [items]="listHinhThucThanhToan"
-            ></input-select>
-          </div>
-
-          <div class="col-md-6">
-            <label for="giaSauGiam" class="form-label">Giá sau giảm</label>
-            <input-moneny formControlName="giaSauGiam"></input-moneny>
-          </div>
-
-          <div class="col-md-6">
-            <label for="soLuong" class="form-label">Số lượng</label>
+            <label for="idGoiTap" class="form-label">Huấn luyện viên</label>
             <input
-              type="number"
-              formControlName="soLuong"
+              type="text"
               class="form-control"
-              max="1"
+              formControlName="tenNguoiDung"
+              placeholder="Huấn luyện viên"
+            />
+          </div>
+
+          <div class="col-md-6">
+            <label for="idGoiTap" class="form-label">Gói tập</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="tenGoiTap"
+              placeholder="Gói tập"
+            />
+          </div>
+
+          <div class="col-md-6">
+            <label for="idGoiTap" class="form-label">Chức vụ</label>
+            <input-select
+              formControlName="vaiTro"
+              placeholder="Vai trò"
+              [items]="listVaiTro"
+            />
+          </div>
+
+          <div class="col-md-6">
+            <label for="idGoiTap" class="form-label"
+              >Số điện thoại huấn luyện viên</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              formControlName="soDienThoaiHLV"
+              placeholder="Số điện thoại"
+            />
+          </div>
+
+          <div class="col-md-6">
+            <label for="idGoiTap" class="form-label"
+              >Email huấn luyện viên</label
+            >
+            <input
+              type="email"
+              class="form-control"
+              formControlName="emailHLV"
+              placeholder="Email"
             />
           </div>
         </div>

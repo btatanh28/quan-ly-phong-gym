@@ -30,6 +30,17 @@ export class CustomerService {
     return this.http.get<any>(`${this.apiUrl}/khach-hang/list`, { params });
   }
 
+  getKhachHangTheTap(params: any): Observable<any> {
+    Object.keys(params).forEach(
+      (key) =>
+        (params[key] == null || params[key] === '') && delete params[key],
+    );
+    return this.http.get<any>(
+      `${this.apiUrl}/khach-hang/list/khach-hang-the-tap`,
+      { params },
+    );
+  }
+
   getKhachHangById(id: String): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/khach-hang/${id}`);
   }

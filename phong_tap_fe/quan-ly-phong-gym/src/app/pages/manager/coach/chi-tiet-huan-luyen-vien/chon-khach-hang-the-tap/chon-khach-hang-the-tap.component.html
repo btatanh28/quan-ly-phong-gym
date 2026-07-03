@@ -1,0 +1,102 @@
+<div class="card">
+  <div class="card-body">
+    <form *ngIf="formSearch" [formGroup]="formSearch" (ngSubmit)="getData()">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="tenKhachHang" class="form-label">Tên khách hàng</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="tenKhachHang"
+            placeholder="Tên khách hàng"
+            required
+          />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="soDienThoai" class="form-label">Số điện thoại</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="soDienThoai"
+            placeholder="Số điện thoại"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="list-button">
+        <button
+          nz-button
+          type="button"
+          class="btn btn-primary btn-search"
+          (click)="getData()"
+        >
+          <i nz-icon nzType="search" nzTheme="outline"></i>Tìm kiếm
+        </button>
+
+        <button
+          nz-button
+          type="button"
+          class="btn btn-primary btn-search"
+          (click)="onReset()"
+        >
+          <i nz-icon nzType="reload" nzTheme="outline"></i>Làm mới
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="user-bg">
+    <div class="mb-4">
+      <div class="data-table">
+        <div class="hearder-table mt-m-15">
+          <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
+            <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
+          </nz-tabset>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="text-center">Tên khách hàng</th>
+                  <th class="text-center">Số điện thoại</th>
+                  <th class="text-center">Thẻ tập</th>
+                  <th class="text-center">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of listOfData">
+                  <td class="text-center">{{ item.tenKhachHang }}</td>
+                  <td class="text-center">{{ item.soDienThoai }}</td>
+                  <td class="text-center">{{ item.tenGoiTap }}</td>
+                  <td class="text-center">
+                    <button
+                      class="btn btn-custom btn-sm me-2"
+                      (click)="chon(item)"
+                    >
+                      <i class="fa-solid fa-circle-plus"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="list-button mt-4">
+  <button
+    nz-button
+    type="button"
+    class="btn btn-danger"
+    (click)="closeDialogcd()"
+  >
+    <i class="isax-close-circle1 mr-2"></i>Đóng
+  </button>
+</div>

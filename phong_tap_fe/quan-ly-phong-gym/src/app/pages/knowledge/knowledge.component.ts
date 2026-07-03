@@ -7,7 +7,7 @@ import { DateTimeFormatPipe } from '../../../common/base/pipe/dateTimeFormat/dat
 
 @Component({
   selector: 'app-knowledge',
-  standalone: true, // Khuyến nghị dùng standalone
+  standalone: true,
   imports: [CommonModule, DateTimeFormatPipe],
   templateUrl: './knowledge.component.html',
   styleUrls: ['./knowledge.component.css'],
@@ -47,6 +47,6 @@ export class KnowledgeComponent implements OnInit {
 
   toggleLike() {
     this.isLiked = !this.isLiked;
-    this.likeCount += this.isLiked ? 1: 1;
+    this.likeCount += this.isLiked ? 1 : 1;
   }
 }
