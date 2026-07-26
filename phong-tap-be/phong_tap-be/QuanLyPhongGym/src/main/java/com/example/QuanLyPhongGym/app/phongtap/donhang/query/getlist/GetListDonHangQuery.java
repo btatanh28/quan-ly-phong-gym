@@ -21,6 +21,7 @@ public class GetListDonHangQuery {
     private String soDienThoai;
     private String email;
     private Long ngayMua;
+    private Long ngayThanhToan;
     private BigDecimal tongTien;
     private Integer trangThaiSanPham;
     private Integer hinhThucThanhToan;

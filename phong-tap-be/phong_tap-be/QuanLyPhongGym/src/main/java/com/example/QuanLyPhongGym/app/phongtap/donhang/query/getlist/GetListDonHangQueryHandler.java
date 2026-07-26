@@ -33,6 +33,7 @@ public class GetListDonHangQueryHandler implements IRequestHandler<GetListDonHan
                         "    dh.HINH_THUC_THANH_TOAN, " +
                         "    dh.NGAY_CAP_NHAT, " +
                         "    dh.NGAY_MUA, " +
+                        "    dh.NGAY_THANH_TOAN, " +
                         "    dh.ID_NGUOI_DUNG, " +
                         "    ng.TEN_NGUOI_DUNG " +
                         "FROM DON_DANG_KY dh " +
@@ -138,6 +139,7 @@ public class GetListDonHangQueryHandler implements IRequestHandler<GetListDonHan
                     dto.setTongTien(rs.getBigDecimal("TONG_TIEN"));
                     dto.setNgayMua(rs.getLong("NGAY_MUA"));
                     dto.setNgayCapNhat(rs.getLong("NGAY_CAP_NHAT"));
+                    dto.setNgayThanhToan(rs.getLong("NGAY_THANH_TOAN"));
                     dto.setHinhThucThanhToan(rs.getInt("HINH_THUC_THANH_TOAN"));
                     dto.setTrangThaiSanPham(rs.getInt("TRANG_THAI_SAN_PHAM"));
                     dto.setIdNguoiDung(rs.getString("ID_NGUOI_DUNG"));

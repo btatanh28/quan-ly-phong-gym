@@ -49,50 +49,37 @@ public class CreateDonHangCommandHandler {
                 /*
                  * ID đơn hàng chính là orderId gửi MoMo
                  */
-                donDangKy.setId(
-                                request.getId());
+                donDangKy.setId(request.getId());
 
-                donDangKy.setIdKhachHang(
-                                request.getIdKhachHang());
+                donDangKy.setIdKhachHang(request.getIdKhachHang());
 
-                donDangKy.setEmail(
-                                request.getEmail());
+                donDangKy.setEmail(request.getEmail());
 
-                donDangKy.setSoDienThoai(
-                                request.getSoDienThoai());
+                donDangKy.setSoDienThoai(request.getSoDienThoai());
 
-                donDangKy.setIdNguoiDung(
-                                request.getIdNguoiDung());
+                donDangKy.setIdNguoiDung(request.getIdNguoiDung());
 
-                donDangKy.setNgayMua(
-                                now);
+                donDangKy.setNgayMua(now);
 
-                donDangKy.setHinhThucThanhToan(
-                                request.getHinhThucThanhToan());
+                donDangKy.setHinhThucThanhToan(request.getHinhThucThanhToan());
 
                 /*
                  * Xử lý trạng thái thanh toán
                  */
                 if (request.getHinhThucThanhToan() == 1) {
-
                         // MoMo
-                        donDangKy.setNgayThanhToan(null);
+                        donDangKy.setNgayThanhToan(now);
 
-                        donDangKy.setTrangThaiSanPham(
-                                        TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
+                        donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
 
                 } else {
-
                         // Tiền mặt
                         donDangKy.setNgayThanhToan(now);
 
-                        donDangKy.setTrangThaiSanPham(
-                                        TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
-
+                        donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
                 }
 
-                donDangKyRepository.save(
-                                donDangKy);
+                donDangKyRepository.save(donDangKy);
 
                 BigDecimal tongTien = BigDecimal.ZERO;
 
@@ -101,79 +88,50 @@ public class CreateDonHangCommandHandler {
                  */
                 for (CreateChiTietDonHangCommand ct : request.getChiTietDonHangs()) {
 
-                        GoiTap goiTap = goiTapRespository
-                                        .findFirstById(
-                                                        ct.getIdGoiTap());
+                        GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
 
                         if (goiTap == null) {
-
-                                throw new RuntimeException(
-                                                "Gói tập không tồn tại");
-
+                                throw new RuntimeException("Gói tập không tồn tại");
                         }
 
-                        BigDecimal gia = goiTap.getGiaSauGiam() != null
-                                        ? goiTap.getGiaSauGiam()
-                                        : goiTap.getGia();
+                        BigDecimal gia = goiTap.getGiaSauGiam() != null ? goiTap.getGiaSauGiam() : goiTap.getGia();
 
-                        BigDecimal thanhTien = gia.multiply(
-                                        BigDecimal.valueOf(
-                                                        ct.getSoLuong()));
+                        BigDecimal thanhTien = gia.multiply(BigDecimal.valueOf(ct.getSoLuong()));
 
-                        tongTien = tongTien.add(
-                                        thanhTien);
+                        tongTien = tongTien.add(thanhTien);
 
                         ChiTietDonHang chiTiet = new ChiTietDonHang();
 
-                        chiTiet.setId(
-                                        Generator.generate());
+                        chiTiet.setId(Generator.generate());
 
-                        chiTiet.setIdDonHang(
-                                        donDangKy.getId());
+                        chiTiet.setIdDonHang(donDangKy.getId());
 
-                        chiTiet.setIdGoiTap(
-                                        ct.getIdGoiTap());
+                        chiTiet.setIdGoiTap(ct.getIdGoiTap());
 
-                        chiTiet.setSoLuong(
-                                        ct.getSoLuong());
+                        chiTiet.setSoLuong(ct.getSoLuong());
 
-                        chiTiet.setGia(
-                                        gia);
+                        chiTiet.setGia(gia);
 
-                        chiTiet.setGiamGia(
-                                        ct.getGiamGia());
+                        chiTiet.setGiamGia(ct.getGiamGia());
 
-                        chiTiet.setTongTien(
-                                        thanhTien);
+                        chiTiet.setTongTien(thanhTien);
 
-                        chiTietDonHangRespository.save(
-                                        chiTiet);
-
+                        chiTietDonHangRespository.save(chiTiet);
                 }
 
-                donDangKy.setTongTien(
-                                tongTien);
+                donDangKy.setTongTien(tongTien);
 
-                donDangKyRepository.save(
-                                donDangKy);
+                donDangKyRepository.save(donDangKy);
 
                 /*
                  * Nếu thanh toán tiền mặt
                  * thì tạo thẻ ngay
                  */
-                if (Objects.equals(
-                                donDangKy.getTrangThaiSanPham(),
-                                TrangThaiSanPhamEnums.DATHANHTOAN.value)) {
-
-                        taoTheTap(
-                                        donDangKy,
-                                        request.getChiTietDonHangs());
-
+                if (Objects.equals(donDangKy.getTrangThaiSanPham(), TrangThaiSanPhamEnums.DATHANHTOAN.value)) {
+                        taoTheTap(donDangKy, request.getChiTietDonHangs());
                 }
 
-                return new DataResponse(
-                                donDangKy.getId());
-
+                return new DataResponse(donDangKy.getId());
         }
 
         /*
@@ -188,78 +146,48 @@ public class CreateDonHangCommandHandler {
 
                 Long now = System.currentTimeMillis();
 
-                TheTap theTap = theTapRespository
-                                .findFirstByIdKhachHang(
-                                                donDangKy.getIdKhachHang());
+                TheTap theTap = theTapRespository.findFirstByIdKhachHang(donDangKy.getIdKhachHang());
 
                 if (theTap == null) {
 
                         theTap = new TheTap();
 
-                        theTap.setId(
-                                        Generator.generate());
+                        theTap.setId(Generator.generate());
 
-                        theTap.setIdKhachHang(
-                                        donDangKy.getIdKhachHang());
+                        theTap.setIdKhachHang(donDangKy.getIdKhachHang());
 
-                        theTap.setQrCode(
-                                        GenarateCode.generate());
+                        theTap.setQrCode(GenarateCode.generate());
 
                         theTap.setTrangThai(1);
 
-                        theTap.setNgayTao(
-                                        now);
+                        theTap.setNgayTao(now);
 
-                        theTapRespository.save(
-                                        theTap);
-
+                        theTapRespository.save(theTap);
                 }
 
                 for (CreateChiTietDonHangCommand ct : chiTietHangs) {
 
-                        GoiTap goiTap = goiTapRespository
-                                        .findFirstById(
-                                                        ct.getIdGoiTap());
+                        GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
 
                         TheTapGoiTap theTapGoiTap = new TheTapGoiTap();
 
-                        theTapGoiTap.setId(
-                                        Generator.generate());
+                        theTapGoiTap.setId(Generator.generate());
 
-                        theTapGoiTap.setIdTheTap(
-                                        theTap.getId());
+                        theTapGoiTap.setIdTheTap(theTap.getId());
 
-                        theTapGoiTap.setIdGoiTap(
-                                        ct.getIdGoiTap());
+                        theTapGoiTap.setIdGoiTap(ct.getIdGoiTap());
 
-                        theTapGoiTap.setNgayBatDau(
-                                        now);
+                        theTapGoiTap.setNgayBatDau(now);
 
-                        theTapGoiTap.setNgayKetThuc(
-                                        now
-                                                        +
-                                                        (goiTap.getSoNgay()
-                                                                        *
-                                                                        24
-                                                                        *
-                                                                        60
-                                                                        *
-                                                                        60
-                                                                        *
-                                                                        1000L));
+                        theTapGoiTap.setNgayKetThuc(now + (goiTap.getSoNgay() * 24 * 60 * 60 * 1000L));
 
-                        theTapGoiTap.setSoNgayConLai(
-                                        goiTap.getSoNgay());
+                        theTapGoiTap.setSoNgayConLai(goiTap.getSoNgay());
 
                         theTapGoiTap.setTrangThai(1);
 
-                        theTapGoiTap.setNgayTao(
-                                        now);
+                        theTapGoiTap.setNgayTao(now);
 
-                        theTapGoiTapRepository.save(
-                                        theTapGoiTap);
-
+                        theTapGoiTapRepository.save(theTapGoiTap);
                 }
-
         }
 }

@@ -41,6 +41,7 @@ public class UpdateDonHangCommandHandler {
 
         donDangKy.setTrangThaiSanPham(request.getTrangThaiSanPham());
         donDangKy.setIdNguoiDung(request.getIdNguoiDung());
+        donDangKy.setNgayThanhToan(now);
         donDangKy.setNgayCapNhat(now);
 
         if (donDangKy.getTrangThaiSanPham() == TrangThaiSanPhamEnums.DATHANHTOAN.value) {

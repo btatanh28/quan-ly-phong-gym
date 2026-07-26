@@ -17,6 +17,7 @@ public class GetListDonHangQueryDTO {
     private String soDienThoai;
     private String email;
     private Long ngayMua;
+    private Long ngayThanhToan;
     private Integer trangThaiSanPham;
     private Integer hinhThucThanhToan;
     private BigDecimal tongTien;
