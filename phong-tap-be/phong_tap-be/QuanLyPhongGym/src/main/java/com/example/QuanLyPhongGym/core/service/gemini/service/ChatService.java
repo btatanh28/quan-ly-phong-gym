@@ -143,71 +143,44 @@ public class ChatService {
                 }
 
                 String context = """
-
-                                Bạn là chatbot chăm sóc khách hàng của phòng gym.
+                                Bạn là chatbot tư vấn của phòng gym.
 
                                 Thông tin khách hàng:
-
                                 - Họ tên: %s
                                 - Email: %s
                                 - Số điện thoại: %s
 
-                                Danh sách gói tập hiện có:
+                                Câu hỏi:
                                 %s
-
-
-                                Thông tin gói tập khách hàng:
-                                %s
-
 
                                 Nhiệm vụ:
-                                - Tư vấn các dịch vụ của phòng gym.
-                                - Hỗ trợ khách hàng về gói tập, lịch tập, huấn luyện viên.
-                                - Trả lời thân thiện như nhân viên tư vấn thật.
+                                - Trả lời đúng trọng tâm câu hỏi.
+                                - Tư vấn về gói tập, huấn luyện viên, lịch tập.
+                                - Tư vấn dinh dưỡng, chế độ ăn và tập luyện.
+                                - Hỗ trợ các mục tiêu: tăng cân, giảm cân, tăng cơ, giảm mỡ, giữ dáng và cải thiện sức khỏe.
 
+                                Quy tắc:
+                                - Trả lời ngắn gọn (không quá 7 dòng).
+                                - Dễ hiểu, thân thiện, có thể dùng emoji.
+                                - Không dùng markdown (*, **, #).
+                                - Không giới thiệu gói tập nếu khách không hỏi.
+                                - Không hỏi lại mục tiêu nếu khách đã nêu rõ.
+                                - Nếu thiếu thông tin thì chỉ hỏi thêm những gì cần thiết.
+                                - Không chẩn đoán bệnh; nếu có vấn đề sức khỏe hãy khuyên khách tham khảo bác sĩ.
 
-                                Quy tắc trả lời:
-                                - Trả lời ngắn gọn, dễ đọc trên ứng dụng chat.
-                                - Không dùng ký hiệu markdown như *, **, #.
-                                - Có thể sử dụng emoji phù hợp.
-                                - Không trả lời quá 7 dòng.
-                                - Nếu khách hỏi giới thiệu phòng gym, trả lời theo mẫu:
-
-
-                                Xin chào anh/chị %s 👋
-
-                                💪 Phòng gym bên em có:
-                                • Không gian tập luyện hiện đại, sạch sẽ.
-                                • Trang thiết bị đầy đủ, phù hợp nhiều mục tiêu.
-                                • Các lớp Yoga, Zumba, Group X.
-                                • Huấn luyện viên hỗ trợ tận tình.
-
-                                🎁 Hiện phòng gym đang có chương trình trải nghiệm miễn phí.
-                                Anh/chị muốn đăng ký lịch tập thử vào thời gian nào ạ?
-
-
-                                Câu hỏi của khách hàng:
+                                Thông tin gói tập hiện tại của khách:
                                 %s
 
-
+                                Danh sách gói tập:
+                                %s
                                 """
                                 .formatted(
-
                                                 khachHang.getTenKhachHang(),
-
                                                 khachHang.getEmail(),
-
                                                 khachHang.getSoDienThoai(),
-
-                                                thongTinGoiTap,
-
+                                                message,
                                                 thongTinTheTap,
-
-                                                thongTinGoiTapDaMua,
-
-                                                message
-
-                                );
+                                                thongTinGoiTap);
 
                 return groqService.chat(context);
 
