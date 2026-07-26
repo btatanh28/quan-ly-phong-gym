@@ -200,11 +200,7 @@ export class CartComponent implements OnInit {
 
         return;
       } else if (hinhThucThanhToan === 2) {
-        /*
-         * ===========================
-         * THANH TOÁN TIỀN MẶT
-         * ===========================
-         */
+        // THANH TOÁN TIỀN MẶT
         await firstValueFrom(this.donHangService.CreateDonHang(req));
 
         Swal.fire({

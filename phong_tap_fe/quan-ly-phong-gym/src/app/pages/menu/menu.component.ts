@@ -2,7 +2,7 @@ import { CommonModule, NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { FormModule } from '../../../common/module/forms.module';
 import { MoneyPipe } from '../../../common/base/pipe/moneny/moneyPipe.component';
@@ -13,6 +13,8 @@ import { DonHangService } from '../../../common/shared/service/application/donha
 import { firstValueFrom } from 'rxjs';
 import { LabelValuePipe } from '../../../common/base/pipe/labelValue/labelValue.component';
 import { giamGia } from '../../../common/shared/enums/giamGia.enums';
+import { MomoService } from '../../../common/shared/service/application/momoService';
+import { AuthService } from '../../../common/shared/service/application/authService';
 
 @Component({
   selector: 'app-menu',
@@ -49,10 +51,53 @@ export class MenuComponent implements OnInit {
     private productService: ProductService,
     private cartService: CartService,
     private donhangService: DonHangService,
+    private route: ActivatedRoute,
+    private momoService: MomoService,
+    private authService: AuthService,
+    private router: Router,
   ) {}
 
   async ngOnInit() {
     await this.getData();
+
+    this.route.queryParams.subscribe((params) => {
+      const orderId = params['orderId'];
+      const resultCode = Number(params['resultCode']);
+
+      if (!orderId) {
+        return;
+      }
+
+      this.momoService.ipnMomo(orderId, resultCode.toString()).subscribe({
+        next: () => {
+          if (resultCode === 0) {
+            if (this.authService.isAdmin() || this.authService.isEmployee()) {
+              this.router.navigate(['/manager']);
+              Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+            } else {
+              this.router.navigate(['/menu']);
+              Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+            }
+          } else {
+            if (this.authService.isAdmin() || this.authService.isEmployee()) {
+              this.router.navigate(['/manager']);
+              Swal.fire(
+                'Thông báo',
+                'Thanh toán bị hủy hoặc thất bại',
+                'warning',
+              );
+            } else {
+              this.router.navigate(['/menu']);
+              Swal.fire(
+                'Thông báo',
+                'Thanh toán bị hủy hoặc thất bại',
+                'warning',
+              );
+            }
+          }
+        },
+      });
+    });
   }
 
   async getData() {

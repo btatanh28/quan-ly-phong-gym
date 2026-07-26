@@ -17,4 +17,11 @@ export class MomoService {
       orderId: orderId,
     });
   }
+
+  ipnMomo(orderId: string, resultCode: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/momo/ipn`, {
+      orderId: orderId,
+      resultCode: resultCode,
+    });
+  }
 }
