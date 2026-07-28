@@ -14,6 +14,8 @@ public interface KhachHangRespository extends JpaRepository<KhachHang, String> {
     boolean existsBySoDienThoai(String soDienThoai);
 
     KhachHang findFirstByEmail(String email);
+    
+    KhachHang findFirstBySoDienThoai(String soDienThoai);
 
     Optional<KhachHang> findById(String id);
 }

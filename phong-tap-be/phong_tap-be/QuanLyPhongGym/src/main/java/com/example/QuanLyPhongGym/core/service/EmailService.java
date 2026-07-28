@@ -66,51 +66,50 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+        @Autowired
+        private JavaMailSender mailSender;
 
-    @Async
-    public void sendVerificationEmail(String to, String code) {
+        @Async
+        public void sendVerificationEmail(String to, String code) {
 
-        long start = System.currentTimeMillis();
+                long start = System.currentTimeMillis();
 
-        try {
+                try {
+                        MimeMessage message = mailSender.createMimeMessage();
 
-            MimeMessage message = mailSender.createMimeMessage();
+                        MimeMessageHelper helper = new MimeMessageHelper(
+                                        message,
+                                        true,
+                                        "UTF-8");
 
-            MimeMessageHelper helper = new MimeMessageHelper(
-                    message,
-                    true,
-                    "UTF-8");
+                        helper.setFrom(
+                                        "tuananh28tuananh28@gmail.com");
 
-            helper.setFrom(
-                    "tuananh28tuananh28@gmail.com");
+                        helper.setTo(to);
 
-            helper.setTo(to);
+                        helper.setSubject(
+                                        "Mã xác nhận đăng ký");
 
-            helper.setSubject(
-                    "Mã xác nhận đăng ký");
+                        String content = "<h3>Mã xác nhận của bạn:</h3>" +
+                                        "<h1 style='color:blue'>" +
+                                        code +
+                                        "</h1>";
 
-            String content = "<h3>Mã xác nhận của bạn:</h3>" +
-                    "<h1 style='color:blue'>" +
-                    code +
-                    "</h1>";
+                        helper.setText(
+                                        content,
+                                        true);
 
-            helper.setText(
-                    content,
-                    true);
+                        mailSender.send(message);
 
-            mailSender.send(message);
+                        System.out.println(
+                                        "Gmail send time: "
+                                                        + (System.currentTimeMillis() - start)
+                                                        + "ms");
 
-            System.out.println(
-                    "Gmail send time: "
-                            + (System.currentTimeMillis() - start)
-                            + "ms");
+                } catch (MessagingException e) {
 
-        } catch (MessagingException e) {
+                        e.printStackTrace();
 
-            e.printStackTrace();
-
+                }
         }
-    }
 }

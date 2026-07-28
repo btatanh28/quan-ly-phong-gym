@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 
 public class LoginCommand {
-    private String email;
+    private String userAccount;
     private String matKhau;
 }
