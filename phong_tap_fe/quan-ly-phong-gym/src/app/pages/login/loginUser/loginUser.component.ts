@@ -44,7 +44,7 @@ export class LoginUserComponent {
     private fb: FormBuilder,
   ) {
     this.myForm = this.fb.group({
-      email: [null],
+      userAccount: [null],
       matKhau: [null],
     });
 
@@ -82,7 +82,7 @@ export class LoginUserComponent {
         }
       }
     } catch (error: any) {
-      this.emailForVerify = this.myForm?.get('email')?.value;
+      this.emailForVerify = this.myForm?.get('userAccount')?.value;
       if (error?.error?.message === 'Tài khoản chưa kích hoạt') {
         Swal.fire({
           icon: 'info',

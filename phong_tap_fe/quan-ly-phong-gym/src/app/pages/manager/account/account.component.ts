@@ -181,7 +181,7 @@ export class AccountComponent implements OnInit {
             ? 'Xem chi tiết thông tin nhân viên'
             : 'Thêm thông tin nhân viên';
         if (mode === 'edit') option.title = 'Cập nhật thông tin nhân viên';
-        option.size = DialogSize.large;
+        option.size = DialogSize.medium;
         option.component = ChiTietNguoiDungComponent;
         option.inputs = {
           id: item?.id,

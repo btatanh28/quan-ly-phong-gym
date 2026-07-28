@@ -89,14 +89,6 @@ export class OrderComponent implements OnInit {
     );
 
     this.listOfData = res.items;
-
-    for (let item of this.listOfData) {
-      const chiTiet = await firstValueFrom(
-        this.chiTietDonHangService.getChiTietDonHangId(item.id),
-      );
-
-      item.chiTietDonHangs = chiTiet;
-    }
   }
 
   async deleteData(val: any) {

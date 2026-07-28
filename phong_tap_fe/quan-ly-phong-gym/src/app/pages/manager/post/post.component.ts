@@ -99,7 +99,7 @@ export class PostComponent implements OnInit {
             ? 'Xem chi tiết thông tin bài đăng'
             : 'Thêm thông tin bài đăng';
         if (mode === 'edit') option.title = 'Cập nhật thông tin bài đăng';
-        option.size = DialogSize.large;
+        option.size = DialogSize.medium;
         option.component = ChiTietBaiDangComponent;
         option.inputs = {
           id: item?.id,

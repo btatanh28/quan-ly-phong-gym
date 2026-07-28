@@ -132,9 +132,9 @@ export class ProductComponent implements OnInit {
       (option) => {
         option.title =
           mode === 'view'
-            ? 'Xem chi tiết thông tin nhân viên'
-            : 'Thêm thông tin nhân viên';
-        if (mode === 'edit') option.title = 'Cập nhật thông tin nhân viên';
+            ? 'Xem chi tiết thông tin gói tập'
+            : 'Thêm thông tin gói tập';
+        if (mode === 'edit') option.title = 'Cập nhật thông tin gói tập';
         option.size = DialogSize.large;
         option.component = ChiTietSanPhamComponent;
         option.inputs = {

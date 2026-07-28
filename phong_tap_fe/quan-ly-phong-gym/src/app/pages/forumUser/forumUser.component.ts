@@ -2,7 +2,7 @@ import { CommentService } from './../../../common/shared/service/application/com
 import { AuthService } from './../../../common/shared/service/application/authService';
 import { ExtentionService } from './../../../common/base/service/extention.service';
 import { ProductService } from './../../../common/shared/service/application/productService';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormModule } from '../../../common/module/forms.module';
 import { CommonModule } from '@angular/common';
 import {
@@ -34,6 +34,8 @@ import { InputDanhGiaComponent } from '../../../common/base/controls/input-danh-
   styleUrls: ['./forumUser.component.css'],
 })
 export class ForumUserComponent implements OnInit {
+  @Output() onClose = new EventEmitter<any | null>();
+
   public myForm?: FormGroup;
   public eidtForm?: FormGroup;
   public editComment?: FormGroup;
@@ -46,6 +48,8 @@ export class ForumUserComponent implements OnInit {
   public hoveredRating: number = 0;
   public previewUrl: string | ArrayBuffer | null = null;
   public editingCommentId: string | null = null;
+  public btnClose: boolean = false;
+  public isUser: boolean = true;
 
   constructor(
     private dialogService: DialogService,
@@ -76,7 +80,20 @@ export class ForumUserComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.currentUser = this.authService.getUserCurrent();
+    this.isUser = false;
+
+    const user = (this.currentUser = this.authService.getUserCurrent());
+
+    if (user) {
+      if (user.role === 1 || user.role === 2 || user.role === 4) {
+        this.isUser = true;
+      } else if (user.role === 7) {
+        this.isUser = false;
+      }
+    } else if (user === null) {
+      this.isUser = false;
+    }
+
     await this.getData();
   }
 
@@ -379,5 +396,9 @@ export class ForumUserComponent implements OnInit {
     }
 
     return false;
+  }
+
+  close(val: any = null) {
+    this.onClose.emit(val);
   }
 }

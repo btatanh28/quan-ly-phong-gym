@@ -9,6 +9,18 @@
   height: auto !important;
 }
 
+.form-label {
+  margin-top: 10px;
+  text-align: center;
+  font-weight: 600;
+  color: #001628;
+}
+
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
 .list-button {
   text-align: center;
 
@@ -19,7 +31,7 @@
     font-size: 14px;
     line-height: 17px;
     color: #ffff;
-    background: #0b5ed7;
+    background: #012847;
     border-radius: 10px;
 
     margin-right: 12px;
@@ -46,7 +58,7 @@
       height: 30px;
       padding: 0px 20px;
       color: #ffff;
-      background: #0b5ed7;
+      background: #012847;
       border-radius: 10px;
     }
 
@@ -155,7 +167,7 @@ body {
 
 .ant-modal-body {
   padding: 20px 24px;
-  background-color: #2e2e2e;
+  background-color: #ffffff;
 }
 
 .ant-tabs-tab-btn {

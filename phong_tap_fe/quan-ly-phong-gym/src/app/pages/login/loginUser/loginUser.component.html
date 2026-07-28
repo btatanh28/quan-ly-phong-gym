@@ -6,12 +6,24 @@
     (ngSubmit)="onLoginSubmit()"
   >
     <div class="mb-3">
-      <label for="loginEmail" class="form-label">Email</label>
-      <input type="email" class="form-control" formControlName="email" />
+      <label for="loginEmail" class="form-label"
+        >Email hoặc Số điện thoại</label
+      >
+      <input
+        type="text"
+        placeholder="Email hoặc Số điện thoại"
+        class="form-control"
+        formControlName="userAccount"
+      />
     </div>
     <div class="mb-3">
       <label for="loginPassword" class="form-label">Mật khẩu</label>
-      <input type="password" class="form-control" formControlName="matKhau" />
+      <input
+        type="password"
+        placeholder="Mật khẩu"
+        class="form-control"
+        formControlName="matKhau"
+      />
     </div>
     <div class="mb-3 text-end">
       <a (click)="changePassWord()" class="text-light">Quên mật khẩu?</a>

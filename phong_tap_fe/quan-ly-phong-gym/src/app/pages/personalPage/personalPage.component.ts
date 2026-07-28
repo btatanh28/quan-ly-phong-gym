@@ -82,6 +82,7 @@ export class PersonalPageComponent implements OnInit {
     const userRes = await firstValueFrom(
       this.customerService.getKhachHangById(uers.id),
     );
+
     this.userData = [userRes];
   }
 
@@ -151,7 +152,7 @@ export class PersonalPageComponent implements OnInit {
         option.title =
           mode === 'view' ? 'Chỉnh sửa thông tin' : 'Chỉnh sửa thông tin';
         if (mode === 'edit') option.title = 'Chỉnh sửa thông tin';
-        option.size = DialogSize.large;
+        option.size = DialogSize.medium;
         option.component = ChinhSuaThongTinComponent;
         option.inputs = {
           id: item?.id,

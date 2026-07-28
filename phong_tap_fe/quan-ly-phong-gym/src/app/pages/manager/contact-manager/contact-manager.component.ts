@@ -90,34 +90,7 @@ export class ContactManagerComponent implements OnInit {
     await this.getData();
   }
 
-  handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {
-    console.log('mode', mode);
-    const dialog = this.dialogService.openDialog(
-      (option) => {
-        option.title =
-          mode === 'view'
-            ? 'Xem chi tiết thông tin nhân viên'
-            : 'Thêm thông tin nhân viên';
-        if (mode === 'edit') option.title = 'Cập nhật thông tin nhân viên';
-        option.size = DialogSize.large;
-        option.inputs = {
-          id: item?.id,
-          mode: mode,
-          item: item,
-          trangThai: item?.trangThai,
-        };
-      },
-      async (eventName, eventValue) => {
-        if (eventName === 'onClose') {
-          this.dialogService.closeDialogById(dialog.id);
-
-          if (eventValue) {
-            await this.getData();
-          }
-        }
-      },
-    );
-  }
+  handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {}
 
   async onReset() {
     this.formSearch?.reset();
