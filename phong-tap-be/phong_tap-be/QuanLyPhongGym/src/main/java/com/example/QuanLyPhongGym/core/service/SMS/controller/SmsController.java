@@ -1,5 +1,5 @@
-package com.example.QuanLyPhongGym.core.service.SMS.controller;
+// package com.example.QuanLyPhongGym.core.service.SMS.controller;
 
-public class SmsController {
+// public class SmsController {
     
-}
+// }

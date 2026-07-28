@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.example.QuanLyPhongGym.core.exception.NotFoundException;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
 import com.example.QuanLyPhongGym.core.service.EmailService;
-import com.example.QuanLyPhongGym.core.service.SMS.command.SmsService;
+// import com.example.QuanLyPhongGym.core.service.SMS.command.SmsService;
 import com.example.QuanLyPhongGym.domain.entity.app.khachhang.KhachHang;
 import com.example.QuanLyPhongGym.domain.enums.VaiTroEnums;
 import com.example.QuanLyPhongGym.domain.repository.app.khachhang.KhachHangRespository;
@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 public class CreateKhachHangCommandHandler {
     private final KhachHangRespository respository;
     private final PasswordEncoder passwordEncoder;
-    // private final EmailService emailService;
-    private final SmsService smsService;
+    private final EmailService emailService;
+    // private final SmsService smsService;
 
     public DataResponse handle(CreateKhachHangCommand request) {
         if (respository.existsByEmail(request.getEmail())) {
@@ -50,7 +50,7 @@ public class CreateKhachHangCommandHandler {
 
         respository.save(khachHang);
 
-        smsService.sendOtp(khachHang.getSoDienThoai(), code);
+        emailService.sendVerificationEmail(khachHang.getEmail(), code);
 
         return new DataResponse(khachHang.getId());
     }
