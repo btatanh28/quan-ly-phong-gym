@@ -1,3 +1,4 @@
+import { VnpayService } from './../../../common/shared/service/application/vnPayService';
 import { CommonModule, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
@@ -51,6 +52,7 @@ export class CartComponent implements OnInit {
     private router: Router,
     private donHangService: DonHangService,
     private momoService: MomoService,
+    private vnpayService: VnpayService,
   ) {
     this.myForm = this.fb.group({
       id: [this.ex.newGuid()],
@@ -155,12 +157,6 @@ export class CartComponent implements OnInit {
     const hinhThucThanhToan = this.myForm?.get('hinhThucThanhToan')?.value;
 
     try {
-      /*
-       * ===========================
-       * THANH TOÁN MOMO
-       * ===========================
-       */
-
       if (hinhThucThanhToan === 1) {
         // 1. Tạo đơn hàng trước
         // trạng thái CHO_THANH_TOAN
@@ -168,13 +164,6 @@ export class CartComponent implements OnInit {
         const order: any = await firstValueFrom(
           this.donHangService.CreateDonHang(req),
         );
-
-        /*
-         * Backend trả:
-         * {
-         *    data: "ID_DON_HANG"
-         * }
-         */
 
         const orderId = order.data || order.id;
 
@@ -190,6 +179,20 @@ export class CartComponent implements OnInit {
           this.momoService.payMomo(this.getTotalPrice(), orderId),
         );
 
+        // 2. Gọi VnPay
+
+        // const vnPayRes: any = await firstValueFrom(
+        //   this.vnpayService.payVNPay(this.getTotalPrice(), orderId),
+        // );
+
+        // 3. Chuyển sang VnPay
+
+        // if (vnPayRes?.payUrl) {
+        //   window.location.href = vnPayRes.payUrl;
+        // } else {
+        //   Swal.fire('Lỗi', 'Không tạo được thanh toán VNPay', 'error');
+        // }
+
         // 3. Chuyển sang MoMo
 
         if (momoRes?.payUrl) {
@@ -200,6 +203,36 @@ export class CartComponent implements OnInit {
 
         return;
       } else if (hinhThucThanhToan === 2) {
+        // 1. Tạo đơn hàng trước
+        // trạng thái CHO_THANH_TOAN
+
+        const order: any = await firstValueFrom(
+          this.donHangService.CreateDonHang(req),
+        );
+
+        const orderId = order.data || order.id;
+
+        if (!orderId) {
+          Swal.fire('Lỗi', 'Không lấy được mã đơn hàng', 'error');
+
+          return;
+        }
+
+        // 2. Gọi VnPay
+
+        const vnPayRes: any = await firstValueFrom(
+          this.vnpayService.payVNPay(this.getTotalPrice(), orderId),
+        );
+
+        // 3. Chuyển sang VnPay
+
+        if (vnPayRes?.payUrl) {
+          window.location.href = vnPayRes.payUrl;
+        } else {
+          Swal.fire('Lỗi', 'Không tạo được thanh toán VNPay', 'error');
+        }
+        return;
+      } else if (hinhThucThanhToan === 3) {
         // THANH TOÁN TIỀN MẶT
         await firstValueFrom(this.donHangService.CreateDonHang(req));
 

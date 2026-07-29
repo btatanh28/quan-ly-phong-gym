@@ -1,3 +1,4 @@
+import { VnpayService } from './../../../common/shared/service/application/vnPayService';
 import { CommonModule, NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -53,6 +54,7 @@ export class MenuComponent implements OnInit {
     private donhangService: DonHangService,
     private route: ActivatedRoute,
     private momoService: MomoService,
+    private vnpayService: VnpayService,
     private authService: AuthService,
     private router: Router,
   ) {}
@@ -61,16 +63,61 @@ export class MenuComponent implements OnInit {
     await this.getData();
 
     this.route.queryParams.subscribe((params) => {
-      const orderId = params['orderId'];
+      // MoMo
+      const orderIdMoMo = params['orderId'];
       const resultCode = Number(params['resultCode']);
 
-      if (!orderId) {
-        return;
-      }
+      console.log('orderIdMoMo:', orderIdMoMo);
+      console.log('resultCode:', resultCode);
 
-      this.momoService.ipnMomo(orderId, resultCode.toString()).subscribe({
+      //VNPAY
+      const responseCode = params['vnp_ResponseCode'];
+      const orderId = params['vnp_TxnRef'];
+
+      console.log('responseCode', responseCode);
+      console.log('orderId', orderId);
+
+      // if (!orderId) {
+      //   return;
+      // }
+
+      // if (!orderIdMoMo) {
+      //   return;
+      // }
+
+      this.momoService.ipnMomo(orderIdMoMo, resultCode.toString()).subscribe({
         next: () => {
           if (resultCode === 0) {
+            if (this.authService.isAdmin() || this.authService.isEmployee()) {
+              this.router.navigate(['/manager']);
+              Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+            } else {
+              this.router.navigate(['/menu']);
+              Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+            }
+          } else {
+            if (this.authService.isAdmin() || this.authService.isEmployee()) {
+              this.router.navigate(['/manager']);
+              Swal.fire(
+                'Thông báo',
+                'Thanh toán bị hủy hoặc thất bại',
+                'warning',
+              );
+            } else {
+              this.router.navigate(['/menu']);
+              Swal.fire(
+                'Thông báo',
+                'Thanh toán bị hủy hoặc thất bại',
+                'warning',
+              );
+            }
+          }
+        },
+      });
+
+      this.vnpayService.ipnVNPay(orderId, responseCode).subscribe({
+        next: () => {
+          if (responseCode === '00') {
             if (this.authService.isAdmin() || this.authService.isEmployee()) {
               this.router.navigate(['/manager']);
               Swal.fire('Thành công', 'Thanh toán thành công', 'success');

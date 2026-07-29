@@ -1,12 +1,17 @@
 export enum HinhThucThanhToanEnums {
-  THANHTOANCHUYENKHOAN = 1,
-  THANHTOANTIENMAT = 2,
+  THANHTOANCHUYENKHOANMOMO = 1,
+  THANHTOANCHUYENKHOANVNPAY = 2,
+  THANHTOANTIENMAT = 3,
 }
 
 export const hinhThucThanhToan: { value: number; label: string }[] = [
   {
-    value: HinhThucThanhToanEnums.THANHTOANCHUYENKHOAN,
-    label: 'Thanh toán chuyển khoản',
+    value: HinhThucThanhToanEnums.THANHTOANCHUYENKHOANMOMO,
+    label: 'Thanh toán chuyển khoản MoMo',
+  },
+  {
+    value: HinhThucThanhToanEnums.THANHTOANCHUYENKHOANVNPAY,
+    label: 'Thanh toán chuyển khoản VNPAY',
   },
   {
     value: HinhThucThanhToanEnums.THANHTOANTIENMAT,
