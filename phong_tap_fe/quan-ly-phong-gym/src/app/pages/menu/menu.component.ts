@@ -80,6 +80,7 @@ export class MenuComponent implements OnInit {
       console.log('URL:', window.location.href);
       console.log('Params:', params);
 
+      debugger
       if (orderIdMoMo) {
         this.momoService.ipnMomo(orderIdMoMo, resultCode.toString()).subscribe({
           next: () => {
