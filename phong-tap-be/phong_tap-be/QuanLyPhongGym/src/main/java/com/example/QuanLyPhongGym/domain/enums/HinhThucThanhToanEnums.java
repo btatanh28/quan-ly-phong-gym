@@ -3,11 +3,13 @@ package com.example.QuanLyPhongGym.domain.enums;
 import java.util.Map;
 
 public enum HinhThucThanhToanEnums {
-    THANHTOANCHUYENKHOAN(1, "Thanh toán chuyển khoản"),
-    THANHTOANTIENMAT(2, "Thanh toán tiền mặt");
+    THANHTOANCHUYENKHOANMOMO(1, "Thanh toán chuyển khoản MoMo"),
+    THANHTOANCHUYENKHOANVNPAY(2, "Thanh toán chuyển khoản VNPAY"),
+    THANHTOANTIENMAT(3, "Thanh toán tiền mặt");
 
     public static final Map<Integer, HinhThucThanhToanEnums> dict = Map.of(
-            HinhThucThanhToanEnums.THANHTOANCHUYENKHOAN.value, HinhThucThanhToanEnums.THANHTOANCHUYENKHOAN,
+            HinhThucThanhToanEnums.THANHTOANCHUYENKHOANMOMO.value, HinhThucThanhToanEnums.THANHTOANCHUYENKHOANMOMO,
+            HinhThucThanhToanEnums.THANHTOANCHUYENKHOANVNPAY.value, HinhThucThanhToanEnums.THANHTOANCHUYENKHOANVNPAY,
             HinhThucThanhToanEnums.THANHTOANTIENMAT.value, HinhThucThanhToanEnums.THANHTOANTIENMAT);
 
     public final Integer value;

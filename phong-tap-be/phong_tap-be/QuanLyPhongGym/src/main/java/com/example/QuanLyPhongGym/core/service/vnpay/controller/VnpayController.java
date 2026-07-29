@@ -1,5 +1,6 @@
-package com.example.QuanLyPhongGym.core.service.momo.controller;
+package com.example.QuanLyPhongGym.core.service.vnpay.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.QuanLyPhongGym.core.service.GenarateCode;
 import com.example.QuanLyPhongGym.core.service.Generator;
-import com.example.QuanLyPhongGym.core.service.momo.dto.MomoRequest;
-import com.example.QuanLyPhongGym.core.service.momo.service.MomoService;
+import com.example.QuanLyPhongGym.core.service.vnpay.dto.VnpayRequest;
+import com.example.QuanLyPhongGym.core.service.vnpay.service.VnpayService;
 import com.example.QuanLyPhongGym.domain.entity.app.chitietdonhang.ChiTietDonHang;
 import com.example.QuanLyPhongGym.domain.entity.app.dondangky.DonDangKy;
 import com.example.QuanLyPhongGym.domain.entity.app.goitap.GoiTap;
@@ -25,46 +26,37 @@ import com.example.QuanLyPhongGym.domain.repository.app.thetapgoitap.TheTapGoiTa
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/momo")
+@RequestMapping("/vnpay")
 @RequiredArgsConstructor
-public class MomoController {
+public class VnpayController {
 
-    private final MomoService momoService;
+    private final VnpayService vnpayService;
 
     private final DonDangKyRespository donDangKyRepository;
-
     private final TheTapRespository theTapRespository;
-
     private final TheTapGoiTapRepository theTapGoiTapRepository;
-
     private final GoiTapRespository goiTapRespository;
-
     private final ChiTietDonHangRespository chiTietDonHangRepository;
 
-    /**
-     * Tạo thanh toán MoMo
-     */
     @PostMapping("/pay")
-    public ResponseEntity<?> pay(
-            @RequestBody MomoRequest request) {
+    public ResponseEntity<?> pay(@RequestBody VnpayRequest request) {
 
-        return ResponseEntity.ok(
-                momoService.createPayment(
-                        request.getAmount(),
-                        request.getOrderId()));
+        String payUrl = vnpayService.createPayment(
+                request.getAmount(),
+                request.getOrderId());
 
+        Map<String, String> result = new HashMap<>();
+
+        result.put("payUrl", payUrl);
+
+        return ResponseEntity.ok(result);
     }
 
-    /**
-     * MoMo gọi về sau khi thanh toán
-     */
     @PostMapping("/ipn")
-    public ResponseEntity<?> ipn(
-            @RequestBody Map<String, Object> body) {
+    public ResponseEntity<?> paymentReturn(@RequestBody Map<String, Object> body) {
 
         String orderId = body.get("orderId").toString();
-
-        Integer resultCode = Integer.parseInt(body.get("resultCode").toString());
+        String responseCode = body.get("responseCode").toString();
 
         DonDangKy donDangKy = donDangKyRepository.findById(orderId).orElse(null);
 
@@ -72,11 +64,10 @@ public class MomoController {
             return ResponseEntity.ok().build();
         }
 
-        if (resultCode == 0) {
-            /*
-             * Thanh toán thành công
-             */
-            donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.DATHANHTOAN.value);
+        if ("00".equals(responseCode)) {
+
+            donDangKy.setTrangThaiSanPham(
+                    TrangThaiSanPhamEnums.DATHANHTOAN.value);
 
             donDangKy.setNgayThanhToan(System.currentTimeMillis());
 
@@ -85,11 +76,9 @@ public class MomoController {
             taoTheTap(donDangKy, chiTietDonHangs);
 
         } else {
-            /*
-             * Người dùng hủy
-             * hoặc thanh toán thất bại
-             */
-            donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.DAHUY.value);
+
+            donDangKy.setTrangThaiSanPham(
+                    TrangThaiSanPhamEnums.DAHUY.value);
         }
 
         donDangKyRepository.save(donDangKy);
@@ -103,7 +92,8 @@ public class MomoController {
 
         Long now = System.currentTimeMillis();
 
-        TheTap theTap = theTapRespository.findFirstByIdKhachHang(donDangKy.getIdKhachHang());
+        TheTap theTap = theTapRespository.findFirstByIdKhachHang(
+                donDangKy.getIdKhachHang());
 
         if (theTap == null) {
 
@@ -136,7 +126,8 @@ public class MomoController {
 
             theTapGoiTap.setNgayBatDau(now);
 
-            theTapGoiTap.setNgayKetThuc(now + (goiTap.getSoNgay() * 24 * 60 * 60 * 1000L));
+            theTapGoiTap.setNgayKetThuc(
+                    now + goiTap.getSoNgay() * 24 * 60 * 60 * 1000L);
 
             theTapGoiTap.setSoNgayConLai(goiTap.getSoNgay());
 
@@ -147,4 +138,5 @@ public class MomoController {
             theTapGoiTapRepository.save(theTapGoiTap);
         }
     }
+
 }

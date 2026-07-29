@@ -72,6 +72,11 @@ public class CreateDonHangCommandHandler {
 
                         donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
 
+                } else if (request.getHinhThucThanhToan() == 2) {
+                        // VnPay
+                        donDangKy.setNgayThanhToan(now);
+
+                        donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
                 } else {
                         // Tiền mặt
                         donDangKy.setNgayThanhToan(now);
