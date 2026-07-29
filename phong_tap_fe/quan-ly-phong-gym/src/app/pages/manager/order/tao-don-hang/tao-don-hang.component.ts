@@ -181,32 +181,19 @@ export class TaoDonHangComponent implements OnInit {
 
       const orderId = order?.id || order?.maDonHang;
 
-      // 2. Gọi MoMo API
-      // const momoRes = await firstValueFrom(
-      //   this.momoService.payMomo(this.getTotalPrice(), orderId),
-      // );
-
-      // 3. Redirect sang MoMo
-      // if (momoRes && momoRes.payUrl) {
-      //   window.location.href = momoRes.payUrl;
-      // } else {
-      //   Swal.fire('Lỗi', 'Không tạo được thanh toán MoMo', 'error');
-      // }
-
       //2. Gọi VnPay API
-
       const vnPayRes: any = await firstValueFrom(
         this.vnpayService.payVNPay(this.getTotalPrice(), orderId),
       );
 
       // 3. Chuyển sang VnPay
-
       if (vnPayRes?.payUrl) {
         window.location.href = vnPayRes.payUrl;
       } else {
         Swal.fire('Lỗi', 'Không tạo được thanh toán VNPay', 'error');
       }
     } else if (this.myForm?.get('hinhThucThanhToan')?.value === 1) {
+      // 1. Tạo đơn hàng trước → trạng thái PENDING
       const order: any = await firstValueFrom(
         this.donHangService.CreateDonHang(req),
       );

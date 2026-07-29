@@ -67,83 +67,73 @@ export class MenuComponent implements OnInit {
       const orderIdMoMo = params['orderId'];
       const resultCode = Number(params['resultCode']);
 
-      console.log('orderIdMoMo:', orderIdMoMo);
-      console.log('resultCode:', resultCode);
-
       //VNPAY
       const responseCode = params['vnp_ResponseCode'];
       const orderId = params['vnp_TxnRef'];
 
-      console.log('responseCode', responseCode);
-      console.log('orderId', orderId);
-
-      // if (!orderId) {
-      //   return;
-      // }
-
-      // if (!orderIdMoMo) {
-      //   return;
-      // }
-
-      this.momoService.ipnMomo(orderIdMoMo, resultCode.toString()).subscribe({
-        next: () => {
-          if (resultCode === 0) {
-            if (this.authService.isAdmin() || this.authService.isEmployee()) {
-              this.router.navigate(['/manager']);
-              Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+      if (orderIdMoMo) {
+        this.momoService.ipnMomo(orderIdMoMo, resultCode.toString()).subscribe({
+          next: () => {
+            if (resultCode === 0) {
+              if (this.authService.isAdmin() || this.authService.isEmployee()) {
+                this.router.navigate(['/manager']);
+                Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+              } else {
+                this.router.navigate(['/menu']);
+                Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+              }
             } else {
-              this.router.navigate(['/menu']);
-              Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+              if (this.authService.isAdmin() || this.authService.isEmployee()) {
+                this.router.navigate(['/manager']);
+                Swal.fire(
+                  'Thông báo',
+                  'Thanh toán bị hủy hoặc thất bại',
+                  'warning',
+                );
+              } else {
+                this.router.navigate(['/menu']);
+                Swal.fire(
+                  'Thông báo',
+                  'Thanh toán bị hủy hoặc thất bại',
+                  'warning',
+                );
+              }
             }
-          } else {
-            if (this.authService.isAdmin() || this.authService.isEmployee()) {
-              this.router.navigate(['/manager']);
-              Swal.fire(
-                'Thông báo',
-                'Thanh toán bị hủy hoặc thất bại',
-                'warning',
-              );
-            } else {
-              this.router.navigate(['/menu']);
-              Swal.fire(
-                'Thông báo',
-                'Thanh toán bị hủy hoặc thất bại',
-                'warning',
-              );
-            }
-          }
-        },
-      });
+          },
+        });
+      }
 
-      this.vnpayService.ipnVNPay(orderId, responseCode).subscribe({
-        next: () => {
-          if (responseCode === '00') {
-            if (this.authService.isAdmin() || this.authService.isEmployee()) {
-              this.router.navigate(['/manager']);
-              Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+      if (orderId) {
+        this.vnpayService.ipnVNPay(orderId, responseCode).subscribe({
+          next: () => {
+            if (responseCode === '00') {
+              if (this.authService.isAdmin() || this.authService.isEmployee()) {
+                this.router.navigate(['/manager']);
+                Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+              } else {
+                this.router.navigate(['/menu']);
+                Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+              }
             } else {
-              this.router.navigate(['/menu']);
-              Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+              if (this.authService.isAdmin() || this.authService.isEmployee()) {
+                this.router.navigate(['/manager']);
+                Swal.fire(
+                  'Thông báo',
+                  'Thanh toán bị hủy hoặc thất bại',
+                  'warning',
+                );
+              } else {
+                this.router.navigate(['/menu']);
+                Swal.fire(
+                  'Thông báo',
+                  'Thanh toán bị hủy hoặc thất bại',
+                  'warning',
+                );
+              }
             }
-          } else {
-            if (this.authService.isAdmin() || this.authService.isEmployee()) {
-              this.router.navigate(['/manager']);
-              Swal.fire(
-                'Thông báo',
-                'Thanh toán bị hủy hoặc thất bại',
-                'warning',
-              );
-            } else {
-              this.router.navigate(['/menu']);
-              Swal.fire(
-                'Thông báo',
-                'Thanh toán bị hủy hoặc thất bại',
-                'warning',
-              );
-            }
-          }
-        },
-      });
+          },
+        });
+      }
     });
   }
 
