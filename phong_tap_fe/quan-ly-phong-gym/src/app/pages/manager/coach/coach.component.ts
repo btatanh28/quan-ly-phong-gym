@@ -69,7 +69,6 @@ export class CoachComponent implements OnInit {
   }
 
   handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {
-    console.log('mode', mode);
     const dialog = this.dialogService.openDialog(
       (option) => {
         option.title =

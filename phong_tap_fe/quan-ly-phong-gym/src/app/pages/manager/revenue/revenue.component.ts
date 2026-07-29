@@ -164,8 +164,6 @@ export class RevenueComponent implements OnInit {
       },
 
       error: (err) => {
-        console.log(err);
-
         Swal.fire({
           position: 'center',
           icon: 'error',

@@ -49,7 +49,6 @@ export class ForumComponent implements OnInit {
   }
 
   handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {
-    console.log('mode', mode);
     const dialog = this.dialogService.openDialog(
       (option) => {
         option.title = mode === 'view' ? 'Xem diễn đàn' : 'Xem diễn đàn';

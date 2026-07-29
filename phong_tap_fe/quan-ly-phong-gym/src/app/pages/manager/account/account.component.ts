@@ -173,7 +173,6 @@ export class AccountComponent implements OnInit {
   }
 
   handlerOpenDialog(item: any = null, mode: string = DialogMode.add) {
-    console.log('mode', mode);
     const dialog = this.dialogService.openDialog(
       (option) => {
         option.title =
@@ -226,8 +225,6 @@ export class AccountComponent implements OnInit {
       },
 
       error: (err) => {
-        console.log(err);
-
         Swal.fire({
           position: 'center',
           icon: 'error',

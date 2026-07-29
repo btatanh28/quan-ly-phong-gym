@@ -244,7 +244,6 @@ export class DialogService {
     let valueCurent = this.loadingChange.value;
     if (valueCurent === null) valueCurent = 0;
     valueCurent++;
-    console.log('openLoading', valueCurent);
 
     this.loadingChange.next(valueCurent);
   }
@@ -253,7 +252,6 @@ export class DialogService {
     let valueCurent = this.loadingChange.value;
     if (!valueCurent) return;
     valueCurent--;
-    console.log('closeLoading', valueCurent);
     this.loadingChange.next(valueCurent);
   }
 }

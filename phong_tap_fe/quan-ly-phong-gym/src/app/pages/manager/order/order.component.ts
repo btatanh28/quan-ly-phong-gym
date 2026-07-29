@@ -176,7 +176,6 @@ export class OrderComponent implements OnInit {
   }
 
   handlerOpenDialogDonHang(item: any = null, mode: string = DialogMode.add) {
-    console.log('mode', mode);
     const dialog = this.dialogService.openDialog(
       (option) => {
         option.title =
