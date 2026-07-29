@@ -2,7 +2,7 @@ import { ForumService } from './../../../common/shared/service/application/forum
 import { PostService } from './../../../common/shared/service/application/postService';
 import { CommonModule, NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { IMAGE_CURRENT } from '../../../common/shared/service/application/api-base';
 import { ProductService } from '../../../common/shared/service/application/productService';
@@ -14,6 +14,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { DateFormatPipe } from '../../../common/base/pipe/dateFormat/dateFormat.component';
 import { ChatBotComponent } from '../chat/chat-bot/chat-bot.component';
+import { MomoService } from '../../../common/shared/service/application/momoService';
+import { VnpayService } from '../../../common/shared/service/application/vnPayService';
+import { AuthService } from '../../../common/shared/service/application/authService';
 
 @Component({
   selector: 'app-home',
@@ -45,6 +48,11 @@ export class HomeComponent implements OnInit {
     private fb: FormBuilder,
     private postService: PostService,
     private forumService: ForumService,
+    private route: ActivatedRoute,
+    private momoService: MomoService,
+    private vnpayService: VnpayService,
+    private authService: AuthService,
+    private router: Router,
   ) {
     this.myForm = this.fb.group({
       chieuCao: [null],
@@ -54,6 +62,90 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit() {
     await this.getData();
+
+    this.route.queryParams.subscribe((params) => {
+      // MoMo
+      const orderIdMoMo = params['orderId'];
+      const resultCode = Number(params['resultCode']);
+
+      console.log('orderIdMoMo:', orderIdMoMo);
+      console.log('resultCode:', resultCode);
+
+      //VNPAY
+      const responseCode = params['vnp_ResponseCode'];
+      const orderId = params['vnp_TxnRef'];
+
+      console.log('responseCode', responseCode);
+      console.log('orderId', orderId);
+
+      console.log('URL:', window.location.href);
+      console.log('Params:', params);
+
+      debugger;
+      if (orderIdMoMo) {
+        this.momoService.ipnMomo(orderIdMoMo, resultCode.toString()).subscribe({
+          next: () => {
+            if (resultCode === 0) {
+              if (this.authService.isAdmin() || this.authService.isEmployee()) {
+                this.router.navigate(['/manager']);
+                Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+              } else {
+                this.router.navigate(['/menu']);
+                Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+              }
+            } else {
+              if (this.authService.isAdmin() || this.authService.isEmployee()) {
+                this.router.navigate(['/manager']);
+                Swal.fire(
+                  'Thông báo',
+                  'Thanh toán bị hủy hoặc thất bại',
+                  'warning',
+                );
+              } else {
+                this.router.navigate(['/menu']);
+                Swal.fire(
+                  'Thông báo',
+                  'Thanh toán bị hủy hoặc thất bại',
+                  'warning',
+                );
+              }
+            }
+          },
+        });
+      }
+
+      if (orderId) {
+        this.vnpayService.ipnVNPay(orderId, responseCode).subscribe({
+          next: () => {
+            if (responseCode === '00') {
+              if (this.authService.isAdmin() || this.authService.isEmployee()) {
+                this.router.navigate(['/manager']);
+                Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+              } else {
+                this.router.navigate(['/menu']);
+                Swal.fire('Thành công', 'Thanh toán thành công', 'success');
+              }
+            } else {
+              if (this.authService.isAdmin() || this.authService.isEmployee()) {
+                this.router.navigate(['/manager']);
+                Swal.fire(
+                  'Thông báo',
+                  'Thanh toán bị hủy hoặc thất bại',
+                  'warning',
+                );
+              } else {
+                this.router.navigate(['/menu']);
+                Swal.fire(
+                  'Thông báo',
+                  'Thanh toán bị hủy hoặc thất bại',
+                  'warning',
+                );
+              }
+            }
+          },
+        });
+      }
+    });
   }
 
   async getData() {
