@@ -146,10 +146,14 @@ public class GetListDonHangQueryHandler implements IRequestHandler<GetListDonHan
                     dto.setTenNguoiDung(rs.getString("TEN_NGUOI_DUNG"));
 
                     if (dto.getHinhThucThanhToan() == 1) {
-                        dto.setHinhThucThanhToanLabel("Thanh toán chuyển khoản");
+                        dto.setHinhThucThanhToanLabel("Thanh toán chuyển khoản MoMo");
                     }
 
                     if (dto.getHinhThucThanhToan() == 2) {
+                        dto.setHinhThucThanhToanLabel("Thanh toán chuyển khoản VNPAY");
+                    }
+
+                    if (dto.getHinhThucThanhToan() == 3) {
                         dto.setHinhThucThanhToanLabel("Thanh toán tiền mặt");
                     }
 
