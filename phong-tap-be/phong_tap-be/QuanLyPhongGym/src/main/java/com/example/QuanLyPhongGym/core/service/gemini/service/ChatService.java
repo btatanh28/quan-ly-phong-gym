@@ -1,6 +1,7 @@
 package com.example.QuanLyPhongGym.core.service.gemini.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -43,6 +44,17 @@ public class ChatService {
         public String chat(
                         String id,
                         String message) {
+
+                String lower = message.toLowerCase();
+
+                boolean needMemberInfo = lower.contains("gói")
+                                || lower.contains("thẻ")
+                                || lower.contains("đăng ký")
+                                || lower.contains("đã mua")
+                                || lower.contains("gia hạn")
+                                || lower.contains("hết hạn")
+                                || lower.contains("còn bao nhiêu ngày");
+
                 // Lấy thông tin khách hàng từ cơ sở dữ liệu
                 KhachHang khachHang = khachHangRepository
                                 .findById(id)
@@ -50,107 +62,110 @@ public class ChatService {
                                                 () -> new RuntimeException(
                                                                 "Không tìm thấy khách hàng"));
 
-                // Lấy danh sách gói tập từ cơ sở dữ liệu
-                List<GoiTap> danhSachGoiTap = goiTapRepository.findAll();
+                String thongTinThanhVien = "";
+                if (needMemberInfo) {
+                        List<GoiTap> danhSachGoiTap = goiTapRepository.findAll();
 
-                // Lấy thông tin thẻ tập của khách hàng từ cơ sở dữ liệu
-                TheTap theTap = theTapRepository
-                                .findFirstByIdKhachHangAndTrangThai(
-                                                khachHang.getId(),
-                                                1);
+                        Map<String, GoiTap> danhSachGoiTapMap = danhSachGoiTap.stream()
+                                        .collect(Collectors.toMap(GoiTap::getId, g -> g));
 
-                // Tạo thông tin gói tập và thẻ tập để gửi cho chatbot
-                String thongTinGoiTap = danhSachGoiTap.stream()
-                                .map(g -> "- " + g.getTenGoiTap()
-                                                + ": "
-                                                + g.getGia()
-                                                + " VNĐ")
-                                .collect(Collectors.joining("\n"));
-
-                String thongTinTheTap = "Khách hàng chưa có gói tập";
-
-                // Nếu khách hàng có thẻ tập, lấy thông tin số ngày còn lại
-                if (theTap != null) {
-                        List<TheTapGoiTap> danhSachTheTapGoiTap = theTapGoiTapRepository
-                                        .findAllByIdTheTapAndTrangThai(
-                                                        theTap.getId(),
+                        TheTap theTap = theTapRepository
+                                        .findFirstByIdKhachHangAndTrangThai(
+                                                        khachHang.getId(),
                                                         1);
 
-                        if (!danhSachTheTapGoiTap.isEmpty()) {
+                        // Tạo thông tin gói tập và thẻ tập để gửi cho chatbot
+                        String thongTinGoiTap = danhSachGoiTap.stream()
+                                        .map(g -> "- " + g.getTenGoiTap()
+                                                        + ": "
+                                                        + g.getGia()
+                                                        + " VNĐ")
+                                        .collect(Collectors.joining("\n"));
 
-                                thongTinTheTap = danhSachTheTapGoiTap.stream()
-                                                .map(ttgt -> {
+                        String thongTinTheTap = "Khách hàng chưa có gói tập";
 
-                                                        GoiTap goiTap = goiTapRepository
-                                                                        .findById(ttgt.getIdGoiTap())
-                                                                        .orElse(null);
+                        // Nếu khách hàng có thẻ tập, lấy thông tin số ngày còn lại
+                        if (theTap != null) {
+                                List<TheTapGoiTap> danhSachTheTapGoiTap = theTapGoiTapRepository
+                                                .findAllByIdTheTapAndTrangThai(
+                                                                theTap.getId(),
+                                                                1);
 
-                                                        int tongSoNgayConLai = danhSachTheTapGoiTap.stream()
-                                                                        .mapToInt(TheTapGoiTap::getSoNgayConLai)
-                                                                        .sum();
+                                if (!danhSachTheTapGoiTap.isEmpty()) {
+                                        int tongSoNgayConLai = danhSachTheTapGoiTap.stream()
+                                                        .mapToInt(TheTapGoiTap::getSoNgayConLai)
+                                                        .sum();
 
-                                                        if (goiTap == null) {
-                                                                return "";
-                                                        }
-
-                                                        return "- "
-                                                                        + "  Số ngày còn lại: "
-                                                                        + tongSoNgayConLai
-                                                                        + " ngày";
-
-                                                })
-                                                .collect(Collectors.joining("\n"));
+                                        thongTinTheTap = "- Số ngày còn lại: " + tongSoNgayConLai + " ngày";
+                                }
                         }
-                }
 
-                List<DonDangKy> danhSachDonDangKy = donDangKyRespository
-                                .findAllByIdKhachHang(khachHang.getId());
+                        List<DonDangKy> danhSachDonDangKy = donDangKyRespository
+                                        .findAllByIdKhachHang(khachHang.getId());
 
-                String thongTinGoiTapDaMua = "Khách hàng chưa mua gói tập";
+                        String thongTinGoiTapDaMua = "Khách hàng chưa mua gói tập";
 
-                if (!danhSachDonDangKy.isEmpty()) {
+                        if (!danhSachDonDangKy.isEmpty()) {
+                                List<String> idsDonHang = danhSachDonDangKy.stream()
+                                                .map(DonDangKy::getId)
+                                                .toList();
 
-                        List<ChiTietDonHang> danhSachChiTiet = danhSachDonDangKy
-                                        .stream()
-                                        .flatMap(don -> chiTietDonHangRespository
-                                                        .findAllByIdDonHang(don.getId())
-                                                        .stream())
-                                        .toList();
+                                List<ChiTietDonHang> danhSachChiTiet = chiTietDonHangRespository
+                                                .findAllByIdDonHangIn(idsDonHang);
 
-                        if (!danhSachChiTiet.isEmpty()) {
+                                if (!danhSachChiTiet.isEmpty()) {
 
-                                thongTinGoiTapDaMua = danhSachChiTiet.stream()
-                                                .map(ct -> {
+                                        thongTinGoiTapDaMua = danhSachChiTiet.stream()
+                                                        .map(ct -> {
 
-                                                        GoiTap goiTap = goiTapRepository
-                                                                        .findById(ct.getIdGoiTap())
-                                                                        .orElse(null);
+                                                                GoiTap goiTap = danhSachGoiTapMap.get(ct.getIdGoiTap());
 
-                                                        if (goiTap == null) {
-                                                                return null;
-                                                        }
+                                                                if (goiTap == null) {
+                                                                        return null;
+                                                                }
 
-                                                        return "- "
-                                                                        + goiTap.getTenGoiTap()
-                                                                        + ": "
-                                                                        + goiTap.getGia()
-                                                                        + " VNĐ";
+                                                                return "- "
+                                                                                + goiTap.getTenGoiTap()
+                                                                                + ": "
+                                                                                + goiTap.getGia()
+                                                                                + " VNĐ";
 
-                                                })
-                                                .filter(item -> item != null)
-                                                .collect(Collectors.joining("\n"));
+                                                        })
+                                                        .filter(item -> item != null)
+                                                        .collect(Collectors.joining("\n"));
+                                }
                         }
+
+                        thongTinThanhVien = """
+                                        Thông tin khách hàng:
+                                        - Họ tên: %s
+                                        - Email: %s
+                                        - Số điện thoại: %s
+
+                                        Thông tin gói tập hiện tại của khách:
+                                        %s
+
+                                        Danh sách gói tập:
+                                        %s
+
+                                        Các gói tập đã mua:
+                                        %s
+                                        """
+                                        .formatted(
+                                                        khachHang.getTenKhachHang(),
+                                                        khachHang.getEmail(),
+                                                        khachHang.getSoDienThoai(),
+                                                        thongTinTheTap,
+                                                        thongTinGoiTap,
+                                                        thongTinGoiTapDaMua);
                 }
 
                 String context = """
                                 Bạn là chatbot tư vấn của phòng gym.
 
-                                Thông tin khách hàng:
-                                - Họ tên: %s
-                                - Email: %s
-                                - Số điện thoại: %s
-
                                 Câu hỏi:
+                                %s
+
                                 %s
 
                                 Nhiệm vụ:
@@ -167,23 +182,12 @@ public class ChatService {
                                 - Không hỏi lại mục tiêu nếu khách đã nêu rõ.
                                 - Nếu thiếu thông tin thì chỉ hỏi thêm những gì cần thiết.
                                 - Không chẩn đoán bệnh; nếu có vấn đề sức khỏe hãy khuyên khách tham khảo bác sĩ.
-
-                                Thông tin gói tập hiện tại của khách:
-                                %s
-
-                                Danh sách gói tập:
-                                %s
                                 """
                                 .formatted(
-                                                khachHang.getTenKhachHang(),
-                                                khachHang.getEmail(),
-                                                khachHang.getSoDienThoai(),
                                                 message,
-                                                thongTinTheTap,
-                                                thongTinGoiTap);
+                                                thongTinThanhVien);
 
                 return groqService.chat(context);
 
         }
-
 }
