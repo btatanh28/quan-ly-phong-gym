@@ -12,4 +12,6 @@ public interface ChiTietDonHangRespository extends JpaRepository<ChiTietDonHang,
     List<ChiTietDonHang> findAllByIdDonHang(String idDonHang);
 
     List<ChiTietDonHang> findByIdDonHang(String idDonHang);
+
+    List<ChiTietDonHang> findAllByIdDonHangIn(List<String> idDonHangs);
 }
