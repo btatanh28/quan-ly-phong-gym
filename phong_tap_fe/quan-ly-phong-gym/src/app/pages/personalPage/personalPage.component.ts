@@ -23,6 +23,7 @@ import { DateFormatPipe } from '../../../common/base/pipe/dateFormat/dateFormat.
 import { ChinhSuaThongTinComponent } from './chinh-sua-thong-tin/chinh-sua-thong-tin.component';
 import { QRCodeComponent } from 'angularx-qrcode';
 import Swal from 'sweetalert2';
+import { HuanLuyenVienService } from '../../../common/shared/service/application/huanLuyenVienService';
 
 @Component({
   selector: 'app-personal',
@@ -49,10 +50,12 @@ export class PersonalPageComponent implements OnInit {
   public userData: any[] = [];
   public listOfData: any[] = [];
   public forums: any[] = [];
+  public noteData: any[] = [];
   public currentUser: any;
   public listTrangThaiSanPham: any[] = trangThaiDonHang;
 
   public qrCode: string = '';
+
   public soNgayConLai: number = 0;
 
   constructor(
@@ -62,6 +65,7 @@ export class PersonalPageComponent implements OnInit {
     private forumService: ForumService,
     private customerService: CustomerService,
     private theTapService: TheTapService,
+    private huanLuyenVienService: HuanLuyenVienService,
   ) {}
 
   async ngOnInit() {
@@ -115,6 +119,13 @@ export class PersonalPageComponent implements OnInit {
       );
       this.qrCode = qr.data.qrCode;
       this.soNgayConLai = qr.data.soNgayConLai;
+    }
+
+    if (!tab || tab === 'Huấn luyện viên') {
+      const noteRes = await firstValueFrom(
+        this.huanLuyenVienService.getHuanLuyenVienKhachHangById(uers.id),
+      );
+      this.noteData = [noteRes];
     }
   }
 

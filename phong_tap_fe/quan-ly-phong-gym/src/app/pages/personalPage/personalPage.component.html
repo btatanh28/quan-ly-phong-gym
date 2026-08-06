@@ -69,6 +69,15 @@
     <li class="nav-item">
       <button
         class="nav-link"
+        (click)="selectTab('Huấn luyện viên')"
+        [class.active]="activeTab === 'Huấn luyện viên'"
+      >
+        Huấn Luyện Viên
+      </button>
+    </li>
+    <li class="nav-item">
+      <button
+        class="nav-link"
         (click)="selectTab('Code')"
         [class.active]="activeTab === 'Code'"
       >
@@ -204,77 +213,150 @@
       </div>
     </div>
   </div>
-</div>
 
-<div
-  class="modal fade show d-block bg-modal"
-  *ngIf="isModalOpen2"
-  style="background-color: rgba(0, 0, 0, 0.5)"
->
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title fw-bold">Chỉnh sửa thông tin cá nhân</h4>
-        <button type="button" class="btn-close"></button>
-      </div>
+  <div *ngIf="activeTab === 'Huấn luyện viên'">
+    <div>
+      <div class="card profile-card">
+        <div class="card-body" *ngFor="let hlv of noteData">
+          <div
+            *ngIf="hlv.daDangKy; else notRegister"
+            class="row align-items-center"
+          >
+            <div class="col-md-2 text-center">
+              <img
+                *ngIf="hlv.hinhAnh; else defaultAvatar"
+                [src]="baseUrl + hlv.hinhAnh"
+                alt="Hình ảnh sản phẩm"
+                class="rounded-circle profile-img"
+                style="width: 150px; height: 150px; object-fit: cover"
+              />
 
-      <div class="modal-body">
-        <form>
-          <div class="row">
-            <div class="mb-3">
-              <label for="TenKhachHang" class="form-label">Họ và Tên</label>
-              <input
-                type="text"
-                class="form-control"
-                id="TenKhachHang"
-                name="TenKhachHang"
-                placeholder="Họ và tên"
-                disabled
-              />
+              <ng-template #defaultAvatar>
+                <i
+                  class="fa fa-user-circle text-secondary"
+                  style="font-size: 100px"
+                ></i>
+              </ng-template>
             </div>
-            <!-- <div class="mb-3">
-                    <label for="MatKhau" class="form-label">Mật Khẩu</label>
-                    <input type="text" class="form-control" id="MatKhau" [(ngModel)]="inforUser.MatKhau" name="MatKhau" placeholder="Mật khẩu">
-                </div> -->
-            <div class="mb-3">
-              <label for="SoDienThoai" class="form-label">Số điện thoại</label>
-              <input
-                type="text"
-                class="form-control"
-                id="SoDienThoai"
-                name="SoDienThoai"
-                placeholder="Số điện thoại"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="Email" class="form-label">Email</label>
-              <input
-                type="text"
-                class="form-control"
-                id="Email"
-                name="Email"
-                placeholder="Số điện thoại"
-              />
-            </div>
-            <div class="mb-3">
-              <label for="DiaChi" class="form-label">Địa chỉ</label>
-              <input
-                type="text"
-                class="form-control"
-                id="DiaChi"
-                name="DiaChi"
-                placeholder="Địa chỉ"
-                required
-              />
-            </div>
-            <div class="mb-3">
-              <label for="HinhAnh" class="form-label">Hình ảnh</label>
-              <input type="file" class="form-control" id="HinhAnh" required />
+
+            <div class="col-md-10 bg-profile">
+              <h3 class="mb-3">{{ hlv.tenNguoiDung }}</h3>
+              <p class="text-secondary mb-2">
+                <i class="fa-solid fa-phone me-2"></i>Số điện thoại:
+                {{ hlv.soDienThoaiHLV }}
+              </p>
+              <p class="text-secondary mb-2">
+                <i class="fa-solid fa-envelope me-2"></i>Email:
+                {{ hlv.emailHLV }}
+              </p>
             </div>
           </div>
 
-          <button type="submit" class="btn btn-success">Cập nhật</button>
-        </form>
+          <ng-template #notRegister>
+            <div class="text-center py-5">
+              <i
+                class="fa fa-user-circle text-secondary"
+                style="font-size: 100px"
+              ></i>
+              <h5 class="mt-3">Bạn chưa đăng ký huấn luyện viên</h5>
+              <p class="text-secondary">
+                Hãy đăng ký để được hướng dẫn tập luyện.
+              </p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <div *ngFor="let note of noteData" class="note-card">
+          <div *ngIf="note.ghiChu; else noNote" class="note-content">
+            {{ note.ghiChu }}
+          </div>
+
+          <ng-template #noNote>
+            <div class="note-content text-secondary">Không có ghi chú nào</div>
+          </ng-template>
+        </div>
+
+        <div *ngIf="noteData.length === 0" class="note-card">
+          <p class="text-center text-secondary mt-2">Không có dữ liệu</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade show d-block bg-modal"
+    *ngIf="isModalOpen2"
+    style="background-color: rgba(0, 0, 0, 0.5)"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title fw-bold">Chỉnh sửa thông tin cá nhân</h4>
+          <button type="button" class="btn-close"></button>
+        </div>
+
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="mb-3">
+                <label for="TenKhachHang" class="form-label">Họ và Tên</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="TenKhachHang"
+                  name="TenKhachHang"
+                  placeholder="Họ và tên"
+                  disabled
+                />
+              </div>
+              <!-- <div class="mb-3">
+                    <label for="MatKhau" class="form-label">Mật Khẩu</label>
+                    <input type="text" class="form-control" id="MatKhau" [(ngModel)]="inforUser.MatKhau" name="MatKhau" placeholder="Mật khẩu">
+                </div> -->
+              <div class="mb-3">
+                <label for="SoDienThoai" class="form-label"
+                  >Số điện thoại</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="SoDienThoai"
+                  name="SoDienThoai"
+                  placeholder="Số điện thoại"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="Email" class="form-label">Email</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Email"
+                  name="Email"
+                  placeholder="Số điện thoại"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="DiaChi" class="form-label">Địa chỉ</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="DiaChi"
+                  name="DiaChi"
+                  placeholder="Địa chỉ"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="HinhAnh" class="form-label">Hình ảnh</label>
+                <input type="file" class="form-control" id="HinhAnh" required />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success">Cập nhật</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

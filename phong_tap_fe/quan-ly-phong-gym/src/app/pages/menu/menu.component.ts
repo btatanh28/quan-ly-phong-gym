@@ -71,7 +71,6 @@ export class MenuComponent implements OnInit {
       const responseCode = params['vnp_ResponseCode'];
       const orderId = params['vnp_TxnRef'];
 
-      debugger;
       if (orderIdMoMo) {
         this.momoService.ipnMomo(orderIdMoMo, resultCode.toString()).subscribe({
           next: () => {

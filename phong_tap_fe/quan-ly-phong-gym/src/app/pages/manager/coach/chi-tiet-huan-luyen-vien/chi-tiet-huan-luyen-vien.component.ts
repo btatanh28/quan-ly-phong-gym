@@ -60,6 +60,7 @@ export class ChiTietHuanLuyenVienComponent implements OnInit {
       tenGoiTap: [null],
       vaiTro: [null],
       email: [null],
+      hinhAnh: [null],
     });
   }
 
@@ -165,6 +166,7 @@ export class ChiTietHuanLuyenVienComponent implements OnInit {
             tenNguoiDung: selectedData.tenNguoiDung,
             soDienThoaiHLV: selectedData.soDienThoai,
             emailHLV: selectedData.email,
+            hinhAnh: selectedData.hinhAnh,
             vaiTro: selectedData.vaiTro,
           };
 

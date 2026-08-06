@@ -26,6 +26,12 @@ export class HuanLuyenVienService {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
+  getHuanLuyenVienKhachHangById(id: any): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/huan-luyen-vien-khach-hang/${id}`,
+    );
+  }
+
   UpdateHuanLuyenVien(huanLuyenVien: any): Observable<any> {
     return this.http.put(
       `${this.apiUrl}/edit/${huanLuyenVien.id}`,
