@@ -101,6 +101,15 @@
   font-size: 1.1rem;
 }
 
+.section-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .note-card {
   background: white;
   border-radius: 14px;

@@ -268,6 +268,8 @@
       </div>
 
       <div class="mt-4">
+        <div class="section-title">Ghi chú của Huấn luyện viên</div>
+
         <div *ngFor="let note of noteData" class="note-card">
           <div *ngIf="note.ghiChu; else noNote" class="note-content">
             {{ note.ghiChu }}

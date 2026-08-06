@@ -60,6 +60,7 @@ export class ChiTietHuanLuyenVienComponent implements OnInit {
       tenGoiTap: [null],
       vaiTro: [null],
       email: [null],
+      ghiChu: [null],
       hinhAnh: [null],
     });
   }

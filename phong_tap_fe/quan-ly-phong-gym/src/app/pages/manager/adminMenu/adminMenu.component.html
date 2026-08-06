@@ -42,7 +42,7 @@
               Quản lý tài khoản
             </a>
           </li>
-          <li *ngIf="isAdmin()" nz-menu-item nzMatchRouter>
+          <li *ngIf="isAdmin() || isCoach()" nz-menu-item nzMatchRouter>
             <a
               class="nav-link"
               [class.active]="currentTab === 'coach'"
