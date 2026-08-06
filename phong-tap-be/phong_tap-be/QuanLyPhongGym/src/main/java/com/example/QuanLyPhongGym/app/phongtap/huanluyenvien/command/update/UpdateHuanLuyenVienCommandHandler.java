@@ -30,6 +30,8 @@ public class UpdateHuanLuyenVienCommandHandler {
         huanLuyenVien.setSoDienThoai(request.getSoDienThoai());
         huanLuyenVien.setSoDienThoaiHLV(request.getSoDienThoaiHLV());
         huanLuyenVien.setEmailHLV(request.getEmailHLV());
+        huanLuyenVien.setHinhAnh(request.getHinhAnh());
+        huanLuyenVien.setGhiChu(request.getGhiChu());
         huanLuyenVien.setVaiTro(request.getVaiTro());
 
         repository.save(huanLuyenVien);

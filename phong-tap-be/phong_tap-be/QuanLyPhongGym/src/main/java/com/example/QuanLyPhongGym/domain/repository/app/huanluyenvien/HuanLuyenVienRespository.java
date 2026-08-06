@@ -10,4 +10,6 @@ public interface HuanLuyenVienRespository extends JpaRepository<HuanLuyenVien, S
     HuanLuyenVien findFirstById(String id);
 
     List<HuanLuyenVien> findAllByIdKhachHang(String idKhachHang);
+
+    HuanLuyenVien findFirstByIdKhachHang(String idKhachHang);
 }

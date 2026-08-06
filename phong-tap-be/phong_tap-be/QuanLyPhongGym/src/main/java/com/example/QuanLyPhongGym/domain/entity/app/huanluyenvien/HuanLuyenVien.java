@@ -33,6 +33,12 @@ public class HuanLuyenVien {
     @Column(name = "EMAIL_HLV")
     private String emailHLV;
 
+    @Column(name = "HINH_ANH")
+    private String hinhAnh;
+
+    @Column(name = "GHI_CHU")
+    private String ghiChu;
+
     @Column(name = "VAI_TRO")
     private Integer vaiTro;
 }

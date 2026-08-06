@@ -18,6 +18,5 @@ public class GetHuanLuyenVienQueryDTO {
     private String tenNguoiDung;
     private String tenGoiTap;
     private String tenKhachHang;
-    private Integer page;
-    private Integer size;
+    private String ghiChu;
 }

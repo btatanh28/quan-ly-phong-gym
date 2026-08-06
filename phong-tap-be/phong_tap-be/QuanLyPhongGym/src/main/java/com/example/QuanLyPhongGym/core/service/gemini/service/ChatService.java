@@ -63,6 +63,7 @@ public class ChatService {
                                                                 "Không tìm thấy khách hàng"));
 
                 String thongTinThanhVien = "";
+
                 if (needMemberInfo) {
                         List<GoiTap> danhSachGoiTap = goiTapRepository.findAll();
 
@@ -174,13 +175,18 @@ public class ChatService {
                                 - Tư vấn dinh dưỡng, chế độ ăn và tập luyện.
                                 - Hỗ trợ các mục tiêu: tăng cân, giảm cân, tăng cơ, giảm mỡ, giữ dáng và cải thiện sức khỏe.
 
-                                Quy tắc:
-                                - Trả lời ngắn gọn (không quá 7 dòng).
+                                Quy tắc bắt buộc:
+                                - Chỉ trả lời tối đa 4 câu hoặc 6 dòng.
+                                - Không viết đoạn văn dài.
+                                - Không giải thích lan man.
                                 - Dễ hiểu, thân thiện, có thể dùng emoji.
                                 - Không dùng markdown (*, **, #).
+                                - Sau khi trả lời xong, không gợi ý thêm các chủ đề khác.
+                                - Không hỏi "Bạn có muốn..." hoặc "Bạn cần tư vấn..." nếu người dùng không yêu cầu.
+                                - Chỉ trả lời đúng nội dung người dùng hỏi.
                                 - Không giới thiệu gói tập nếu khách không hỏi.
-                                - Không hỏi lại mục tiêu nếu khách đã nêu rõ.
-                                - Nếu thiếu thông tin thì chỉ hỏi thêm những gì cần thiết.
+                                - Chỉ hỏi lại khi câu hỏi hiện tại thật sự thiếu thông tin.
+                                - Nếu người dùng đã nói rõ mục tiêu ngay trong câu hỏi thì không hỏi lại.
                                 - Không chẩn đoán bệnh; nếu có vấn đề sức khỏe hãy khuyên khách tham khảo bác sĩ.
                                 """
                                 .formatted(

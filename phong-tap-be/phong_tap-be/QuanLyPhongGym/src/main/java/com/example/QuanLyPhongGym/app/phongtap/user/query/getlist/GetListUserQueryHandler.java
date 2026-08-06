@@ -24,7 +24,7 @@ public class GetListUserQueryHandler implements IRequestHandler<GetListUserQuery
     public ListResponse handle(GetListUserQuery request) {
         StringBuilder sql = new StringBuilder(
                 "SELECT ID, TEN_NGUOI_DUNG, DIA_CHI, EMAIL, SO_DIEN_THOAI, NGAY_VAO_LAM, " +
-                        "VAI_TRO, LUONG, CCCD FROM NGUOI_DUNG WHERE 1=1");
+                        "VAI_TRO, LUONG, CCCD, HINH_ANH FROM NGUOI_DUNG WHERE 1=1");
 
         List<Object> params = new ArrayList<>();
 
@@ -68,6 +68,7 @@ public class GetListUserQueryHandler implements IRequestHandler<GetListUserQuery
                     dto.setDiaChi(rs.getString("DIA_CHI"));
                     dto.setEmail(rs.getString("EMAIL"));
                     dto.setSoDienThoai(rs.getString("SO_DIEN_THOAI"));
+                    dto.setHinhAnh(rs.getString("HINH_ANH"));
                     dto.setNgayVaoLam(rs.getLong("NGAY_VAO_LAM"));
                     dto.setLuong(rs.getInt("LUONG"));
                     dto.setVaiTro(rs.getInt("VAI_TRO"));

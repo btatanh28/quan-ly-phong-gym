@@ -48,6 +48,7 @@ public class GetHuanLuyenVienQueryHandler {
         dto.setSoDienThoai(huanLuyenVien.getSoDienThoai());
         dto.setVaiTro(huanLuyenVien.getVaiTro());
         dto.setEmailHLV(huanLuyenVien.getEmailHLV());
+        dto.setGhiChu(huanLuyenVien.getGhiChu());
         return dto;
     }
 

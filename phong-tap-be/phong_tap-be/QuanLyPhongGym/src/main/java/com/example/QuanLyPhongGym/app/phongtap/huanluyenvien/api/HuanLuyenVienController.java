@@ -21,6 +21,9 @@ import com.example.QuanLyPhongGym.app.phongtap.huanluyenvien.command.update.Upda
 import com.example.QuanLyPhongGym.app.phongtap.huanluyenvien.query.get.GetHuanLuyenVienQuery;
 import com.example.QuanLyPhongGym.app.phongtap.huanluyenvien.query.get.GetHuanLuyenVienQueryDTO;
 import com.example.QuanLyPhongGym.app.phongtap.huanluyenvien.query.get.GetHuanLuyenVienQueryHandler;
+import com.example.QuanLyPhongGym.app.phongtap.huanluyenvien.query.getHuanLuyenVienKhachHang.GetHuanLuyenVienKhachHangQuery;
+import com.example.QuanLyPhongGym.app.phongtap.huanluyenvien.query.getHuanLuyenVienKhachHang.GetHuanLuyenVienKhachHangQueryDTO;
+import com.example.QuanLyPhongGym.app.phongtap.huanluyenvien.query.getHuanLuyenVienKhachHang.GetHuanLuyenVienKhachHangQueryHandler;
 import com.example.QuanLyPhongGym.app.phongtap.huanluyenvien.query.getList.GetListHuanLuyenVienQuery;
 import com.example.QuanLyPhongGym.app.phongtap.huanluyenvien.query.getList.GetListHuanLuyenVienQueryHandler;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
@@ -39,6 +42,7 @@ public class HuanLuyenVienController {
     private final GetHuanLuyenVienQueryHandler getHuanLuyenVienQueryHandler;
     private final UpdateHuanLuyenVienCommandHandler updateHuanLuyenVienCommandHandler;
     private final DeleteHuanLuyenVienCommandHandler deleteHuanLuyenVienCommandHandler;
+    private final GetHuanLuyenVienKhachHangQueryHandler getHuanLuyenVienKhachHangQueryHandler;
 
     @GetMapping("list")
     public ResponseEntity<ListResponse> getList(@ModelAttribute GetListHuanLuyenVienQuery request) {
@@ -51,6 +55,14 @@ public class HuanLuyenVienController {
         GetHuanLuyenVienQuery request = new GetHuanLuyenVienQuery(); // để handler nhận
         request.setId(id);
         GetHuanLuyenVienQueryDTO response = getHuanLuyenVienQueryHandler.handle(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("huan-luyen-vien-khach-hang/{id}")
+    public ResponseEntity<GetHuanLuyenVienKhachHangQueryDTO> getHuanLuyenVienKhachHang(@PathVariable String id) {
+        GetHuanLuyenVienKhachHangQuery request = new GetHuanLuyenVienKhachHangQuery(); // để handler nhận
+        request.setId(id);
+        GetHuanLuyenVienKhachHangQueryDTO response = getHuanLuyenVienKhachHangQueryHandler.handle(request);
         return ResponseEntity.ok(response);
     }
 

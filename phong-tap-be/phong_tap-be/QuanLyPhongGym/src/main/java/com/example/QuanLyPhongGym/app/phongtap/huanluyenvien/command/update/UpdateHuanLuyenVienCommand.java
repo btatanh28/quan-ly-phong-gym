@@ -19,4 +19,6 @@ public class UpdateHuanLuyenVienCommand {
     private String soDienThoaiHLV;
     private String emailHLV;
     private Integer vaiTro;
+    private String hinhAnh;
+    private String ghiChu;
 }
