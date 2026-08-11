@@ -32,7 +32,8 @@ public class GetDoanhThuQueryHandler implements IRequestHandler<GetDoanhThuQuery
                             DAY(FROM_UNIXTIME(dh.NGAY_MUA/1000)) AS ngay,
                             MONTH(FROM_UNIXTIME(dh.NGAY_MUA/1000)) AS thang,
                             YEAR(FROM_UNIXTIME(dh.NGAY_MUA/1000)) AS nam,
-                            SUM(dh.TONG_TIEN) AS tongTienDoanhThu
+                            SUM(dh.TONG_TIEN) AS tongTienDoanhThu,
+                            COUNT(*) AS tongSoDon
                         FROM DON_DANG_KY dh
                         WHERE dh.TRANG_THAI_SAN_PHAM = 2
                         AND YEAR(FROM_UNIXTIME(dh.NGAY_MUA/1000)) = ?
@@ -49,7 +50,8 @@ public class GetDoanhThuQueryHandler implements IRequestHandler<GetDoanhThuQuery
                         SELECT
                             MONTH(FROM_UNIXTIME(dh.NGAY_MUA/1000)) AS thang,
                             YEAR(FROM_UNIXTIME(dh.NGAY_MUA/1000)) AS nam,
-                            SUM(dh.TONG_TIEN) AS tongTienDoanhThu
+                            SUM(dh.TONG_TIEN) AS tongTienDoanhThu,
+                            COUNT(*) AS tongSoDon
                         FROM DON_DANG_KY dh
                         WHERE dh.TRANG_THAI_SAN_PHAM = 2
                         AND YEAR(FROM_UNIXTIME(dh.NGAY_MUA/1000)) = ?
@@ -76,6 +78,9 @@ public class GetDoanhThuQueryHandler implements IRequestHandler<GetDoanhThuQuery
                     }
 
                     dto.setTongTienDoanhThu(rs.getBigDecimal("tongTienDoanhThu"));
+
+                    dto.setTongSoDon(
+                            rs.getInt("tongSoDon"));
 
                     return dto;
                 });

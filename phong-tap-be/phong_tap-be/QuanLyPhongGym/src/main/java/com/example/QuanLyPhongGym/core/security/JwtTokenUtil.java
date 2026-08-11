@@ -17,7 +17,7 @@ public class JwtTokenUtil {
     private final String SECRET_KEY = "YOUR_SECRET_KEY_32CHAR_MIN_LENGTH_123456";
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 1 ngày
+    private final long EXPIRATION_TIME = 1000 * 60 * 15; // 15 phút
 
     public String generateToken(String id, String email, Integer vaiTro) {
         return Jwts.builder()
@@ -25,7 +25,7 @@ public class JwtTokenUtil {
                 .claim("id", id)
                 .claim("vaiTro", vaiTro)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 1 ngày
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 15 phút
                 .signWith(key, SignatureAlgorithm.HS256) // ⚡ đúng chuẩn JJWT 0.11.x
                 .compact();
     }

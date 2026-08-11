@@ -13,4 +13,5 @@ public class GetDoanhThuQueryDTO {
     private Integer ngay;
     private Integer nam;
     private BigDecimal tongTienDoanhThu;
+    private Integer tongSoDon;
 }
