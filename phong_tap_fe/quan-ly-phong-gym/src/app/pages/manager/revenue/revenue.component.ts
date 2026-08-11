@@ -1,3 +1,4 @@
+import { CustomerService } from './../../../../common/shared/service/application/customerService';
 import { ChiTietDonHangService } from './../../../../common/shared/service/application/chiTietDonHang';
 import { DonHangService } from './../../../../common/shared/service/application/donhangService';
 import { Component, OnInit } from '@angular/core';
@@ -21,12 +22,17 @@ export class RevenueComponent implements OnInit {
   public listOfData: any[] = [];
   public listNgayThangNam: any[] = ngayThangNamEnums;
   public chart: any;
-  selectedMonth: number | '' = '';
+  public selectedMonth: number | '' = '';
+  public tongDoanhThu: number = 0;
+  public tongKhachHang: number = 0;
+  public tongSoDon: number = 0;
+  public trungBinhDoanhThuDon: number = 0;
 
   constructor(
     private fb: FormBuilder,
     private donHangService: DonHangService,
     private chiTietDonHangService: ChiTietDonHangService,
+    private customerService: CustomerService,
   ) {
     this.formSearch = this.fb.group({
       year: [null],
@@ -44,16 +50,43 @@ export class RevenueComponent implements OnInit {
       ...this.formSearch?.value,
     };
 
-    this.donHangService.getDoanhThu(params).subscribe(async (res: any) => {
-      await this.drawChart(res.items);
+    // Tổng số khách hàng
+    this.customerService.getAllKhachHang('').subscribe((res: any) => {
+      this.tongKhachHang = res.items.length;
     });
 
-    const res = await firstValueFrom(
-      this.chiTietDonHangService.getChiTietDoanhThu(params),
-    );
+    // Doanh thu + biểu đồ + đơn đăng ký
+    this.donHangService.getDoanhThu(params).subscribe(async (res: any) => {
+      await this.drawChart(res.items);
 
-    this.listOfData = res.items;
+      this.tongDoanhThu = res.items.reduce(
+        (total: number, item: any) =>
+          total + Number(item.tongTienDoanhThu || 0),
+        0,
+      );
+
+      const items = res.items ?? [];
+
+      this.tongSoDon = items.reduce(
+        (total: number, item: any) => total + Number(item.tongSoDon || 0),
+        0,
+      );
+
+      this.trungBinhDoanhThuDon = this.tongSoDon > 0 ? this.tongDoanhThu / this.tongSoDon : 0;
+    });
+
+    // Chi tiết gói tập
+    this.chiTietDonHangService
+      .getChiTietDoanhThu(params)
+      .subscribe(async (res: any) => {
+        await this.drawChartChiTiet(res.items);
+
+        this.listOfData = res.items;
+      });
   }
+
+  public revenueChart: any;
+  public chiTietChart: any;
 
   drawChart(data: any[]) {
     const year = this.formSearch?.get('year')?.value;
@@ -77,9 +110,11 @@ export class RevenueComponent implements OnInit {
 
     const ctx = document.getElementById('revenueChart') as HTMLCanvasElement;
 
-    if (this.chart) this.chart.destroy();
+    if (this.revenueChart) {
+      this.revenueChart.destroy();
+    }
 
-    this.chart = new Chart(ctx, {
+    this.revenueChart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels,
@@ -133,6 +168,98 @@ export class RevenueComponent implements OnInit {
             },
             grid: {
               color: '#eee',
+            },
+          },
+        },
+      },
+    });
+  }
+
+  drawChartChiTiet(data: any[]) {
+    const labels = data.map((x) => x.tenGoiTap);
+    const values = data.map((x) => x.soLuong);
+
+    const ctx = document.getElementById(
+      'revenueChartChiTiet',
+    ) as HTMLCanvasElement;
+
+    if (this.chiTietChart) {
+      this.chiTietChart.destroy();
+    }
+
+    this.chiTietChart = new Chart(ctx, {
+      type: 'pie',
+
+      data: {
+        labels,
+
+        datasets: [
+          {
+            label: 'Số lượng gói tập',
+            data: values,
+
+            // Mỗi gói tập một màu
+            backgroundColor: [
+              '#0d6efd',
+              '#198754',
+              '#ffc107',
+              '#dc3545',
+              '#6f42c1',
+              '#20c997',
+              '#fd7e14',
+              '#d63384',
+              '#6610f2',
+              '#0dcaf0',
+            ],
+
+            borderWidth: 2,
+            borderColor: '#fff',
+
+            hoverOffset: 8,
+          },
+        ],
+      },
+
+      options: {
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+
+            labels: {
+              color: '#333',
+
+              font: {
+                size: 14,
+                weight: 'bold',
+              },
+
+              usePointStyle: true,
+              pointStyle: 'circle',
+
+              padding: 15,
+            },
+          },
+
+          tooltip: {
+            callbacks: {
+              label: (context: any) => {
+                const value = Number(context.raw);
+
+                const total = context.dataset.data.reduce(
+                  (sum: number, item: any) => sum + Number(item),
+                  0,
+                );
+
+                const percent =
+                  total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+
+                return ` ${context.label}: ${value} gói (${percent}%)`;
+              },
             },
           },
         },
