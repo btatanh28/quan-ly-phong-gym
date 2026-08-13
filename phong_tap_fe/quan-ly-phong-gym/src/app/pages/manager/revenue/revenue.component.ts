@@ -72,7 +72,7 @@ export class RevenueComponent implements OnInit {
         0,
       );
 
-      this.trungBinhDoanhThuDon = this.tongSoDon > 0 ? this.tongDoanhThu / this.tongSoDon : 0;
+      this.trungBinhDoanhThuDon = this.tongSoDon > 0 ? Math.round(this.tongDoanhThu / this.tongSoDon) : 0;
     });
 
     // Chi tiết gói tập
