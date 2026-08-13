@@ -115,6 +115,6 @@ public class LoginCommandHandler {
 
         }
 
-        throw new CustomException("404", "Email hoặc số điện thoại không tồn tại");
+        throw new CustomException("404", "Email hoặc số điện thoại không đúng");
     }
 }
