@@ -92,7 +92,10 @@ export class LoginUserComponent {
         this.showVerify = true;
       }
 
-      if (error?.error?.message === 'Sai mật khẩu') {
+      if (
+        error?.error?.message === 'Email hoặc số điện thoại không đúng' ||
+        error?.error?.message === 'Sai mật khẩu'
+      ) {
         Swal.fire({
           icon: 'warning',
           title: 'Tài khoản hoặc mật khẩu không đúng',
