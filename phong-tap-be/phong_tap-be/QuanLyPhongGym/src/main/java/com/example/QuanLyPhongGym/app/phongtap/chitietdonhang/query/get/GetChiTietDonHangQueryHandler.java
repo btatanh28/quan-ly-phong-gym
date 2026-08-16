@@ -26,12 +26,17 @@ public class GetChiTietDonHangQueryHandler {
                         ct.ID,
                         ct.ID_DON_HANG,
                         ct.ID_GOI_TAP,
+                        ct.ID_SAN_PHAM,
                         gt.TEN_GOI_TAP,
+                        sp.TEN_SAN_PHAM,
                         ct.GIA,
+                        ct.GIA_SAN_PHAM,
                         ct.SO_LUONG,
+                        ct.SO_LUONG_SAN_PHAM,
                         ct.TONG_TIEN
                     FROM CHI_TIET_DON_HANG ct
-                    JOIN GOI_TAP gt ON ct.ID_GOI_TAP = gt.ID
+                    LEFT JOIN GOI_TAP gt ON ct.ID_GOI_TAP = gt.ID
+                    LEFT JOIN SAN_PHAM sp ON ct.ID_SAN_PHAM = sp.ID
                     WHERE ct.ID_DON_HANG = ?
                 """;
 
@@ -43,9 +48,13 @@ public class GetChiTietDonHangQueryHandler {
                     dto.setId(rs.getString("ID"));
                     dto.setIdDonHang(rs.getString("ID_DON_HANG"));
                     dto.setIdGoiTap(rs.getString("ID_GOI_TAP"));
+                    dto.setIdSanPham(rs.getString("ID_SAN_PHAM"));
                     dto.setTenGoiTap(rs.getString("TEN_GOI_TAP"));
+                    dto.setTenSanPham(rs.getString("TEN_SAN_PHAM"));
                     dto.setSoLuong(rs.getInt("SO_LUONG"));
+                    dto.setSoLuongSanPham(rs.getInt("SO_LUONG_SAN_PHAM"));
                     dto.setGia(rs.getBigDecimal("GIA"));
+                    dto.setGiaSanPham(rs.getBigDecimal("GIA_SAN_PHAM"));
                     dto.setTongTien(rs.getBigDecimal("TONG_TIEN"));
                     return dto;
                 });

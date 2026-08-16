@@ -1,4 +1,4 @@
-package com.example.QuanLyPhongGym.app.phongtap.chitietdonhang.command.create;
+package com.example.QuanLyPhongGym.app.phongtap.sanphamgym.command.update;
 
 import java.math.BigDecimal;
 
@@ -12,14 +12,13 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class CreateChiTietDonHangCommand {
+public class UpdateSanPhamGymCommand {
     private String id;
-    private String idDonHang;
-    private String idGoiTap;
-    private String idSanPham;
-    private Integer soLuong;
-    private Integer soLuongSanPham;
+    private String tenSanPham;
+    private String hinhAnh;
     private BigDecimal gia;
-    private BigDecimal tongTien;
+    private Integer soTonKho;
+    private String moTa;
     private Integer giamGia;
+    private BigDecimal giaSauGiam;
 }

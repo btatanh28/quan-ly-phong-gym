@@ -23,11 +23,20 @@ public class ChiTietDonHang {
     @Column(name = "ID_GOI_TAP")
     private String idGoiTap;
 
+    @Column(name = "ID_SAN_PHAM")
+    private String idSanPham;
+
     @Column(name = "SO_LUONG")
     private Integer soLuong;
 
+    @Column(name = "SO_LUONG_SAN_PHAM")
+    private Integer soLuongSanPham;
+
     @Column(name = "GIA")
     private BigDecimal gia;
+
+    @Column(name = "GIA_SAN_PHAM")
+    private BigDecimal giaSanPham;
 
     @Column(name = "GIAM_GIA")
     private Integer giamGia;

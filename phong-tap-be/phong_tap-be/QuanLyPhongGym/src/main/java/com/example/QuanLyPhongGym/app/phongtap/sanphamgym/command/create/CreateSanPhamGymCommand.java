@@ -1,10 +1,11 @@
-package com.example.QuanLyPhongGym.app.phongtap.chitietdonhang.command.create;
+package com.example.QuanLyPhongGym.app.phongtap.sanphamgym.command.create;
 
 import java.math.BigDecimal;
 
 import com.example.QuanLyPhongGym.core.annotation.Response;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
 
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,14 +13,13 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class CreateChiTietDonHangCommand {
+public class CreateSanPhamGymCommand {
     private String id;
-    private String idDonHang;
-    private String idGoiTap;
-    private String idSanPham;
-    private Integer soLuong;
-    private Integer soLuongSanPham;
+    private String tenSanPham;
+    private String hinhAnh;
     private BigDecimal gia;
-    private BigDecimal tongTien;
+    private Integer soTonKho;
+    private String moTa;
     private Integer giamGia;
+    private BigDecimal giaSauGiam;
 }

@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -188,7 +189,33 @@ public class ExportDoanhThuQueryHandler {
                 }
             }
 
+            // Excel bắt đầu từ 1
+            int firstDataRow = startRow + 1;
+            int lastDataRow = startRow + items.size();
+
+            // Dòng Tổng
+            int totalRowIndex = startRow + items.size();
+
+            Row totalRow = sheet.getRow(totalRowIndex);
+
+            if (totalRow == null) {
+                totalRow = sheet.createRow(totalRowIndex);
+            }
+
+            // Cột E = index 4
+            Cell totalCell = totalRow.getCell(4);
+
+            if (totalCell == null) {
+                totalCell = totalRow.createCell(4);
+            }
+
+            // Công thức
+            totalCell.setCellFormula(
+                    "SUM(E" + firstDataRow + ":E" + lastDataRow + ")");
+
             ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            workbook.setForceFormulaRecalculation(true);
 
             workbook.write(out);
 

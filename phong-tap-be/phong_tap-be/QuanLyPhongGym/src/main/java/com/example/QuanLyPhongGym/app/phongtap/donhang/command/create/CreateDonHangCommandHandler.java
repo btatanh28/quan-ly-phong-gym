@@ -14,12 +14,14 @@ import com.example.QuanLyPhongGym.core.service.Generator;
 import com.example.QuanLyPhongGym.domain.entity.app.chitietdonhang.ChiTietDonHang;
 import com.example.QuanLyPhongGym.domain.entity.app.dondangky.DonDangKy;
 import com.example.QuanLyPhongGym.domain.entity.app.goitap.GoiTap;
+import com.example.QuanLyPhongGym.domain.entity.app.sanpham.SanPham;
 import com.example.QuanLyPhongGym.domain.entity.app.thetap.TheTap;
 import com.example.QuanLyPhongGym.domain.entity.app.thetapgoitap.TheTapGoiTap;
 import com.example.QuanLyPhongGym.domain.enums.TrangThaiSanPhamEnums;
 import com.example.QuanLyPhongGym.domain.repository.app.chitietdonhang.ChiTietDonHangRespository;
 import com.example.QuanLyPhongGym.domain.repository.app.dondangky.DonDangKyRespository;
 import com.example.QuanLyPhongGym.domain.repository.app.goitap.GoiTapRespository;
+import com.example.QuanLyPhongGym.domain.repository.app.sanpham.SanPhamRepository;
 import com.example.QuanLyPhongGym.domain.repository.app.thetap.TheTapRespository;
 import com.example.QuanLyPhongGym.domain.repository.app.thetapgoitap.TheTapGoiTapRepository;
 
@@ -33,6 +35,8 @@ public class CreateDonHangCommandHandler {
         private final DonDangKyRespository donDangKyRepository;
 
         private final GoiTapRespository goiTapRespository;
+
+        private final SanPhamRepository sanPhamRepository;
 
         private final ChiTietDonHangRespository chiTietDonHangRespository;
 
@@ -93,33 +97,87 @@ public class CreateDonHangCommandHandler {
                  */
                 for (CreateChiTietDonHangCommand ct : request.getChiTietDonHangs()) {
 
-                        GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
-
-                        if (goiTap == null) {
-                                throw new RuntimeException("Gói tập không tồn tại");
-                        }
-
-                        BigDecimal gia = goiTap.getGiaSauGiam() != null ? goiTap.getGiaSauGiam() : goiTap.getGia();
-
-                        BigDecimal thanhTien = gia.multiply(BigDecimal.valueOf(ct.getSoLuong()));
-
-                        tongTien = tongTien.add(thanhTien);
-
                         ChiTietDonHang chiTiet = new ChiTietDonHang();
 
                         chiTiet.setId(Generator.generate());
-
                         chiTiet.setIdDonHang(donDangKy.getId());
 
-                        chiTiet.setIdGoiTap(ct.getIdGoiTap());
+                        BigDecimal thanhTien = BigDecimal.ZERO;
 
-                        chiTiet.setSoLuong(ct.getSoLuong());
+                        // =========================
+                        // GÓI TẬP
+                        // =========================
+                        if (ct.getIdGoiTap() != null) {
 
-                        chiTiet.setGia(gia);
+                                GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
 
-                        chiTiet.setGiamGia(ct.getGiamGia());
+                                if (goiTap == null) {
+                                        throw new RuntimeException(
+                                                        "Không tìm thấy gói tập: " + ct.getIdGoiTap());
+                                }
+
+                                BigDecimal gia = goiTap.getGiaSauGiam() != null
+                                                ? goiTap.getGiaSauGiam()
+                                                : goiTap.getGia();
+
+                                int soLuong = ct.getSoLuong();
+
+                                thanhTien = gia.multiply(
+                                                BigDecimal.valueOf(soLuong));
+
+                                chiTiet.setIdGoiTap(goiTap.getId());
+                                chiTiet.setIdSanPham(null);
+
+                                chiTiet.setSoLuong(soLuong);
+                                chiTiet.setSoLuongSanPham(0);
+
+                                chiTiet.setGia(gia);
+                                chiTiet.setGiaSanPham(BigDecimal.ZERO);
+                        }
+
+                        // =========================
+                        // SẢN PHẨM
+                        // =========================
+                        else if (ct.getIdSanPham() != null) {
+
+                                SanPham sanPham = sanPhamRepository
+                                                .findFirstById(ct.getIdSanPham());
+
+                                if (sanPham == null) {
+                                        throw new RuntimeException(
+                                                        "Không tìm thấy sản phẩm: " + ct.getIdSanPham());
+                                }
+
+                                BigDecimal giaSanPham = sanPham.getGiaSauGiam() != null
+                                                ? sanPham.getGiaSauGiam()
+                                                : sanPham.getGia();
+
+                                int soLuongSanPham = ct.getSoLuongSanPham();
+
+                                thanhTien = giaSanPham.multiply(
+                                                BigDecimal.valueOf(soLuongSanPham));
+
+                                chiTiet.setIdGoiTap(null);
+                                chiTiet.setIdSanPham(sanPham.getId());
+
+                                chiTiet.setSoLuong(0);
+                                chiTiet.setSoLuongSanPham(soLuongSanPham);
+
+                                chiTiet.setGia(BigDecimal.ZERO);
+                                chiTiet.setGiaSanPham(giaSanPham);
+                        }
+
+                        // =========================
+                        // KHÔNG CÓ GÓI / SẢN PHẨM
+                        // =========================
+                        else {
+                                throw new RuntimeException(
+                                                "Chi tiết đơn hàng phải có idGoiTap hoặc idSanPham");
+                        }
 
                         chiTiet.setTongTien(thanhTien);
+
+                        tongTien = tongTien.add(thanhTien);
 
                         chiTietDonHangRespository.save(chiTiet);
                 }

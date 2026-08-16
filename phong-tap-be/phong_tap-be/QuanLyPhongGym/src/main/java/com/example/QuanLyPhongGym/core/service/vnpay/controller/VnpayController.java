@@ -114,6 +114,10 @@ public class VnpayController {
 
         for (ChiTietDonHang ct : chiTietHangs) {
 
+            if(ct.getIdGoiTap() == null){
+                continue;
+            }
+
             GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
 
             TheTapGoiTap theTapGoiTap = new TheTapGoiTap();

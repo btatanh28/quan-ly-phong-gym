@@ -12,8 +12,12 @@ public class GetChiTietDonHangQueryDTO {
     private String id;
     private String idDonHang;
     private String idGoiTap;
+    private String idSanPham;
+    private String tenSanPham;
     private String tenGoiTap;
     private Integer soLuong;
+    private Integer soLuongSanPham;
     private BigDecimal gia;
+    private BigDecimal giaSanPham;
     private BigDecimal tongTien;
 }
