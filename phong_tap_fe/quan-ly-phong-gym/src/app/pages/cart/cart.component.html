@@ -22,7 +22,9 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of cartItems">
-                    <td>{{ item.product.tenGoiTap }}</td>
+                    <td>
+                      {{ item.product.tenGoiTap || item.product.tenSanPham }}
+                    </td>
                     <td>
                       <img
                         [src]="baseUrl + item.product.hinhAnh"
@@ -36,10 +38,11 @@
                       <input
                         type="number"
                         class="form-control w-75 text-center"
+                        [disabled]="!!item.product.tenGoiTap"
                         [(ngModel)]="item.soLuong"
-                        max="1"
+                        [max]="item.product.tenGoiTap ? 1 : null"
                         (change)="updateQuantity(item)"
-                        disabled
+                        min="1"
                       />
                     </td>
                     <td>
@@ -118,7 +121,9 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let item of cartItems">
-                    <td class="text-center">{{ item.product.tenGoiTap }}</td>
+                    <td class="text-center">
+                      {{ item.product.tenGoiTap || item.product.tenSanPham }}
+                    </td>
                     <td class="text-center">
                       {{ item.product.gia | moneyPipe }}
                     </td>

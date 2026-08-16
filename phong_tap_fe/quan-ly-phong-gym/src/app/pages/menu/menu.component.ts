@@ -16,6 +16,7 @@ import { LabelValuePipe } from '../../../common/base/pipe/labelValue/labelValue.
 import { giamGia } from '../../../common/shared/enums/giamGia.enums';
 import { MomoService } from '../../../common/shared/service/application/momoService';
 import { AuthService } from '../../../common/shared/service/application/authService';
+import { SanPhamGymService } from '../../../common/shared/service/application/sanPhamGymService';
 
 @Component({
   selector: 'app-menu',
@@ -38,6 +39,7 @@ export class MenuComponent implements OnInit {
   public selectedDanhMucId: String | null = null;
   public products: any[] = [];
   public filteredProducts: any[] = [];
+  public sanPhamList: any[] = [];
   public keyword: string = '';
   public listGiamGia: any[] = giamGia;
 
@@ -48,6 +50,11 @@ export class MenuComponent implements OnInit {
   public pageSize = 4;
   public totalPages = 0;
 
+  public pageSanPham = 0;
+  public pageSizeSanPham = 4;
+  public totalPagesSanPham = 0;
+  public totalItemsSanPham: number = 0;
+
   constructor(
     private productService: ProductService,
     private cartService: CartService,
@@ -56,11 +63,14 @@ export class MenuComponent implements OnInit {
     private momoService: MomoService,
     private vnpayService: VnpayService,
     private authService: AuthService,
+    private sanPhamGymService: SanPhamGymService,
     private router: Router,
   ) {}
 
   async ngOnInit() {
     await this.getData();
+
+    await this.getDataSanPham();
 
     this.route.queryParams.subscribe((params) => {
       // MoMo
@@ -142,7 +152,6 @@ export class MenuComponent implements OnInit {
       this.productService.getAllProduct({
         page: this.page,
         size: this.pageSize,
-        idDanhMuc: this.selectedDanhMucId,
       }),
     );
     this.products = response.items || [];
@@ -152,10 +161,30 @@ export class MenuComponent implements OnInit {
     this.applyFilterAndPagination();
   }
 
+  async getDataSanPham() {
+    const res = await firstValueFrom(
+      this.sanPhamGymService.getAllSanPham({
+        page: this.pageSanPham,
+        size: this.pageSizeSanPham,
+      }),
+    );
+    this.sanPhamList = res.items || [];
+
+    this.totalItemsSanPham = res.totalItems;
+    this.totalPagesSanPham = res.totalPages;
+  }
+
   onPageChange(newPage: number) {
     if (newPage < 0 || newPage >= this.totalPages) return;
     this.page = newPage;
     this.getData();
+  }
+
+  onPageChangeSanPham(newPage: number) {
+    if (newPage < 0 || newPage >= this.totalPagesSanPham) return;
+    this.pageSanPham = newPage;
+
+    this.getDataSanPham();
   }
 
   async addToCart(product: any) {
@@ -164,28 +193,11 @@ export class MenuComponent implements OnInit {
       return;
     }
 
-    // const res = await firstValueFrom(
-    //   this.productService.KiemTraTonKho(product.id),
-    // );
-
     this.cartService.addToCart(product);
     Swal.fire({
       title: 'Thêm giỏ hàng thành công!',
       icon: 'success',
     });
-
-    // if (res.soLuong > 0) {
-    //   this.cartService.addToCart(product);
-    //   Swal.fire({
-    //     title: 'Thêm giỏ hàng thành công!',
-    //     icon: 'success',
-    //   });
-    // } else {
-    //   Swal.fire({
-    //     title: 'Sản phẩm đã hết hàng!',
-    //     icon: 'error',
-    //   });
-    // }
   }
 
   filterByDanhMuc(id: String | null) {

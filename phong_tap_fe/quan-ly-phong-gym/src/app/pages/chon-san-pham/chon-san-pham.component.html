@@ -4,25 +4,19 @@
       <form *ngIf="formSearch" [formGroup]="formSearch" (ngSubmit)="getData()">
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label for="tenKhachHang" class="form-label">Tên khách hàng</label>
+            <label for="tenSanPham" class="form-label">Tên Sản phẩm</label>
             <input
               type="text"
               class="form-control"
-              formControlName="tenKhachHang"
-              placeholder="Tên khách hàng"
+              formControlName="tenSanPham"
+              placeholder="Tên Sản phẩm"
               required
             />
           </div>
 
           <div class="col-md-6 mb-3">
-            <label for="soDienThoai" class="form-label">Số điện thoại</label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="soDienThoai"
-              placeholder="Số điện thoại"
-              required
-            />
+            <label for="gia" class="form-label">Giá</label>
+            <input-moneny type="text" formControlName="gia" />
           </div>
         </div>
 
@@ -51,7 +45,7 @@
     <div class="mb-4">
       <div class="data-table">
         <div class="hearder-table mt-m-15">
-          <nz-tabset (nzSelectedIndexChange)="changeTabKhachHang($event)">
+          <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
             <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
           </nz-tabset>
         </div>
@@ -61,24 +55,25 @@
             <table class="table table-bordered table-hover">
               <thead>
                 <tr>
-                  <th class="text-center">Họ và tên</th>
-                  <th class="text-center">Email</th>
-                  <td class="text-center">Số điện thoại</td>
-                  <th class="text-center">Địa chỉ</th>
+                  <th class="text-center">Tên sản phẩm</th>
+                  <th class="text-center">Giá</th>
+                  <td class="text-center">Giảm giá</td>
+                  <th class="text-center">Giá sau giảm</th>
+                  <th class="text-center">Số tồn kho</th>
                   <th class="text-center">Hành động</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let item of listOfData">
-                  <td class="text-center">{{ item.tenKhachHang }}</td>
-                  <td class="text-center">{{ item.email }}</td>
-                  <td class="text-center">{{ item.soDienThoai }}</td>
-                  <td class="text-center">{{ item.diaChi }}</td>
+                  <td class="text-center">{{ item.tenSanPham }}</td>
+                  <td class="text-center">{{ item.gia | moneyPipe }}</td>
                   <td class="text-center">
-                    <button
-                      class="btn btn-custom btn-sm me-2"
-                      (click)="chon(item)"
-                    >
+                    {{ item.giamGia | labelValue: listGiamGia }}
+                  </td>
+                  <td class="text-center">{{ item.giaSauGiam | moneyPipe }}</td>
+                  <td class="text-center">{{ item.soTonKho }}</td>
+                  <td class="text-center">
+                    <button class="btn" (click)="addToCart(item)">
                       <i class="fa-solid fa-circle-plus"></i>
                     </button>
                   </td>

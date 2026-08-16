@@ -1,3 +1,5 @@
+import { CartService } from './../../../../../common/shared/service/application/cartService';
+import { SanPhamGymService } from './../../../../../common/shared/service/application/sanPhamGymService';
 import { VnpayService } from './../../../../../common/shared/service/application/vnPayService';
 import { MomoService } from './../../../../../common/shared/service/application/momoService';
 import { DonHangService } from './../../../../../common/shared/service/application/donhangService';
@@ -15,7 +17,7 @@ import {
 } from '../../../../../common/shared/service/base/dialogservice';
 import { ExtentionService } from '../../../../../common/base/service/extention.service';
 import { ProductService } from '../../../../../common/shared/service/application/productService';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { API_CURRENT } from '../../../../../common/shared/service/application/api-base';
 import Swal from 'sweetalert2';
 import { InputSelectComponent } from '../../../../../common/base/controls/input-select/input-select.component';
@@ -24,6 +26,9 @@ import { hinhThucThanhToan } from '../../../../../common/shared/enums/hinhThucTh
 import { ChonKhachHangComponent } from '../../../chon-khach-hang/chon-khach-hang.component';
 import { ChonGoiTapComponent } from '../../../chon-goi-tap/chon-goi-tap.component';
 import { InputMonenyComponent } from '../../../../../common/base/controls/input-moneny/input-moneny.component';
+import { ChonSanPhamComponent } from '../../../chon-san-pham/chon-san-pham.component';
+import { MoneyPipe } from '../../../../../common/base/pipe/moneny/moneyPipe.component';
+import { LabelValuePipe } from '../../../../../common/base/pipe/labelValue/labelValue.component';
 
 @Component({
   selector: 'app-tao-don-hang',
@@ -32,8 +37,9 @@ import { InputMonenyComponent } from '../../../../../common/base/controls/input-
     FormModule,
     CommonModule,
     InputSelectComponent,
-    InputSelectApiComponent,
-    InputMonenyComponent,
+
+    MoneyPipe,
+    LabelValuePipe,
   ],
   templateUrl: './tao-don-hang.component.html',
   styleUrls: ['./tao-don-hang.component.css'],
@@ -53,31 +59,30 @@ export class TaoDonHangComponent implements OnInit {
   public listThoiHanNgay: any[] = thoiHanNgay;
   public listGiamGia: any[] = giamGia;
   public listHinhThucThanhToan: any[] = hinhThucThanhToan;
+  public cartItems: { product: any; soLuong: number }[] = [];
 
   constructor(
     private dialogService: DialogService,
     private fb: FormBuilder,
     private ex: ExtentionService,
     public productService: ProductService,
-    private customerService: CustomerService,
+    public sanPhamGymService: SanPhamGymService,
     private donHangService: DonHangService,
     private momoService: MomoService,
     private vnpayService: VnpayService,
+    private cartService: CartService,
   ) {
     this.myForm = this.fb.group({
       id: [this.ex.newGuid()],
-      idGoiTap: [null],
-      tenGoiTap: [null],
       hinhThucThanhToan: [null],
       soDienThoai: [null],
       email: [null],
       tenKhachHang: [null],
       idKhachHang: [null],
-      gia: [null],
-      giamGia: [null],
-      giaSauGiam: [null],
-      soLuong: [1],
-      chiTietDonHangs: this.fb.array([]),
+    });
+
+    this.cartService.cartItem$.subscribe((item) => {
+      this.cartItems = item;
     });
   }
 
@@ -87,8 +92,6 @@ export class TaoDonHangComponent implements OnInit {
     }
 
     await this.handleModeDialog();
-
-    await this.disableValueForm();
 
     this.initForm = true;
   }
@@ -105,14 +108,6 @@ export class TaoDonHangComponent implements OnInit {
     }
   }
 
-  async disableValueForm() {
-    this.myForm?.get('idGoiTap')?.disable();
-    this.myForm?.get('gia')?.disable();
-    this.myForm?.get('giamGia')?.disable();
-    this.myForm?.get('giaSauGiam')?.disable();
-    this.myForm?.get('soLuong')?.disable();
-  }
-
   async getData() {
     const response = await firstValueFrom(
       this.productService.getProductById(this.id),
@@ -127,10 +122,8 @@ export class TaoDonHangComponent implements OnInit {
   }
 
   getTotalPrice(): number {
-    const items = this.myForm?.value?.chiTietDonHangs || [];
-
-    return items.reduce((tong: number, item: any) => {
-      const gia = item.giaSauGiam || item.gia;
+    return this.cartItems.reduce((tong, item) => {
+      const gia = item.product.giaSauGiam || item.product.gia;
       return tong + gia * item.soLuong;
     }, 0);
   }
@@ -154,10 +147,17 @@ export class TaoDonHangComponent implements OnInit {
 
     const req = {
       ...this.myForm?.getRawValue(),
-      chiTietDonHangs: this.chiTietDonHangs.value.map((item: any) => ({
-        idGoiTap: item.idGoiTap,
-        soLuong: item.soLuong,
-        gia: item.gia,
+
+      chiTietDonHangs: this.cartItems.map((item) => ({
+        idGoiTap: item.product.tenGoiTap ? item.product.id : null,
+
+        idSanPham: item.product.tenSanPham ? item.product.id : null,
+
+        soLuong: item.product.tenGoiTap ? item.soLuong : 0,
+
+        soLuongSanPham: item.product.tenSanPham ? item.soLuong : 0,
+
+        gia: item.product.gia,
       })),
     };
 
@@ -171,6 +171,8 @@ export class TaoDonHangComponent implements OnInit {
         icon: 'success',
         draggable: true,
       });
+
+      this.cartService.clearCart();
 
       this.closeDialog(true);
     } else if (this.myForm?.get('hinhThucThanhToan')?.value === 2) {
@@ -189,6 +191,8 @@ export class TaoDonHangComponent implements OnInit {
       // 3. Chuyển sang VnPay
       if (vnPayRes?.payUrl) {
         window.location.href = vnPayRes.payUrl;
+
+        this.cartService.clearCart();
       } else {
         Swal.fire('Lỗi', 'Không tạo được thanh toán VNPay', 'error');
       }
@@ -208,6 +212,8 @@ export class TaoDonHangComponent implements OnInit {
       // 3. Redirect sang MoMo
       if (momoRes && momoRes.payUrl) {
         window.location.href = momoRes.payUrl;
+
+        this.cartService.clearCart();
       } else {
         Swal.fire('Lỗi', 'Không tạo được thanh toán MoMo', 'error');
       }
@@ -242,33 +248,63 @@ export class TaoDonHangComponent implements OnInit {
     );
   }
 
-  chonGoiTap() {
+  chonGoiTap(item: any = null, mode: string = DialogMode.add) {
     const dialog = this.dialogService.openDialog(
       (option) => {
-        option.title = 'Chọn gọi tập';
-        option.size = DialogSize.medium;
+        option.title = mode === 'view' ? 'Chọn gói tập' : 'Chọn gói tập';
+        if (mode === 'edit') option.title = 'Chọn gói tập';
+        option.size = DialogSize.large;
         option.component = ChonGoiTapComponent;
+        option.inputs = {
+          id: item?.id,
+          mode: mode,
+          item: item,
+          trangThai: item?.trangThai,
+        };
       },
-      (eventName, selectedData) => {
-        if (selectedData) {
-          const res = {
-            idGoiTap: selectedData.id,
-            gia: selectedData.gia,
-            giamGia: selectedData.giamGia,
-            giaSauGiam: selectedData.giaSauGiam,
-          };
+      async (eventName, eventValue) => {
+        if (eventName === 'onClose') {
+          this.dialogService.closeDialogById(dialog.id);
 
-          const item = this.fb.group({
-            idGoiTap: [selectedData.id],
-            soLuong: [1],
-            gia: [selectedData.giaSauGiam || selectedData.gia],
-          });
-
-          this.chiTietDonHangs.push(item);
-
-          this.myForm?.patchValue(res);
+          if (eventValue) {
+            await this.getData();
+          }
         }
       },
     );
+  }
+
+  chonSanPham(item: any = null, mode: string = DialogMode.add) {
+    const dialog = this.dialogService.openDialog(
+      (option) => {
+        option.title = mode === 'view' ? 'Chọn sản phẩm' : 'Chọn sản phẩm';
+        if (mode === 'edit') option.title = 'Chọn sản phẩm';
+        option.size = DialogSize.large;
+        option.component = ChonSanPhamComponent;
+        option.inputs = {
+          id: item?.id,
+          mode: mode,
+          item: item,
+          trangThai: item?.trangThai,
+        };
+      },
+      async (eventName, eventValue) => {
+        if (eventName === 'onClose') {
+          this.dialogService.closeDialogById(dialog.id);
+
+          if (eventValue) {
+            await this.getData();
+          }
+        }
+      },
+    );
+  }
+
+  updateQuantity(item: { product: any; soLuong: number }) {
+    this.cartService.updateSoLuong(item.product.id, item.soLuong);
+  }
+
+  removeFromCart(item: { product: any; soLuong: number }) {
+    this.cartService.removeFromCart(item.product.id);
   }
 }

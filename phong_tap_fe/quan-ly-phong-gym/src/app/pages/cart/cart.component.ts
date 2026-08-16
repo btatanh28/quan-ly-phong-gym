@@ -146,9 +146,13 @@ export class CartComponent implements OnInit {
       idKhachHang: this.idKhachHang,
 
       chiTietDonHangs: this.cartItems.map((item) => ({
-        idGoiTap: item.product.id,
+        idGoiTap: item.product.tenGoiTap ? item.product.id : null,
 
-        soLuong: item.soLuong,
+        idSanPham: item.product.tenSanPham ? item.product.id : null,
+
+        soLuong: item.product.tenGoiTap ? item.soLuong : 0,
+
+        soLuongSanPham: item.product.tenSanPham ? item.soLuong : 0,
 
         gia: item.product.gia,
       })),
@@ -179,24 +183,12 @@ export class CartComponent implements OnInit {
           this.momoService.payMomo(this.getTotalPrice(), orderId),
         );
 
-        // 2. Gọi VnPay
-
-        // const vnPayRes: any = await firstValueFrom(
-        //   this.vnpayService.payVNPay(this.getTotalPrice(), orderId),
-        // );
-
-        // 3. Chuyển sang VnPay
-
-        // if (vnPayRes?.payUrl) {
-        //   window.location.href = vnPayRes.payUrl;
-        // } else {
-        //   Swal.fire('Lỗi', 'Không tạo được thanh toán VNPay', 'error');
-        // }
-
         // 3. Chuyển sang MoMo
 
         if (momoRes?.payUrl) {
           window.location.href = momoRes.payUrl;
+
+          this.cartService.clearCart();
         } else {
           Swal.fire('Lỗi', 'Không tạo được thanh toán MoMo', 'error');
         }
@@ -225,9 +217,10 @@ export class CartComponent implements OnInit {
         );
 
         // 3. Chuyển sang VnPay
-
         if (vnPayRes?.payUrl) {
           window.location.href = vnPayRes.payUrl;
+
+          this.cartService.clearCart();
         } else {
           Swal.fire('Lỗi', 'Không tạo được thanh toán VNPay', 'error');
         }

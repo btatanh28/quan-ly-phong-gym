@@ -14,7 +14,7 @@
           <table class="table table-bordered">
             <thead class="table-light">
               <tr>
-                <th class="text-center">Tên gói tập</th>
+                <th class="text-center">Tên gói tập và sản phẩm</th>
                 <th class="text-center">Giá</th>
                 <th class="text-center">Số lượng</th>
                 <th class="text-center">Tổng tiền</th>
@@ -22,11 +22,15 @@
             </thead>
             <tbody>
               <tr *ngFor="let item of listOfData">
-                <td class="text-center">{{ item.tenGoiTap }}</td>
-                <td class="text-center">{{ item.gia | moneyPipe }}</td>
-                <td class="text-center">{{ item.soLuong }}</td>
                 <td class="text-center">
-                  {{ item.gia * item.soLuong | moneyPipe }}
+                  {{ item.tenGoiTap || item.tenSanPham }}
+                </td>
+                <td class="text-center">{{ item.gia || item.giaSanPham | moneyPipe }}</td>
+                <td class="text-center">
+                  {{ item.soLuong || item.soLuongSanPham }}
+                </td>
+                <td class="text-center">
+                  {{ item.gia * item.soLuong || item.giaSanPham * item.soLuongSanPham | moneyPipe }}
                 </td>
               </tr>
             </tbody>

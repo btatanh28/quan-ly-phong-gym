@@ -72,7 +72,8 @@ export class RevenueComponent implements OnInit {
         0,
       );
 
-      this.trungBinhDoanhThuDon = this.tongSoDon > 0 ? Math.round(this.tongDoanhThu / this.tongSoDon) : 0;
+      this.trungBinhDoanhThuDon =
+        this.tongSoDon > 0 ? Math.round(this.tongDoanhThu / this.tongSoDon) : 0;
     });
 
     // Chi tiết gói tập
@@ -107,6 +108,7 @@ export class RevenueComponent implements OnInit {
     }
 
     const values = data.map((x) => x.tongTienDoanhThu);
+    const tongSoDon = data.map((x) => x.tongSoDon);
 
     const ctx = document.getElementById('revenueChart') as HTMLCanvasElement;
 
@@ -145,7 +147,15 @@ export class RevenueComponent implements OnInit {
           tooltip: {
             callbacks: {
               label: (context: any) => {
-                return ' ' + context.raw.toLocaleString('vi-VN') + ' VNĐ';
+                const index = context.dataIndex;
+
+                const doanhThu = values[index] ?? 0;
+                const soDon = tongSoDon[index] ?? 0;
+
+                return [
+                  ` Doanh thu: ${doanhThu.toLocaleString('vi-VN')} VNĐ`,
+                  ` Số đơn: ${soDon}`,
+                ];
               },
             },
           },

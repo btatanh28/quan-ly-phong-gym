@@ -56,7 +56,7 @@
       />
     </div> -->
     <div class="bg-menu container py-5 animate__animated animate__fadeInLeft">
-      <h2 class="">Danh Sách Gói Tập</h2>
+      <h2 class="">Danh sách Gói Tập</h2>
 
       <!-- Layout chính -->
       <div class="row">
@@ -94,7 +94,97 @@
         <!-- Danh sách sản phẩm -->
         <div class="col-md-12">
           <div class="row">
-            <div class="col-md-3 py-3" *ngFor="let product of filteredProducts">
+            <div class="col-md-3 py-3" *ngFor="let goiTap of filteredProducts">
+              <div class="card">
+                <a class="nav-link" [routerLink]="['/product', goiTap.id]">
+                  <img
+                    alt="Hình ảnh sản phẩm"
+                    width="100"
+                    [src]="imgUrl + goiTap.hinhAnh"
+                    style="height: 200px; width: 100%; object-fit: cover"
+                  />
+                  <div class="card-body py-4">
+                    <h5 class="card-title mb-3">{{ goiTap.tenGoiTap }}</h5>
+
+                    <div class="price-box">
+                      <!-- Có giảm giá -->
+                      <ng-container *ngIf="goiTap.giamGia; else normalPrice">
+                        <p class="text-muted text-decoration-line-through mb-1">
+                          Giá: {{ goiTap.gia | moneyPipe }}
+                        </p>
+
+                        <p class="text-danger fw-bold fs-5 mb-1">
+                          Giá chỉ còn: {{ goiTap.giaSauGiam | moneyPipe }}
+                        </p>
+
+                        <span class="badge bg-danger">
+                          -{{ goiTap.giamGia | labelValue: listGiamGia }}
+                        </span>
+                      </ng-container>
+
+                      <!-- Không giảm giá -->
+                      <ng-template #normalPrice>
+                        <p class="text-danger fw-bold fs-5">
+                          Giá: {{ goiTap.gia | moneyPipe }}
+                        </p>
+                      </ng-template>
+                    </div>
+                  </div>
+                </a>
+                <div class="card-btn card-body d-flex gap-2">
+                  <button
+                    class="btn-card btn btn-primary"
+                    (click)="addToCart(goiTap)"
+                  >
+                    Thêm giỏ hàng
+                  </button>
+                  <button
+                    class="btn-card btn btn-outline-secondary"
+                    (click)="showDetails(goiTap)"
+                  >
+                    Chi tiết
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="pagination d-flex align-items-center justify-content-center py-4"
+      >
+        <button
+          class="btn btn-primary mx-2"
+          [disabled]="page === 0"
+          (click)="onPageChange(page - 1)"
+        >
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <span class="text-white bg-dark px-3 py-2 rounded">
+          {{ page + 1 }} / {{ totalPages }}
+        </span>
+
+        <button
+          class="btn btn-primary mx-2"
+          [disabled]="page + 1 >= totalPages"
+          (click)="onPageChange(page + 1)"
+        >
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="bg-menu container py-1 animate__animated animate__fadeInLeft">
+      <h2 class="">Danh sách Sản phẩm</h2>
+
+      <!-- Layout chính -->
+      <div class="row">
+        <!-- Danh sách sản phẩm -->
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-3 py-3" *ngFor="let product of sanPhamList">
               <div class="card">
                 <a class="nav-link" [routerLink]="['/product', product.id]">
                   <img
@@ -104,7 +194,7 @@
                     style="height: 200px; width: 100%; object-fit: cover"
                   />
                   <div class="card-body py-4">
-                    <h5 class="card-title mb-3">{{ product.tenGoiTap }}</h5>
+                    <h5 class="card-title mb-3">{{ product.tenSanPham }}</h5>
 
                     <div class="price-box">
                       <!-- Có giảm giá -->
@@ -128,6 +218,12 @@
                           Giá: {{ product.gia | moneyPipe }}
                         </p>
                       </ng-template>
+
+                      <ng-template>
+                        <span class="badge bg-danger">
+                          {{ product.soTonKho }}
+                        </span>
+                      </ng-template>
                     </div>
                   </div>
                 </a>
@@ -149,44 +245,27 @@
             </div>
           </div>
         </div>
-
-        <!-- <div
-          class="pagination d-flex align-items-center justify-content-center py-4"
-        >
-          <button
-            class="btn btn-primary mx-2"
-            [disabled]="page === 0"
-            (click)="onPageChange(page - 1)"
-          >
-            <i class="fa-solid fa-arrow-left"></i>
-          </button>
-
-          <span class="text-white bg-dark px-3 py-2 rounded">{{ page + 1 }}</span>
-
-          <button class="btn btn-primary mx-2" (click)="onPageChange(page + 1)">
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div> -->
       </div>
+
       <div
         class="pagination d-flex align-items-center justify-content-center py-4"
       >
         <button
           class="btn btn-primary mx-2"
-          [disabled]="page === 0"
-          (click)="onPageChange(page - 1)"
+          [disabled]="pageSanPham === 0"
+          (click)="onPageChangeSanPham(pageSanPham - 1)"
         >
           <i class="fa-solid fa-arrow-left"></i>
         </button>
 
         <span class="text-white bg-dark px-3 py-2 rounded">
-          {{ page + 1 }} / {{ totalPages }}
+          {{ pageSanPham + 1 }} / {{ totalPagesSanPham }}
         </span>
 
         <button
           class="btn btn-primary mx-2"
-          [disabled]="page + 1 >= totalPages"
-          (click)="onPageChange(page + 1)"
+          [disabled]="pageSanPham + 1 >= totalPagesSanPham"
+          (click)="onPageChangeSanPham(pageSanPham + 1)"
         >
           <i class="fa-solid fa-arrow-right"></i>
         </button>

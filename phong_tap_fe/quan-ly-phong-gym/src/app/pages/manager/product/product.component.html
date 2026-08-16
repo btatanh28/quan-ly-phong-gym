@@ -1,240 +1,348 @@
 <div class="card">
-  <!-- <ul class="nav nav-tabs">
+  <ul class="nav nav-tabs">
     <li class="nav-item">
       <button
         class="nav-link"
-        (click)="selectTab('Sản Phẩm')"
-        [class.active]="activeTab === 'Sản Phẩm'"
+        (click)="selectTab('Gói tập')"
+        [class.active]="activeTab === 'Gói tập'"
       >
-        Sản Phẩm
+        Gói tập
       </button>
     </li>
     <li class="nav-item">
       <button
         class="nav-link"
-        (click)="selectTab('Danh Mục')"
-        [class.active]="activeTab === 'Danh Mục'"
+        (click)="selectTab('Sản phẩm')"
+        [class.active]="activeTab === 'Sản phẩm'"
       >
-        Danh Mục
+        Sản phẩm
       </button>
     </li>
-  </ul> -->
+  </ul>
 
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">Quản lý sản phẩm</h5>
-  </div>
+  <div class="user-bg" *ngIf="activeTab === 'Gói tập' && this.isAdmin()">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Quản lý gói tập</h5>
+    </div>
 
-  <div class="card-body">
-    <form *ngIf="formSearch" [formGroup]="formSearch" (ngSubmit)="getData()">
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="tenGoiTap" class="form-label">Tên Sản phẩm</label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="tenGoiTap"
-            placeholder="Tên Sản phẩm"
-            required
-          />
+    <div class="card-body">
+      <form *ngIf="formSearch" [formGroup]="formSearch" (ngSubmit)="getData()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="tenGoiTap" class="form-label">Tên gói tập</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="tenGoiTap"
+              placeholder="Tên gói tập"
+              required
+            />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="gia" class="form-label">Giá</label>
+            <input-moneny type="text" formControlName="gia" />
+          </div>
         </div>
 
-        <div class="col-md-6 mb-3">
-          <label for="gia" class="form-label">Giá</label>
-          <input-moneny type="text" formControlName="gia" />
+        <div class="list-button">
+          <button
+            nz-button
+            type="button"
+            class="btn btn-primary btn-search"
+            (click)="getData()"
+          >
+            <i nz-icon nzType="search" nzTheme="outline"></i>Tìm kiếm
+          </button>
+
+          <button
+            nz-button
+            type="button"
+            class="btn btn-primary btn-search"
+            (click)="onReset()"
+          >
+            <i nz-icon nzType="reload" nzTheme="outline"></i>Làm mới
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="user-bg" *ngIf="this.isAdmin()">
+      <div class="mb-4">
+        <div class="data-table">
+          <div class="hearder-table mt-m-15">
+            <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
+              <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
+            </nz-tabset>
+            <div class="lst-controls">
+              <button
+                nz-button
+                type="button"
+                class="btn btn-primary"
+                (click)="handlerOpenDialog()"
+              >
+                <i class="isax-add-circle1 mr-2"></i>Thêm mới
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-center">Tên sản phẩm</th>
+                    <th class="text-center">Hình ảnh</th>
+                    <th class="text-center">Giá</th>
+                    <th class="text-center">Thời hạn ngày</th>
+                    <th class="text-center">Giảm giá</th>
+                    <th class="text-center">Giá sau giảm</th>
+                    <th class="text-center">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of listOfData">
+                    <td class="text-center">{{ item.tenGoiTap }}</td>
+                    <td class="text-center">
+                      <img
+                        style="
+                          width: 150px;
+                          height: 150px;
+                          object-fit: cover;
+                          border-radius: 15px;
+                        "
+                        class="img-product"
+                        [src]="img_URl + item.hinhAnh"
+                        alt="{{ item.tenGoiTap }}"
+                      />
+                    </td>
+                    <td class="text-center">{{ item.gia | moneyPipe }}</td>
+                    <td class="text-center">
+                      {{ item.thoiHanNgay | labelValue: listThoiHanNgay }}
+                    </td>
+                    <td class="text-center">
+                      {{ item.giamGia | labelValue: listGiamGia }}
+                    </td>
+                    <td class="text-center">
+                      {{ item.giaSauGiam | moneyPipe }}
+                    </td>
+                    <td class="text-center">
+                      <button
+                        class="btn btn-custom btn-sm me-2"
+                        (click)="handlerOpenDialog(item, 'view')"
+                      >
+                        <i class="fa-solid fa-eye"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-custom btn-sm me-2"
+                        (click)="handlerOpenDialog(item, 'edit')"
+                      >
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </button>
+                      <button
+                        class="btn btn-danger btn-sm"
+                        (click)="deleteData(item.id)"
+                      >
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="list-button">
+      <div
+        class="pagination d-flex align-items-center justify-content-center py-4"
+      >
         <button
-          nz-button
-          type="button"
-          class="btn btn-primary btn-search"
-          (click)="getData()"
+          class="btn btn-primary mx-2"
+          [disabled]="page === 0"
+          (click)="onPageChange(page - 1)"
         >
-          <i nz-icon nzType="search" nzTheme="outline"></i>Tìm kiếm
+          <i class="fa-solid fa-arrow-left"></i>
         </button>
 
+        <span class="text-white bg-dark px-3 py-2 rounded">
+          {{ page + 1 }} / {{ totalPages }}
+        </span>
+
         <button
-          nz-button
-          type="button"
-          class="btn btn-primary btn-search"
-          (click)="onReset()"
+          class="btn btn-primary mx-2"
+          [disabled]="page + 1 >= totalPages"
+          (click)="onPageChange(page + 1)"
         >
-          <i nz-icon nzType="reload" nzTheme="outline"></i>Làm mới
+          <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
-    </form>
-  </div>
-
-  <div class="user-bg" *ngIf="this.isAdmin()">
-    <div class="mb-4">
-      <div class="data-table">
-        <div class="hearder-table mt-m-15">
-          <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
-            <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
-          </nz-tabset>
-          <div class="lst-controls">
-            <button
-              nz-button
-              type="button"
-              class="btn btn-primary"
-              (click)="handlerOpenDialog()"
-            >
-              <i class="isax-add-circle1 mr-2"></i>Thêm mới
-            </button>
-          </div>
-        </div>
-
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-              <thead>
-                <tr>
-                  <th class="text-center">Tên sản phẩm</th>
-                  <th class="text-center">Hình ảnh</th>
-                  <th class="text-center">Giá</th>
-                  <th class="text-center">Thời hạn ngày</th>
-                  <th class="text-center">Giảm giá</th>
-                  <th class="text-center">Giá sau giảm</th>
-                  <th class="text-center">Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of listOfData">
-                  <td class="text-center">{{ item.tenGoiTap }}</td>
-                  <td class="text-center">
-                    <img
-                      style="
-                        width: 150px;
-                        height: 150px;
-                        object-fit: cover;
-                        border-radius: 15px;
-                      "
-                      class="img-product"
-                      [src]="img_URl + item.hinhAnh"
-                      alt="{{ item.tenGoiTap }}"
-                    />
-                  </td>
-                  <td class="text-center">{{ item.gia | moneyPipe }}</td>
-                  <td class="text-center">
-                    {{ item.thoiHanNgay | labelValue: listThoiHanNgay }}
-                  </td>
-                  <td class="text-center">
-                    {{ item.giamGia | labelValue: listGiamGia }}
-                  </td>
-                  <td class="text-center">
-                    {{ item.giaSauGiam | moneyPipe }}
-                  </td>
-                  <td class="text-center">
-                    <button
-                      class="btn btn-custom btn-sm me-2"
-                      (click)="handlerOpenDialog(item, 'view')"
-                    >
-                      <i class="fa-solid fa-eye"></i>
-                    </button>
-
-                    <button
-                      class="btn btn-custom btn-sm me-2"
-                      (click)="handlerOpenDialog(item, 'edit')"
-                    >
-                      <i class="fa-solid fa-pen-to-square"></i>
-                    </button>
-                    <button
-                      class="btn btn-danger btn-sm"
-                      (click)="deleteData(item.id)"
-                    >
-                      <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="pagination d-flex align-items-center justify-content-center py-4"
-    >
-      <button
-        class="btn btn-primary mx-2"
-        [disabled]="page === 0"
-        (click)="onPageChange(page - 1)"
-      >
-        <i class="fa-solid fa-arrow-left"></i>
-      </button>
-
-      <span class="text-white bg-dark px-3 py-2 rounded">
-        {{ page + 1 }} / {{ totalPages }}
-      </span>
-
-      <button
-        class="btn btn-primary mx-2"
-        [disabled]="page + 1 >= totalPages"
-        (click)="onPageChange(page + 1)"
-      >
-        <i class="fa-solid fa-arrow-right"></i>
-      </button>
     </div>
   </div>
 
-  <!-- <div class="user-bg" *ngIf="activeTab === 'Danh Mục' && this.isAdmin()">
-    <div class="mb-4">
-      <div class="data-table">
-        <div class="hearder-table mt-m-15">
-          <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
-            <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
-          </nz-tabset>
-          <div class="lst-controls">
-            <button
-              nz-button
-              type="button"
-              class="btn btn-primary"
-              (click)="handlerOpenDialog()"
-            >
-              <i class="isax-add-circle1 mr-2"></i>Thêm mới danh mục
-            </button>
+  <div class="user-bg" *ngIf="activeTab === 'Sản phẩm' && this.isAdmin()">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Quản lý sản phẩm</h5>
+    </div>
+
+    <div class="card-body">
+      <form
+        *ngIf="formSearchSanPham"
+        [formGroup]="formSearchSanPham"
+        (ngSubmit)="getDataSanPham()"
+      >
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="tenSanPham" class="form-label">Tên Sản phẩm</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="tenSanPham"
+              placeholder="Tên Sản phẩm"
+              required
+            />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="gia" class="form-label">Giá</label>
+            <input-moneny type="text" formControlName="gia" />
           </div>
         </div>
 
-        <div class="card-body">
-          <table class="table table-dark">
-            <thead>
-              <tr>
-                <th class="text-center">Tên danh mục</th>
-                <th class="text-center">Hành động</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of listOfDataDanhMuc">
-                <td class="text-center">{{ item.tenDanhMuc }}</td>
-                <td class="text-center">
-                  <button
-                    class="btn btn-custom btn-sm me-2"
-                    (click)="handlerOpenDialog(item, 'view')"
-                  >
-                    <i class="fa-solid fa-eye"></i>
-                  </button>
+        <div class="list-button">
+          <button
+            nz-button
+            type="button"
+            class="btn btn-primary btn-search"
+            (click)="getDataSanPham()"
+          >
+            <i nz-icon nzType="search" nzTheme="outline"></i>Tìm kiếm
+          </button>
 
-                  <button
-                    class="btn btn-custom btn-sm me-2"
-                    (click)="handlerOpenDialog(item, 'edit')"
-                  >
-                    <i class="fa-solid fa-pen-to-square"></i>
-                  </button>
-                  <button
-                    class="btn btn-danger btn-sm"
-                    (click)="deleteDanhMuc(item)"
-                  >
-                    <i class="fa-solid fa-trash-can"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <button
+            nz-button
+            type="button"
+            class="btn btn-primary btn-search"
+            (click)="onReset()"
+          >
+            <i nz-icon nzType="reload" nzTheme="outline"></i>Làm mới
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="user-bg" *ngIf="this.isAdmin()">
+      <div class="mb-4">
+        <div class="data-table">
+          <div class="hearder-table mt-m-15">
+            <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
+              <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
+            </nz-tabset>
+            <div class="lst-controls">
+              <button
+                nz-button
+                type="button"
+                class="btn btn-primary"
+                (click)="handlerOpenDialogSanPham()"
+              >
+                <i class="isax-add-circle1 mr-2"></i>Thêm mới
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-center">Tên sản phẩm</th>
+                    <th class="text-center">Hình ảnh</th>
+                    <th class="text-center">Giá</th>
+                    <th class="text-center">Số tồn kho</th>
+                    <th class="text-center">Giảm giá</th>
+                    <th class="text-center">Giá sau giảm</th>
+                    <th class="text-center">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of listOfDataSanPham">
+                    <td class="text-center">{{ item.tenSanPham }}</td>
+                    <td class="text-center">
+                      <img
+                        style="
+                          width: 150px;
+                          height: 150px;
+                          object-fit: cover;
+                          border-radius: 15px;
+                        "
+                        class="img-product"
+                        [src]="img_URl + item.hinhAnh"
+                        alt="{{ item.tenSanPham }}"
+                      />
+                    </td>
+                    <td class="text-center">{{ item.gia | moneyPipe }}</td>
+                    <td class="text-center">
+                      {{ item.soTonKho }}
+                    </td>
+                    <td class="text-center">
+                      {{ item.giamGia | labelValue: listGiamGia }}
+                    </td>
+                    <td class="text-center">
+                      {{ item.giaSauGiam | moneyPipe }}
+                    </td>
+                    <td class="text-center">
+                      <button
+                        class="btn btn-custom btn-sm me-2"
+                        (click)="handlerOpenDialogSanPham(item, 'view')"
+                      >
+                        <i class="fa-solid fa-eye"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-custom btn-sm me-2"
+                        (click)="handlerOpenDialogSanPham(item, 'edit')"
+                      >
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </button>
+                      <button
+                        class="btn btn-danger btn-sm"
+                        (click)="deleteDataSanPham(item.id)"
+                      >
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
+
+      <div
+        class="pagination d-flex align-items-center justify-content-center py-4"
+      >
+        <button
+          class="btn btn-primary mx-2"
+          [disabled]="pageSanPham === 0"
+          (click)="onPageChangeSanPham(pageSanPham - 1)"
+        >
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <span class="text-white bg-dark px-3 py-2 rounded">
+          {{ pageSanPham + 1 }} / {{ totalPagesSanPham }}
+        </span>
+
+        <button
+          class="btn btn-primary mx-2"
+          [disabled]="pageSanPham + 1 >= totalPagesSanPham"
+          (click)="onPageChangeSanPham(pageSanPham + 1)"
+        >
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
     </div>
-  </div> -->
+  </div>
 </div>

@@ -1,26 +1,30 @@
 import { CartService } from './../../../common/shared/service/application/cartService';
-import { ProductService } from './../../../common/shared/service/application/productService';
+import { SanPhamGymService } from './../../../common/shared/service/application/sanPhamGymService';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormModule } from '../../../common/module/forms.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { DialogService } from '../../../common/shared/service/base/dialogservice';
-import { NzModalRef } from 'ng-zorro-antd/modal';
-import { firstValueFrom } from 'rxjs';
 import { giamGia } from '../../../common/shared/enums/giamGia.enums';
+import { firstValueFrom } from 'rxjs';
 import { LabelValuePipe } from '../../../common/base/pipe/labelValue/labelValue.component';
 import Swal from 'sweetalert2';
 import { MoneyPipe } from '../../../common/base/pipe/moneny/moneyPipe.component';
-import { thoiHanNgay } from '../../../common/shared/enums/thoiHanNgay.enums';
+import { InputMonenyComponent } from '../../../common/base/controls/input-moneny/input-moneny.component';
 
 @Component({
-  selector: 'app-chon-goi-tap',
+  selector: 'app-chon-san-pham',
   standalone: true,
-  imports: [FormModule, CommonModule, LabelValuePipe, MoneyPipe],
-  templateUrl: './chon-goi-tap.component.html',
-  styleUrls: ['./chon-goi-tap.component.css'],
+  imports: [
+    FormModule,
+    CommonModule,
+    LabelValuePipe,
+    MoneyPipe,
+    InputMonenyComponent,
+  ],
+  templateUrl: './chon-san-pham.component.html',
+  styleUrls: ['./chon-san-pham.component.css'],
 })
-export class ChonGoiTapComponent implements OnInit {
+export class ChonSanPhamComponent implements OnInit {
   @Output() onClose = new EventEmitter<any | null>();
   @Output() chonCongDan = new EventEmitter<any>();
 
@@ -34,15 +38,15 @@ export class ChonGoiTapComponent implements OnInit {
   public totalPages = 0;
   public totalItems: number = 0;
   public listGiamGia: any[] = giamGia;
-  public listThoiHanNgay: any[] = thoiHanNgay;
+  public selectedProduct: any = null;
 
   constructor(
     private fb: FormBuilder,
-    private productService: ProductService,
+    private sanPhamGymService: SanPhamGymService,
     private cartService: CartService,
   ) {
     this.formSearch = this.fb.group({
-      tenGoiTap: [null],
+      tenSanPham: [null],
       gia: [null],
     });
   }
@@ -59,7 +63,7 @@ export class ChonGoiTapComponent implements OnInit {
     };
 
     const res = await firstValueFrom(
-      this.productService.getAllProduct({
+      this.sanPhamGymService.getAllSanPham({
         page: this.page,
         size: this.pageSize,
         ...this.formSearch.value,
@@ -67,6 +71,11 @@ export class ChonGoiTapComponent implements OnInit {
     );
 
     this.listOfData = res.items;
+  }
+
+  async onReset() {
+    this.formSearch?.reset();
+    await this.getData();
   }
 
   async addToCart(product: any) {
@@ -82,11 +91,6 @@ export class ChonGoiTapComponent implements OnInit {
     });
 
     this.closeDialogcd();
-  }
-
-  async onReset() {
-    this.formSearch?.reset();
-    await this.getData();
   }
 
   closeDialogcd() {
