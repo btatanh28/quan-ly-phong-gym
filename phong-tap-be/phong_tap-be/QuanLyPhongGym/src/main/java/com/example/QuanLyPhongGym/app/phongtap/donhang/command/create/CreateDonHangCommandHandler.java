@@ -46,6 +46,8 @@ public class CreateDonHangCommandHandler {
 
         public DataResponse handle(CreateDonHangCommand request) {
 
+                kiemTraTonKho(request.getChiTietDonHangs());
+
                 Long now = System.currentTimeMillis();
 
                 DonDangKy donDangKy = new DonDangKy();
@@ -230,6 +232,10 @@ public class CreateDonHangCommandHandler {
 
                 for (CreateChiTietDonHangCommand ct : chiTietHangs) {
 
+                        if (ct.getIdGoiTap() == null) {
+                                continue;
+                        }
+
                         GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
 
                         TheTapGoiTap theTapGoiTap = new TheTapGoiTap();
@@ -251,6 +257,35 @@ public class CreateDonHangCommandHandler {
                         theTapGoiTap.setNgayTao(now);
 
                         theTapGoiTapRepository.save(theTapGoiTap);
+                }
+        }
+
+        private void kiemTraTonKho(
+                        List<CreateChiTietDonHangCommand> chiTietHangs) {
+
+                for (CreateChiTietDonHangCommand ct : chiTietHangs) {
+
+                        // Chỉ kiểm tra sản phẩm
+                        if (ct.getIdSanPham() == null) {
+                                continue;
+                        }
+
+                        SanPham sanPham = sanPhamRepository.findFirstById(ct.getIdSanPham());
+
+                        if (sanPham == null) {
+                                throw new RuntimeException("Không tìm thấy sản phẩm: " + ct.getIdSanPham());
+                        }
+
+                        int soLuongMua = ct.getSoLuongSanPham();
+
+                        if (soLuongMua <= 0) {
+                                throw new RuntimeException("Số lượng sản phẩm phải lớn hơn 0");
+                        }
+
+                        if (sanPham.getSoTonKho() < soLuongMua) {
+                                throw new RuntimeException("Sản phẩm " + sanPham.getTenSanPham() + " chỉ còn "
+                                                + sanPham.getSoTonKho() + " sản phẩm");
+                        }
                 }
         }
 }
