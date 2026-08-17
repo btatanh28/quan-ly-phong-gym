@@ -133,93 +133,109 @@ export class TaoDonHangComponent implements OnInit {
   }
 
   async saveData() {
-    const giaValue = this.myForm?.get('tenKhachHang')?.value;
-    if (!giaValue) {
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: 'Thiếu tên khách hàng',
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      return;
-    }
+    try {
+      const giaValue = this.myForm?.get('tenKhachHang')?.value;
+      if (!giaValue) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Thiếu tên khách hàng',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
 
-    const req = {
-      ...this.myForm?.getRawValue(),
+      const req = {
+        ...this.myForm?.getRawValue(),
 
-      chiTietDonHangs: this.cartItems.map((item) => ({
-        idGoiTap: item.product.tenGoiTap ? item.product.id : null,
+        chiTietDonHangs: this.cartItems.map((item) => ({
+          idGoiTap: item.product.tenGoiTap ? item.product.id : null,
 
-        idSanPham: item.product.tenSanPham ? item.product.id : null,
+          idSanPham: item.product.tenSanPham ? item.product.id : null,
 
-        soLuong: item.product.tenGoiTap ? item.soLuong : 0,
+          soLuong: item.product.tenGoiTap ? item.soLuong : 0,
 
-        soLuongSanPham: item.product.tenSanPham ? item.soLuong : 0,
+          soLuongSanPham: item.product.tenSanPham ? item.soLuong : 0,
 
-        gia: item.product.gia,
-      })),
-    };
+          gia: item.product.gia,
+        })),
+      };
 
-    let response = null;
+      let response = null;
 
-    if (this.myForm?.get('hinhThucThanhToan')?.value === 3) {
-      response = await firstValueFrom(this.donHangService.CreateDonHang(req));
+      if (this.myForm?.get('hinhThucThanhToan')?.value === 3) {
+        response = await firstValueFrom(this.donHangService.CreateDonHang(req));
 
-      Swal.fire({
-        title: 'Thanh Toán và đặt hàng thành công',
-        icon: 'success',
-        draggable: true,
-      });
+        Swal.fire({
+          title: 'Thanh Toán và đặt hàng thành công',
+          icon: 'success',
+          draggable: true,
+        });
 
-      this.cartService.clearCart();
+        this.cartService.clearCart();
+
+        this.closeDialog(true);
+      } else if (this.myForm?.get('hinhThucThanhToan')?.value === 2) {
+        // 1. Tạo đơn hàng trước → trạng thái PENDING
+        const order: any = await firstValueFrom(
+          this.donHangService.CreateDonHang(req),
+        );
+
+        const orderId = order?.id || order?.maDonHang;
+
+        //2. Gọi VnPay API
+        const vnPayRes: any = await firstValueFrom(
+          this.vnpayService.payVNPay(this.getTotalPrice(), orderId),
+        );
+
+        // 3. Chuyển sang VnPay
+        if (vnPayRes?.payUrl) {
+          window.location.href = vnPayRes.payUrl;
+
+          this.cartService.clearCart();
+        } else {
+          Swal.fire('Lỗi', 'Không tạo được thanh toán VNPay', 'error');
+        }
+      } else if (this.myForm?.get('hinhThucThanhToan')?.value === 1) {
+        // 1. Tạo đơn hàng trước → trạng thái PENDING
+        const order: any = await firstValueFrom(
+          this.donHangService.CreateDonHang(req),
+        );
+
+        const orderId = order?.id || order?.maDonHang;
+
+        // 2. Gọi MoMo API
+        const momoRes = await firstValueFrom(
+          this.momoService.payMomo(this.getTotalPrice(), orderId),
+        );
+
+        // 3. Redirect sang MoMo
+        if (momoRes && momoRes.payUrl) {
+          window.location.href = momoRes.payUrl;
+
+          this.cartService.clearCart();
+        } else {
+          Swal.fire('Lỗi', 'Không tạo được thanh toán MoMo', 'error');
+        }
+      }
 
       this.closeDialog(true);
-    } else if (this.myForm?.get('hinhThucThanhToan')?.value === 2) {
-      // 1. Tạo đơn hàng trước → trạng thái PENDING
-      const order: any = await firstValueFrom(
-        this.donHangService.CreateDonHang(req),
-      );
+    } catch (error: any) {
+      if (error?.error?.message) {
+        let message = 'Không thể tạo đơn hàng';
 
-      const orderId = order?.id || order?.maDonHang;
+        message = error.error.message;
 
-      //2. Gọi VnPay API
-      const vnPayRes: any = await firstValueFrom(
-        this.vnpayService.payVNPay(this.getTotalPrice(), orderId),
-      );
-
-      // 3. Chuyển sang VnPay
-      if (vnPayRes?.payUrl) {
-        window.location.href = vnPayRes.payUrl;
-
-        this.cartService.clearCart();
-      } else {
-        Swal.fire('Lỗi', 'Không tạo được thanh toán VNPay', 'error');
-      }
-    } else if (this.myForm?.get('hinhThucThanhToan')?.value === 1) {
-      // 1. Tạo đơn hàng trước → trạng thái PENDING
-      const order: any = await firstValueFrom(
-        this.donHangService.CreateDonHang(req),
-      );
-
-      const orderId = order?.id || order?.maDonHang;
-
-      // 2. Gọi MoMo API
-      const momoRes = await firstValueFrom(
-        this.momoService.payMomo(this.getTotalPrice(), orderId),
-      );
-
-      // 3. Redirect sang MoMo
-      if (momoRes && momoRes.payUrl) {
-        window.location.href = momoRes.payUrl;
-
-        this.cartService.clearCart();
-      } else {
-        Swal.fire('Lỗi', 'Không tạo được thanh toán MoMo', 'error');
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Không thể đặt hàng',
+          text: message,
+          confirmButtonText: 'Ok',
+        });
       }
     }
-
-    this.closeDialog(true);
   }
 
   closeDialog(val: any = null) {

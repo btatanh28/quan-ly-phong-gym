@@ -241,16 +241,20 @@ export class CartComponent implements OnInit {
 
         this.cartService.clearCart();
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error?.error?.message) {
+        let message = 'Không thể tạo đơn hàng';
 
-      Swal.fire(
-        'Lỗi',
+        message = error.error.message;
 
-        'Không thể tạo đơn hàng',
-
-        'error',
-      );
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Không thể đặt hàng',
+          text: message,
+          confirmButtonText: 'Ok',
+        });
+      }
     }
   }
 }
