@@ -33,6 +33,16 @@ public class MomoService {
 
     public Map<String, Object> createPayment(long amount, String orderId) {
 
+        System.out.println("========== MOMO CONFIG ==========");
+        System.out.println("endpoint = " + endpoint);
+        System.out.println("partnerCode = " + partnerCode);
+        System.out.println("accessKey = " + accessKey);
+        System.out.println("secretKey length = "
+                + (secretKey == null ? 0 : secretKey.length()));
+        System.out.println("redirectUrl = " + redirectUrl);
+        System.out.println("ipnUrl = " + ipnUrl);
+        System.out.println("=================================");
+
         String requestId = UUID.randomUUID().toString();
         String orderInfo = "Thanh toan don hang " + orderId;
         String requestType = "captureWallet";
@@ -68,6 +78,15 @@ public class MomoService {
         req.setExtraData(extraData);
         req.setRequestType(requestType);
         req.setSignature(signature);
+
+        System.out.println("rawHash = " + rawHash);
+        System.out.println("signature = " + signature);
+        System.out.println("partnerCode = " + partnerCode);
+        System.out.println("accessKey = " + accessKey);
+        System.out.println("amount = " + amount);
+        System.out.println("orderId = " + orderId);
+        System.out.println("redirectUrl = " + redirectUrl);
+        System.out.println("ipnUrl = " + ipnUrl);
 
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.postForObject(
