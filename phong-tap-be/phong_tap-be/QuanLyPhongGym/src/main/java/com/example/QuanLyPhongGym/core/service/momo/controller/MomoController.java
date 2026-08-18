@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.example.QuanLyPhongGym.core.service.ThanhToanService;
 import com.example.QuanLyPhongGym.core.service.momo.dto.MomoRequest;
@@ -31,11 +32,17 @@ public class MomoController {
     public ResponseEntity<?> pay(
             @RequestBody MomoRequest request) {
 
-        return ResponseEntity.ok(
-                momoService.createPayment(
-                        request.getAmount(),
-                        request.getOrderId()));
+        try {
+            return ResponseEntity.ok(
+                    momoService.createPayment(
+                            request.getAmount(),
+                            request.getOrderId()));
+        } catch (HttpClientErrorException e) {
 
+            return ResponseEntity
+                    .status(e.getStatusCode())
+                    .body(e.getResponseBodyAsString());
+        }
     }
 
     /**
