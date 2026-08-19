@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.example.QuanLyPhongGym.app.phongtap.chitietdonhang.command.create.CreateChiTietDonHangCommand;
+import com.example.QuanLyPhongGym.core.exception.CustomException;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
 import com.example.QuanLyPhongGym.core.service.GenarateCode;
 import com.example.QuanLyPhongGym.core.service.Generator;
@@ -273,17 +274,17 @@ public class CreateDonHangCommandHandler {
                         SanPham sanPham = sanPhamRepository.findFirstById(ct.getIdSanPham());
 
                         if (sanPham == null) {
-                                throw new RuntimeException("Không tìm thấy sản phẩm: " + ct.getIdSanPham());
+                                throw new CustomException("404", "Không tìm thấy sản phẩm: " + ct.getIdSanPham());
                         }
 
                         int soLuongMua = ct.getSoLuongSanPham();
 
                         if (soLuongMua <= 0) {
-                                throw new RuntimeException("Số lượng sản phẩm phải lớn hơn 0");
+                                throw new CustomException("404", "Số lượng sản phẩm phải lớn hơn 0");
                         }
 
                         if (sanPham.getSoTonKho() < soLuongMua) {
-                                throw new RuntimeException("Sản phẩm " + sanPham.getTenSanPham() + " chỉ còn "
+                                throw new CustomException("404", "Sản phẩm " + sanPham.getTenSanPham() + " chỉ còn "
                                                 + sanPham.getSoTonKho() + " sản phẩm");
                         }
                 }
