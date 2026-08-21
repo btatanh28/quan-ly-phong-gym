@@ -6,6 +6,12 @@
   color: #b8860b !important;
 }
 
-.layout-chon{
+.layout-chon {
   margin-top: 40px;
+}
+
+.btn-chon {
+  background-color: #012847;
+  color: #ffffff;
+  font-size: 14px;
 }

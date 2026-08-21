@@ -27,9 +27,10 @@
             <button
               *ngIf="this.mode !== 'view'"
               type="button"
-              class="form-control btn-primary"
+              class="form-control btn-chon btn-primary"
               (click)="chonKhachHang()"
             >
+              <i class="fa-solid fa-user"></i>
               Chọn khách hàng
             </button>
           </div>
@@ -38,9 +39,10 @@
             <button
               *ngIf="this.mode !== 'view'"
               type="button"
-              class="form-control btn-primary"
+              class="form-control btn-chon btn-primary"
               (click)="chonHuanLuyenVien()"
             >
+              <i class="fa-solid fa-clipboard-user"></i>
               Chọn huấn luyện viên
             </button>
           </div>
