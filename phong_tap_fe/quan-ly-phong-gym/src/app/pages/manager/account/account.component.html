@@ -150,35 +150,37 @@
               </thead>
               <tbody>
                 <tr *ngFor="let item of listOfData">
-                  <td class="text-center">{{ item.tenNguoiDung }}</td>
+                  <td class="text-center customer-name">{{ item.tenNguoiDung }}</td>
                   <td class="text-center">{{ item.cccd }}</td>
                   <td class="text-center">{{ item.email }}</td>
-                  <td class="text-center">{{ item.soDienThoai }}</td>
+                  <td class="text-center customer-name">{{ item.soDienThoai }}</td>
                   <td class="text-center">{{ item.diaChi }}</td>
                   <td class="text-center">{{ item.luong | moneyPipe }}</td>
                   <td class="text-center">
                     {{ item.vaiTro | labelValue: listVaiTro }}
                   </td>
                   <td class="text-center">
-                    <button
-                      class="btn btn-custom btn-sm me-2"
-                      (click)="handlerOpenDialog(item, 'view')"
-                    >
-                      <i class="fa-solid fa-eye"></i>
-                    </button>
+                    <div class="actions">
+                      <button
+                        class="btn-icon view"
+                        (click)="handlerOpenDialog(item, 'view')"
+                      >
+                        <i class="fa-solid fa-eye"></i>
+                      </button>
 
-                    <button
-                      class="btn btn-custom btn-sm me-2"
-                      (click)="handlerOpenDialog(item, 'edit')"
-                    >
-                      <i class="fa-solid fa-pen-to-square"></i>
-                    </button>
-                    <button
-                      class="btn btn-danger btn-sm"
-                      (click)="deleteData(item.id)"
-                    >
-                      <i class="fa-solid fa-trash-can"></i>
-                    </button>
+                      <button
+                        class="btn-icon edit"
+                        (click)="handlerOpenDialog(item, 'edit')"
+                      >
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </button>
+                      <button
+                        class="btn-icon delete"
+                        (click)="deleteData(item.id)"
+                      >
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -238,12 +240,14 @@
                     {{ item.daXacNhan | labelValue: listXacNhan }}
                   </td>
                   <td class="text-center">
-                    <button
-                      class="btn btn-danger btn-sm"
-                      (click)="deleteDataKhachHang(item.id)"
-                    >
-                      <i class="fa-solid fa-trash-can"></i>
-                    </button>
+                    <div class="actions">
+                      <button
+                        class="btn-icon delete"
+                        (click)="deleteDataKhachHang(item.id)"
+                      >
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </tbody>

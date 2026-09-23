@@ -8,19 +8,3 @@
 h5 {
   color: #fffff2;
 }
-
-.table-responsive {
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-.table {
-  min-width: 1000px;
-  white-space: nowrap;
-}
-
-.table td {
-  max-width: 220px;
-  white-space: normal;
-  word-break: break-word;
-}

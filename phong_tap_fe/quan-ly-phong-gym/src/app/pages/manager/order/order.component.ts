@@ -128,7 +128,7 @@ export class OrderComponent implements OnInit {
         option.title =
           mode === 'view' ? 'Xem chi tiết đơn hàng' : 'Thêm thông tin sản phẩm';
         if (mode === 'edit') option.title = 'Cập nhật thông tin sản phẩm';
-        option.size = DialogSize.small;
+        option.size = DialogSize.medium;
         option.component = ChiTietDonHangComponent;
         option.inputs = {
           id: item?.id,

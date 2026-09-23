@@ -1,31 +1,30 @@
-<div class="card">
-  <!-- <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <button
-        class="nav-link"
-        (click)="selectTab('Sản Phẩm')"
-        [class.active]="activeTab === 'Sản Phẩm'"
-      >
-        Sản Phẩm
-      </button>
-    </li>
-    <li class="nav-item">
-      <button
-        class="nav-link"
-        (click)="selectTab('Danh Mục')"
-        [class.active]="activeTab === 'Danh Mục'"
-      >
-        Danh Mục
-      </button>
-    </li>
-  </ul> -->
+<div
+  class="list-button page-header d-flex flex-wrap justify-content-between align-items-center p-md-4"
+>
+  <h1 class="mb-0 fw-bold d-flex align-items-center">
+    <i class="bi bi-cart3 text-primary"></i>
+    Quản lý đơn hàng
+  </h1>
+  <button
+    nz-button
+    type="button"
+    class="btn btn-primary d-flex align-items-center gap-2"
+    (click)="handlerOpenDialogDonHang()"
+  >
+    <i class="bi bi-plus-lg"></i>
+    Tạo đơn hàng
+  </button>
+</div>
 
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">Quản lý đơn hàng</h5>
-  </div>
+<div class="card filter-card mb-4">
+  <div class="card-body p-3 p-md-4">
+    <h6 class="fw-semibold text-secondary mb-3 d-flex align-items-center gap-2">
+      <i class="fa-solid fa-filter"></i>
 
-  <div class="mb-4">
-    <div class="card-body">
+      Bộ lọc tìm kiếm
+    </h6>
+
+    <div class="row g-3 mb-3">
       <form *ngIf="formSearch" [formGroup]="formSearch" (ngSubmit)="getData()">
         <div class="row">
           <div class="col-md-4 mb-3">
@@ -113,100 +112,110 @@
       </form>
     </div>
   </div>
+</div>
 
+<div class="card">
   <div class="user-bg">
     <div class="mb-4">
-      <div class="data-table">
-        <div class="hearder-table mt-m-15">
-          <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
-            <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
-          </nz-tabset>
-          <div class="lst-controls">
-            <button
-              nz-button
-              type="button"
-              class="btn btn-primary"
-              (click)="handlerOpenDialogDonHang()"
-            >
-              <i class="isax-add-circle1 mr-2"></i>Tạo đơn hàng
-            </button>
-          </div>
-        </div>
+      <div
+        class="card-header bg-white border-bottom d-flex flex-wrap justify-content-between align-items-center py-3 px-3 px-md-4"
+      >
+        <h6 class="mb-0 fw-semibold">Danh sách đơn hàng</h6>
+      </div>
 
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-              <thead>
-                <tr>
-                  <th class="text-center">Tên khách hàng</th>
-                  <th class="text-center">Số điện thoại</th>
-                  <th class="text-center">Email</th>
-                  <th class="text-center">Chi tiết đơn hàng</th>
-                  <th class="text-center">Tổng tiền</th>
-                  <th class="text-center">Ngày mua</th>
-                  <th class="text-center">Trạng thái đơn hàng</th>
-                  <th class="text-center">Hình thức thanh toán</th>
-                  <th class="text-center">
-                    Người cập nhật và thời gian cập nhật
-                  </th>
-                  <th class="text-center">Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of listOfData">
-                  <td class="text-center">{{ item.tenKhachHang }}</td>
-                  <td class="text-center">{{ item.soDienThoai }}</td>
-                  <td class="text-center">{{ item.email }}</td>
-                  <td class="text-center">
-                    <button
-                      class="btn btn-custom btn-sm me-2"
-                      (click)="handlerOpenDialogChiTietDonHang(item, 'view')"
-                    >
-                      Chi tiết <i class="fa-solid fa-eye"></i>
-                    </button>
-                  </td>
-                  <td class="text-center">{{ item.tongTien | moneyPipe }}</td>
-                  <td class="text-center">
-                    {{ item.ngayMua | dateTimeFormat }}
-                  </td>
-                  <td class="text-center">{{ item.trangThaiSanPhamLabel }}</td>
-                  <td class="text-center">{{ item.hinhThucThanhToanLabel }}</td>
-                  <td class="text-center">
-                    {{ item.tenNguoiDung }} -
-                    {{ item.ngayCapNhat | dateTimeFormat }}
-                  </td>
-                  <td class="text-center">
-                    <button
-                      class="btn btn-custom btn-sm me-2"
-                      (click)="handlerOpenDialog(item, 'view')"
-                    >
-                      <i class="fa-solid fa-eye"></i>
-                    </button>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th class="ps-3 ps-md-4">Tên khách hàng</th>
+              <th>Số điện thoại</th>
+              <th>Email</th>
+              <th>Chi tiết đơn hàng</th>
+              <th>Tổng tiền</th>
+              <th>Ngày mua</th>
+              <th>Trạng thái</th>
+              <th>Hình thức thanh toán</th>
+              <th>Người cập nhật</th>
+              <th class="text-center pe-3 pe-md-4">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of listOfData">
+              <td class="customer-name text-center">{{ item.tenKhachHang }}</td>
+              <td class="text-center">{{ item.soDienThoai }}</td>
+              <td class="email-text text-center">{{ item.email }}</td>
+              <td class="text-center">
+                <button
+                  class="link-detail btn btn-custom btn-sm me-2"
+                  (click)="handlerOpenDialogChiTietDonHang(item, 'view')"
+                >
+                  Chi tiết <i class="fa-solid fa-eye"></i>
+                </button>
+              </td>
+              <td class="money text-center">{{ item.tongTien | moneyPipe }}</td>
+              <td class="">
+                {{ item.ngayMua | dateTimeFormat }}
+              </td>
+              <td class="text-center">
+                @if (item.trangThaiSanPham === 1) {
+                  <span class="badge rounded-pill text-bg-warning badge-status">
+                    <i class="bi bi-clock"></i>
+                    {{ item.trangThaiSanPhamLabel }}
+                  </span>
+                } @else if (item.trangThaiSanPham === 2) {
+                  <span class="badge rounded-pill text-bg-success badge-status">
+                    <i class="bi bi-check-circle"></i>
+                    {{ item.trangThaiSanPhamLabel }}
+                  </span>
+                } @else if (item.trangThaiSanPham === 3) {
+                  <span class="badge rounded-pill text-bg-info badge-status">
+                    <i class="bi bi-hourglass-split"></i>
+                    {{ item.trangThaiSanPhamLabel }}
+                  </span>
+                } @else if (item.trangThaiSanPham === 4) {
+                  <span class="badge rounded-pill text-bg-danger badge-status">
+                    <i class="bi bi-x-circle"></i>
+                    {{ item.trangThaiSanPhamLabel }}
+                  </span>
+                }
+              </td>
+              <td class="text-center">{{ item.hinhThucThanhToanLabel }}</td>
+              <td class="">
+                <strong>{{ item.tenNguoiDung }}</strong
+                ><br />
+                {{ item.ngayCapNhat | dateTimeFormat }}
+              </td>
+              <td>
+                <div class="actions">
+                  <button
+                    class="btn-icon view"
+                    (click)="handlerOpenDialog(item, 'view')"
+                  >
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
 
-                    <button
-                      class="btn btn-custom btn-sm me-2"
-                      *ngIf="item.trangThaiSanPham !== 2"
-                      (click)="handlerOpenDialog(item, 'edit')"
-                    >
-                      <i class="fa-solid fa-pen-to-square"></i>
-                    </button>
+                  <button
+                    class="btn-icon edit"
+                    *ngIf="item.trangThaiSanPham !== 2"
+                    (click)="handlerOpenDialog(item, 'edit')"
+                  >
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
 
-                    <button
-                      class="btn btn-danger btn-sm me-2"
-                      *ngIf="
-                        item.trangThaiSanPham === 3 ||
-                        item.trangThaiSanPham === 4
-                      "
-                      (click)="deleteData(item.id)"
-                    >
-                      <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  <button
+                    class="btn-icon delete"
+                    *ngIf="
+                      item.trangThaiSanPham === 3 || item.trangThaiSanPham === 4
+                    "
+                    (click)="deleteData(item.id)"
+                  >
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

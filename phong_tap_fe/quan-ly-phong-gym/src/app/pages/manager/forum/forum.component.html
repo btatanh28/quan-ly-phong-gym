@@ -1,53 +1,55 @@
+<div
+  class="list-button page-header d-flex flex-wrap justify-content-between align-items-center p-md-4"
+>
+  <h1 class="mb-0 fw-bold d-flex align-items-center">
+    <i class="bi bi-cart3 text-primary"></i>
+    Quản lý diễn đàn
+  </h1>
+  <button
+    nz-button
+    type="button"
+    class="btn btn-primary d-flex align-items-center gap-2"
+    (click)="handlerOpenDialog()"
+  >
+    <i class="fa-solid fa-eye"></i> Xem diễn đàn
+  </button>
+</div>
+
 <div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">Quản lý diễn đàn</h5>
-  </div>
-
-  <div class="mt-4">
-    <div class="data-table">
-      <div class="hearder-table mt-m-15">
-        <nz-tabset (nzSelectedIndexChange)="changeTab($event)">
-          <nz-tab nzTitle="Danh sách dữ liệu"> </nz-tab>
-        </nz-tabset>
-
-        <div class="lst-controls">
-          <button
-            nz-button
-            type="button"
-            class="btn btn-primary"
-            (click)="handlerOpenDialog()"
-          >
-            <i class="fa-solid fa-eye"></i> Xem diễn đàn
-          </button>
-        </div>
+  <div class="user-bg">
+    <div class="mb-4">
+      <div
+        class="card-header bg-white border-bottom d-flex flex-wrap justify-content-between align-items-center py-3 px-3 px-md-4"
+      >
+        <h6 class="mb-0 fw-semibold">Danh sách diễn đàn</h6>
       </div>
 
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-bordered table-hover">
-            <thead>
-              <tr>
-                <th class="text-center">Tên khách hàng</th>
-                <th class="text-center">Tên gói tập</th>
-                <th class="text-center">Đánh giá</th>
-                <th class="text-center">Nội dung</th>
-                <td class="text-center">Ngày đánh giá</td>
-                <th class="text-center">Hành động</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of listOfData">
-                <td class="text-center">{{ item.tenKhachHang }}</td>
-                <td class="text-center">{{ item.tenGoiTap }}</td>
-                <td class="text-center">
-                  <i
-                    *ngFor="let star of [].constructor(item.danhGia)"
-                    class="fa-solid fa-star text-warning"
-                  ></i>
-                </td>
-                <td class="text-center">{{ item.binhLuan }}</td>
-                <td class="text-center">{{ item.ngayDanhGia | dateFormat }}</td>
-                <td class="text-center">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th class="text-center">Tên khách hàng</th>
+              <th class="text-center">Tên gói tập</th>
+              <th class="text-center">Đánh giá</th>
+              <th class="text-center">Nội dung</th>
+              <td class="text-center">Ngày đánh giá</td>
+              <th class="text-center">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of listOfData">
+              <td class="text-center">{{ item.tenKhachHang }}</td>
+              <td class="text-center">{{ item.tenGoiTap }}</td>
+              <td class="text-center">
+                <i
+                  *ngFor="let star of [].constructor(item.danhGia)"
+                  class="fa-solid fa-star text-warning"
+                ></i>
+              </td>
+              <td class="text-center">{{ item.binhLuan }}</td>
+              <td class="text-center">{{ item.ngayDanhGia | dateFormat }}</td>
+              <td class="text-center">
+                <div class="actions">
                   <!-- <button
                     class="btn btn-custom btn-sm me-2"
                     (click)="handlerOpenDialog(item, 'view')"
@@ -61,18 +63,16 @@
                   >
                     <i class="fa-solid fa-pen-to-square"></i>
                   </button> -->
-                  <button
-                    class="btn btn-danger btn-sm"
-                    (click)="deleteData(item.id)"
-                  >
+                  <button class="btn-icon delete" (click)="deleteData(item.id)">
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
+
