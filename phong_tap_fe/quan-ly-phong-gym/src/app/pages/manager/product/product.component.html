@@ -294,25 +294,27 @@
                       {{ item.giaSauGiam | moneyPipe }}
                     </td>
                     <td class="text-center">
-                      <button
-                        class="btn btn-custom btn-sm me-2"
-                        (click)="handlerOpenDialogSanPham(item, 'view')"
-                      >
-                        <i class="fa-solid fa-eye"></i>
-                      </button>
+                      <div class="actions">
+                        <button
+                          class="btn-icon view"
+                          (click)="handlerOpenDialogSanPham(item, 'view')"
+                        >
+                          <i class="fa-solid fa-eye"></i>
+                        </button>
 
-                      <button
-                        class="btn btn-custom btn-sm me-2"
-                        (click)="handlerOpenDialogSanPham(item, 'edit')"
-                      >
-                        <i class="fa-solid fa-pen-to-square"></i>
-                      </button>
-                      <button
-                        class="btn btn-danger btn-sm"
-                        (click)="deleteDataSanPham(item.id)"
-                      >
-                        <i class="fa-solid fa-trash-can"></i>
-                      </button>
+                        <button
+                          class="btn-icon edit"
+                          (click)="handlerOpenDialogSanPham(item, 'edit')"
+                        >
+                          <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button
+                          class="btn-icon delete"
+                          (click)="deleteDataSanPham(item.id)"
+                        >
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>

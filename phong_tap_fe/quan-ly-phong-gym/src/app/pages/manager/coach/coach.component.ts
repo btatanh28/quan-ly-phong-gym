@@ -77,7 +77,7 @@ export class CoachComponent implements OnInit {
             : 'Thêm thông tin huấn luyện viên cho khách hàng';
         if (mode === 'edit')
           option.title = 'Cập nhật thông tin huấn luyện viên cho khách hàng';
-        option.size = DialogSize.large;
+        option.size = DialogSize.xlarge;
         option.component = ChiTietHuanLuyenVienComponent;
         option.inputs = {
           id: item?.id,
