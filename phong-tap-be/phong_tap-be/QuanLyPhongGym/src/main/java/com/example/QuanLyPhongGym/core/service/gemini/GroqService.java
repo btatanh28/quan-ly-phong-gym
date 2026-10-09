@@ -100,7 +100,7 @@ public class GroqService {
                 headers.setBearerAuth(apiKey);
 
                 Map<String, Object> body = Map.of(
-                                "model", "llama-3.1-8b-instant",
+                                "model", "openai/gpt-oss-20b",
                                 "messages", List.of(
                                                 Map.of(
                                                                 "role", "user",
