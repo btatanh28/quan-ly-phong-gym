@@ -23,7 +23,7 @@
   overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  height: 500px;
+  height: 550px;
 }
 
 /* Hover card */
@@ -49,7 +49,7 @@
   font-weight: 600;
 }
 
-.card-title-soLuong{
+.card-title-soLuong {
   font-size: 16px;
   opacity: 0.8;
 }
@@ -108,7 +108,6 @@
 .card-btn {
   display: flex;
   align-items: end;
-
 }
 
 /* Nền modal */

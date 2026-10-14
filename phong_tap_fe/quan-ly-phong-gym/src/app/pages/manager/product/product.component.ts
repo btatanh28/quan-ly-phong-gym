@@ -49,7 +49,7 @@ export class ProductComponent implements OnInit {
   public totalItems: number = 0;
 
   public pageSanPham = 0;
-  public pageSizeSanPham = 3;
+  public pageSizeSanPham = 4;
   public totalPagesSanPham = 0;
   public totalItemsSanPham: number = 0;
 

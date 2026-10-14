@@ -39,6 +39,7 @@ export class MenuComponent implements OnInit {
   public selectedDanhMucId: String | null = null;
   public products: any[] = [];
   public filteredProducts: any[] = [];
+  public filteredProductsGym: any[] = [];
   public sanPhamList: any[] = [];
   public keyword: string = '';
   public listGiamGia: any[] = giamGia;
@@ -51,7 +52,7 @@ export class MenuComponent implements OnInit {
   public totalPages = 0;
 
   public pageSanPham = 0;
-  public pageSizeSanPham = 4;
+  public pageSizeSanPham = 8;
   public totalPagesSanPham = 0;
   public totalItemsSanPham: number = 0;
 
@@ -172,6 +173,21 @@ export class MenuComponent implements OnInit {
 
     this.totalItemsSanPham = res.totalItems;
     this.totalPagesSanPham = res.totalPages;
+
+    this.filterProducts();
+  }
+
+  filterProducts() {
+    const lowerKeyword = this.keyword.trim().toLowerCase();
+
+    if (!lowerKeyword) {
+      this.filteredProductsGym = [...this.sanPhamList];
+      return;
+    }
+
+    this.filteredProductsGym = this.sanPhamList.filter((product) =>
+      product.tenSanPham?.toLowerCase().includes(lowerKeyword),
+    );
   }
 
   onPageChange(newPage: number) {

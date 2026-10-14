@@ -179,12 +179,20 @@
     <div class="bg-menu container py-1 animate__animated animate__fadeInLeft">
       <h2 class="">Danh sách Sản phẩm</h2>
 
+      <input
+        type="text"
+        class="form-control mb-3 mt-3"
+        placeholder="Tìm kiếm sản phẩm..."
+        [(ngModel)]="keyword"
+        (input)="filterProducts()"
+      />
+
       <!-- Layout chính -->
       <div class="row">
         <!-- Danh sách sản phẩm -->
         <div class="col-md-12">
           <div class="row">
-            <div class="col-md-3 py-3" *ngFor="let product of sanPhamList">
+            <div class="col-md-3 py-3" *ngFor="let product of filteredProductsGym">
               <div class="card">
                 <a class="nav-link" [routerLink]="['/product', product.id]">
                   <img
@@ -291,14 +299,14 @@
       </div>
       <div class="modal-body px-4 py-4">
         <div class="row">
-          <div class="col-md-6">
+          <div class="text-center col-md-6">
             <img
               alt="Hình ảnh sản phẩm"
               [src]="imgUrl + selectedProduct.hinhAnh"
               style="height: 300px; width: 300px; object-fit: cover"
             />
           </div>
-          <div class="col-md-6">
+          <div class="text-center mt-3 col-md-6">
             <h3>
               {{ selectedProduct.tenGoiTap || selectedProduct.tenSanPham }}
             </h3>
