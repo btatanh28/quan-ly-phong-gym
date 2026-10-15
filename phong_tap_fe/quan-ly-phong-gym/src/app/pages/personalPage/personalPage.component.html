@@ -9,7 +9,7 @@
         <div class="col-md-2 text-center">
           <img
             *ngIf="user.hinhAnh; else defaultAvatar"
-            [src]="baseUrl + user.hinhAnh"
+            [src]="user.hinhAnh"
             alt="Hình ảnh sản phẩm"
             class="rounded-circle profile-img"
             style="width: 150px; height: 150px; object-fit: cover"
@@ -225,7 +225,7 @@
             <div class="col-md-2 text-center">
               <img
                 *ngIf="hlv.hinhAnh; else defaultAvatar"
-                [src]="baseUrl + hlv.hinhAnh"
+                [src]="hlv.hinhAnh"
                 alt="Hình ảnh sản phẩm"
                 class="rounded-circle profile-img"
                 style="width: 150px; height: 150px; object-fit: cover"
