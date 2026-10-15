@@ -143,7 +143,7 @@
                 >
                   <img
                     style="width: 140px; height: 140px; object-fit: cover"
-                    [src]="baseUrl + knowledge.hinhAnh"
+                    [src]="knowledge.hinhAnh"
                     alt="Hình ảnh kiến thức"
                     class="knowledge-image mb-3"
                   />
@@ -183,7 +183,7 @@
           >
             <img
               *ngIf="forum.hinhAnhKhachHang; else defaultAvatar"
-              [src]="baseUrl + forum.hinhAnhKhachHang"
+              [src]="forum.hinhAnhKhachHang"
               alt="Hình ảnh"
               class="rounded-circle profile-img"
               style="width: 60px; height: 60px"
