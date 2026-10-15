@@ -86,9 +86,17 @@ export class ChiTietSanPhamGymComponent implements OnInit {
     );
     if (response) {
       this.myForm?.patchValue(response);
+
       if (response.hinhAnh) {
-        this.previewUrl = API_CURRENT + response.hinhAnh;
+        // URL Cloudinary dùng trực tiếp, ảnh cũ /uploads vẫn hỗ trợ
+        this.previewUrl = response.hinhAnh.startsWith('http')
+          ? response.hinhAnh
+          : API_CURRENT + response.hinhAnh;
+
         this.modalImg = false;
+      } else {
+        this.previewUrl = null;
+        this.modalImg = true;
       }
     }
   }
