@@ -1,15 +1,11 @@
 package com.example.QuanLyPhongGym.app.phongtap.khachhang.command.update;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
-
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.example.QuanLyPhongGym.core.exception.NotFoundException;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
+import com.example.QuanLyPhongGym.core.service.Cloudinary.CloudinaryStorageService;
 import com.example.QuanLyPhongGym.domain.entity.app.khachhang.KhachHang;
 import com.example.QuanLyPhongGym.domain.repository.app.khachhang.KhachHangRespository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 public class UpdateKhachHangCommandHandler {
     private final KhachHangRespository respository;
+    private final CloudinaryStorageService cloudinaryStorageService;
 
     public DataResponse handle(UpdateKhachHangCommand request) {
         KhachHang khachHang = respository.findFirstById(request.getId());
@@ -34,20 +31,21 @@ public class UpdateKhachHangCommandHandler {
         khachHang.setDiaChi(request.getDiaChi());
         khachHang.setHinhAnh(request.getHinhAnh());
 
-        if (request.getHinhAnh() != null && request.getHinhAnh().startsWith("data:image")) {
+        String hinhAnh = request.getHinhAnh();
+
+        if (hinhAnh != null && !hinhAnh.isBlank()) {
             try {
-                String base64 = request.getHinhAnh().split(",")[1]; // bỏ phần data:image/png;base64,
-                byte[] bytes = Base64.getDecoder().decode(base64);
+                if (hinhAnh.startsWith("data:image")) {
+                    hinhAnh = cloudinaryStorageService.uploadBase64Image(
+                            hinhAnh,
+                            "quan-ly-phong-gym/khach-hang");
+                }
 
-                // Lưu file vào thư mục uploads/
-                Path path = Paths.get("uploads/" + khachHang.getId() + ".png");
-                Files.createDirectories(path.getParent());
-                Files.write(path, bytes);
+                khachHang.setHinhAnh(hinhAnh);
 
-                // Lưu đường dẫn vào DB
-                khachHang.setHinhAnh("/uploads/" + khachHang.getId() + ".png");
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(
+                        "Không thể upload ảnh khách hàng lên Cloudinary", e);
             }
         }
 

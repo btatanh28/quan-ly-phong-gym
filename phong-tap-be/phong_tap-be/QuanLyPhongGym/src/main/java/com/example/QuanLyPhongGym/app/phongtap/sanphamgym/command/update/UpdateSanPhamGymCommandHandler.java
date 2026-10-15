@@ -1,16 +1,13 @@
 package com.example.QuanLyPhongGym.app.phongtap.sanphamgym.command.update;
 
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.example.QuanLyPhongGym.core.exception.NotFoundException;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
+import com.example.QuanLyPhongGym.core.service.Cloudinary.CloudinaryStorageService;
 import com.example.QuanLyPhongGym.domain.entity.app.sanpham.SanPham;
 import com.example.QuanLyPhongGym.domain.repository.app.sanpham.SanPhamRepository;
 
@@ -22,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 public class UpdateSanPhamGymCommandHandler {
     private final SanPhamRepository repository;
+    private final CloudinaryStorageService cloudinaryStorageService;
 
     public DataResponse handle(UpdateSanPhamGymCommand request) {
         SanPham sanPham = repository.findFirstById(request.getId());
@@ -87,22 +85,22 @@ public class UpdateSanPhamGymCommandHandler {
             sanPham.setGiaSauGiam(giaSauGiam);
         }
 
-        if (request.getHinhAnh() != null && request.getHinhAnh().startsWith("data:image")) {
+        String hinhAnh = request.getHinhAnh();
+
+        if (hinhAnh != null && !hinhAnh.isBlank()) {
             try {
-                String base64 = request.getHinhAnh().split(",")[1]; // bỏ phần data:image/png;base64,
-                byte[] bytes = Base64.getDecoder().decode(base64);
+                if (hinhAnh.startsWith("data:image")) {
+                    hinhAnh = cloudinaryStorageService.uploadBase64Image(
+                            hinhAnh,
+                            "quan-ly-phong-gym/san-pham");
+                }
 
-                // Lưu file vào thư mục uploads/user
-                Path path = Paths.get("uploads/san-pham-gym/" + sanPham.getId() + ".png");
-                Files.createDirectories(path.getParent());
-                Files.write(path, bytes);
+                sanPham.setHinhAnh(hinhAnh);
 
-                // Lưu đường dẫn vào DB
-                sanPham.setHinhAnh("/uploads/san-pham-gym/" + sanPham.getId() + ".png");
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(
+                        "Không thể upload ảnh sản phẩm lên Cloudinary", e);
             }
-
         }
 
         repository.save(sanPham);

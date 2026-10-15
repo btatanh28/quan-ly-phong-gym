@@ -1,16 +1,13 @@
 package com.example.QuanLyPhongGym.app.phongtap.sanpham.command.update;
 
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.example.QuanLyPhongGym.core.exception.NotFoundException;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
+import com.example.QuanLyPhongGym.core.service.Cloudinary.CloudinaryStorageService;
 import com.example.QuanLyPhongGym.domain.entity.app.goitap.GoiTap;
 import com.example.QuanLyPhongGym.domain.repository.app.goitap.GoiTapRespository;
 
@@ -22,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 public class UpdateSanPhamCommandHandler {
     private final GoiTapRespository repository;
+    private final CloudinaryStorageService cloudinaryStorageService;
 
     public DataResponse handle(UpdateSanPhamCommand request) {
         GoiTap goiTap = repository.findFirstById(request.getId());
@@ -118,22 +116,22 @@ public class UpdateSanPhamCommandHandler {
             }
         }
 
-        if (request.getHinhAnh() != null && request.getHinhAnh().startsWith("data:image")) {
+        String hinhAnh = request.getHinhAnh();
+
+        if (hinhAnh != null && !hinhAnh.isBlank()) {
             try {
-                String base64 = request.getHinhAnh().split(",")[1]; // bỏ phần data:image/png;base64,
-                byte[] bytes = Base64.getDecoder().decode(base64);
+                if (hinhAnh.startsWith("data:image")) {
+                    hinhAnh = cloudinaryStorageService.uploadBase64Image(
+                            hinhAnh,
+                            "quan-ly-phong-gym/san-pham");
+                }
 
-                // Lưu file vào thư mục uploads/user
-                Path path = Paths.get("uploads/san-pham/" + goiTap.getId() + ".png");
-                Files.createDirectories(path.getParent());
-                Files.write(path, bytes);
+                goiTap.setHinhAnh(hinhAnh);
 
-                // Lưu đường dẫn vào DB
-                goiTap.setHinhAnh("/uploads/san-pham/" + goiTap.getId() + ".png");
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(
+                        "Không thể upload ảnh gói tập lên Cloudinary", e);
             }
-
         }
 
         repository.save(goiTap);

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.example.QuanLyPhongGym.core.exception.NotFoundException;
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
 import com.example.QuanLyPhongGym.core.service.EmailService;
+import com.example.QuanLyPhongGym.core.service.Cloudinary.CloudinaryStorageService;
 // import com.example.QuanLyPhongGym.core.service.SMS.command.SmsService;
 import com.example.QuanLyPhongGym.domain.entity.app.khachhang.KhachHang;
 import com.example.QuanLyPhongGym.domain.enums.VaiTroEnums;
@@ -24,6 +25,7 @@ public class CreateKhachHangCommandHandler {
     private final KhachHangRespository respository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final CloudinaryStorageService cloudinaryStorageService;
     // private final SmsService smsService;
 
     public DataResponse handle(CreateKhachHangCommand request) {

@@ -1,14 +1,10 @@
 package com.example.QuanLyPhongGym.app.phongtap.danhgia.command.update;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
-
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.example.QuanLyPhongGym.core.model.response.DataResponse;
+import com.example.QuanLyPhongGym.core.service.Cloudinary.CloudinaryStorageService;
 import com.example.QuanLyPhongGym.domain.entity.app.danhgia.DanhGia;
 import com.example.QuanLyPhongGym.domain.repository.app.danhgia.DanhGiaRespository;
 
@@ -20,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 
 public class UpdateDanhGiaCommandHandler {
     private final DanhGiaRespository respository;
+
+    private final CloudinaryStorageService cloudinaryStorageService;
 
     public DataResponse handle(UpdateDanhGiaCommand request) {
         DanhGia danhGia = respository.findFirstById(request.getId());
@@ -33,18 +31,21 @@ public class UpdateDanhGiaCommandHandler {
         danhGia.setHinhAnh(request.getHinhAnh());
         danhGia.setIdGoiTap(request.getIdGoiTap());
 
-        if (request.getHinhAnh() != null && request.getHinhAnh().startsWith("data:image")) {
+        String hinhAnh = request.getHinhAnh();
+
+        if (hinhAnh != null && !hinhAnh.isBlank()) {
             try {
-                String base64 = request.getHinhAnh().split(",")[1];
-                byte[] bytes = Base64.getDecoder().decode(base64);
+                if (hinhAnh.startsWith("data:image")) {
+                    hinhAnh = cloudinaryStorageService.uploadBase64Image(
+                            hinhAnh,
+                            "quan-ly-phong-gym/danh-gia");
+                }
 
-                Path path = Paths.get("uploads/bai-viet/" + danhGia.getId() + ".png");
-                Files.createDirectories(path.getParent());
-                Files.write(path, bytes);
+                danhGia.setHinhAnh(hinhAnh);
 
-                danhGia.setHinhAnh("/uploads/bai-viet/" + danhGia.getId() + ".png");
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new RuntimeException(
+                        "Không thể upload ảnh đánh giá lên Cloudinary", e);
             }
         }
 
