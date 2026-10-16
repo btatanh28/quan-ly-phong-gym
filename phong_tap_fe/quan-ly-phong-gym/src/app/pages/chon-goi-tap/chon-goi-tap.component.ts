@@ -30,7 +30,7 @@ export class ChonGoiTapComponent implements OnInit {
   public indexTab: number = 0;
   public listOfData: any[] = [];
   public page = 0;
-  public pageSize = 5;
+  public pageSize = 7;
   public totalPages = 0;
   public totalItems: number = 0;
   public listGiamGia: any[] = giamGia;
