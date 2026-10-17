@@ -100,6 +100,13 @@
             >
               <i class="fa-solid fa-cart-shopping"></i>
               Quản lý đơn hàng
+              <span
+                *ngIf="newOrderCount > 0"
+                class="bell-shake badge bg-danger rounded-pill ms-1"
+              >
+              {{ newOrderCount }}
+                <i class="fa-solid fa-bell"></i>
+              </span>
             </a>
           </li>
           <li nz-menu-item nzMatchRouter>

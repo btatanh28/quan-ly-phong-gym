@@ -91,3 +91,41 @@ nz-content {
   width: 100%;
   box-shadow: 10px 10px 10px rgba(0, 21, 41, 0.1);
 }
+
+.bell-shake {
+  animation: bellShake 0.8s infinite;
+}
+
+@keyframes bellShake {
+  0% {
+    transform: rotate(0);
+  }
+
+  15% {
+    transform: rotate(15deg);
+  }
+
+  30% {
+    transform: rotate(-15deg);
+  }
+
+  45% {
+    transform: rotate(12deg);
+  }
+
+  60% {
+    transform: rotate(-12deg);
+  }
+
+  75% {
+    transform: rotate(7deg);
+  }
+
+  90% {
+    transform: rotate(-7deg);
+  }
+
+  100% {
+    transform: rotate(0);
+  }
+}

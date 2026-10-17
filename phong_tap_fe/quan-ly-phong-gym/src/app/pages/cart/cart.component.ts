@@ -17,6 +17,7 @@ import { DonHangService } from '../../../common/shared/service/application/donha
 import { MomoService } from '../../../common/shared/service/application/momoService';
 import { LabelValuePipe } from '../../../common/base/pipe/labelValue/labelValue.component';
 import { giamGia } from '../../../common/shared/enums/giamGia.enums';
+import { ThongBaoService } from '../../../common/shared/service/application/thongbaoService';
 
 @Component({
   selector: 'app-cart',
@@ -53,6 +54,7 @@ export class CartComponent implements OnInit {
     private donHangService: DonHangService,
     private momoService: MomoService,
     private vnpayService: VnpayService,
+    private thongBaoService: ThongBaoService,
   ) {
     this.myForm = this.fb.group({
       id: [this.ex.newGuid()],
@@ -228,6 +230,8 @@ export class CartComponent implements OnInit {
       } else if (hinhThucThanhToan === 3) {
         // THANH TOÁN TIỀN MẶT
         await firstValueFrom(this.donHangService.CreateDonHang(req));
+
+        this.thongBaoService.increase();
 
         Swal.fire({
           title: 'Đặt hàng thành công',

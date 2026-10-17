@@ -19,7 +19,8 @@ import { ScanCheckinComponent } from '../scan-checkin/scan-checkin.component';
 import { ExerciseCardComponent } from '../exercise-card/exercise-card.component';
 import { ContactManagerComponent } from '../contact-manager/contact-manager.component';
 import { RevenueComponent } from '../revenue/revenue.component';
-import { CoachComponent } from "../coach/coach.component";
+import { CoachComponent } from '../coach/coach.component';
+import { ThongBaoService } from '../../../../common/shared/service/application/thongbaoService';
 
 @Component({
   selector: 'app-adminMenu',
@@ -38,8 +39,8 @@ import { CoachComponent } from "../coach/coach.component";
     ExerciseCardComponent,
     ContactManagerComponent,
     RevenueComponent,
-    CoachComponent
-],
+    CoachComponent,
+  ],
   templateUrl: './adminMenu.component.html',
   styleUrls: ['./adminMenu.component.css'],
 })
@@ -51,14 +52,20 @@ export class AdminMenuComponent implements OnInit {
   public isCollapsed = false;
   public user: any;
   public listVaiTro: any[] = vaiTroOptions;
+  public newOrderCount = 0;
 
   constructor(
     private authService: AuthService,
     private router: Router,
+    private thongBaoService: ThongBaoService,
   ) {}
 
   ngOnInit() {
     this.user = this.authService.getUserCurrent();
+
+    this.thongBaoService.newOrderCount$.subscribe((count) => {
+      this.newOrderCount = count;
+    });
   }
 
   setTab(tab: string) {
