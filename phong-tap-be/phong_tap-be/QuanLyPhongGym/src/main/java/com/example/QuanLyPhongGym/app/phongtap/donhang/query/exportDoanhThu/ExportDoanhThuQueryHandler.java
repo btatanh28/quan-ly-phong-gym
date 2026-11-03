@@ -107,7 +107,7 @@ public class ExportDoanhThuQueryHandler {
             Sheet sheet = workbook.getSheetAt(0);
 
             // TITLE
-            Row titleRow = sheet.getRow(0);
+            Row titleRow = sheet.getRow(1);
 
             String title;
 
@@ -124,8 +124,46 @@ public class ExportDoanhThuQueryHandler {
 
             titleRow.getCell(0).setCellValue(title);
 
+
+            Row periodRow = sheet.getRow(2);
+
+            String period;
+
+            if (request.getMonth() != null && request.getYear() != null) {
+                period = "Kỳ báo cáo tháng " + request.getMonth()
+                        + " năm " + request.getYear();
+
+            } else if (request.getYear() != null) {
+                period = "Kỳ báo cáo năm " + request.getYear();
+
+            } else {
+                period = "Kỳ báo cáo tất cả thời gian";
+            }
+
+            periodRow.getCell(0).setCellValue(period);
+
+            // NGÀY LẬP BÁO CÁO - Hàng 8
+            java.time.LocalDate today = java.time.LocalDate.now();
+
+            Row dateRow = sheet.getRow(7);
+
+            if (dateRow != null) {
+                Cell dateCell = dateRow.getCell(3);
+
+                if (dateCell != null) {
+                    String dateText = "Hà Nội, ngày "
+                            + today.getDayOfMonth()
+                            + " tháng "
+                            + today.getMonthValue()
+                            + " năm "
+                            + today.getYear();
+
+                    dateCell.setCellValue(dateText);
+                }
+            }
+
             // DATA
-            int startRow = 2;
+            int startRow = 4;
 
             // dòng mẫu có style sẵn trong excel
             Row templateRow = sheet.getRow(startRow);
