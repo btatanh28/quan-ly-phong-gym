@@ -205,7 +205,9 @@
                   <button
                     class="btn-icon delete"
                     *ngIf="
-                      item.trangThaiSanPham === 3 || item.trangThaiSanPham === 4
+                      item.trangThaiSanPham === 3 ||
+                      item.trangThaiSanPham === 4 ||
+                      item.trangThaiSanPham === 1
                     "
                     (click)="deleteData(item.id)"
                   >

@@ -146,6 +146,33 @@ export class TaoDonHangComponent implements OnInit {
         return;
       }
 
+      const hinhThucThanhToanValue =
+        this.myForm?.get('hinhThucThanhToan')?.value;
+      if (hinhThucThanhToanValue === 1) {
+        await Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Thông báo bảo trì',
+          text: 'Tính năng thanh toán MoMo hiện đang tạm bảo trì. Vui lòng chọn phương thức thanh toán khác!',
+          confirmButtonText: 'Đã hiểu',
+          confirmButtonColor: '#3085d6',
+        });
+
+        return;
+      }
+
+      const hinhThucThanhToan = this.myForm?.get('hinhThucThanhToan')?.value;
+      if (!hinhThucThanhToan) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Thiếu hình thức thanh toán',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+
       const req = {
         ...this.myForm?.getRawValue(),
 
@@ -246,7 +273,7 @@ export class TaoDonHangComponent implements OnInit {
     const dialog = this.dialogService.openDialog(
       (option) => {
         option.title = 'Chọn khách hàng';
-        option.size = DialogSize.medium;
+        option.size = DialogSize.large;
         option.component = ChonKhachHangComponent;
       },
       (eventName, selectedData) => {

@@ -161,42 +161,55 @@ export class CartComponent implements OnInit {
     };
 
     const hinhThucThanhToan = this.myForm?.get('hinhThucThanhToan')?.value;
+    if (hinhThucThanhToan === 1) {
+      await Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Thông báo bảo trì',
+        text: 'Tính năng thanh toán MoMo hiện đang tạm bảo trì. Vui lòng chọn phương thức thanh toán khác!',
+        confirmButtonText: 'Đã hiểu',
+        confirmButtonColor: '#3085d6',
+      });
+
+      return;
+    }
 
     try {
-      if (hinhThucThanhToan === 1) {
-        // 1. Tạo đơn hàng trước
-        // trạng thái CHO_THANH_TOAN
+      // if (hinhThucThanhToan === 1) {
+      //   // 1. Tạo đơn hàng trước
+      //   // trạng thái CHO_THANH_TOAN
 
-        const order: any = await firstValueFrom(
-          this.donHangService.CreateDonHang(req),
-        );
+      //   const order: any = await firstValueFrom(
+      //     this.donHangService.CreateDonHang(req),
+      //   );
 
-        const orderId = order.data || order.id;
+      //   const orderId = order.data || order.id;
 
-        if (!orderId) {
-          Swal.fire('Lỗi', 'Không lấy được mã đơn hàng', 'error');
+      //   if (!orderId) {
+      //     Swal.fire('Lỗi', 'Không lấy được mã đơn hàng', 'error');
 
-          return;
-        }
+      //     return;
+      //   }
 
-        // 2. Gọi MoMo
+      //   // 2. Gọi MoMo
 
-        const momoRes: any = await firstValueFrom(
-          this.momoService.payMomo(this.getTotalPrice(), orderId),
-        );
+      //   const momoRes: any = await firstValueFrom(
+      //     this.momoService.payMomo(this.getTotalPrice(), orderId),
+      //   );
 
-        // 3. Chuyển sang MoMo
+      //   // 3. Chuyển sang MoMo
 
-        if (momoRes?.payUrl) {
-          window.location.href = momoRes.payUrl;
+      //   if (momoRes?.payUrl) {
+      //     window.location.href = momoRes.payUrl;
 
-          this.cartService.clearCart();
-        } else {
-          Swal.fire('Lỗi', 'Không tạo được thanh toán MoMo', 'error');
-        }
+      //     this.cartService.clearCart();
+      //   } else {
+      //     Swal.fire('Lỗi', 'Không tạo được thanh toán MoMo', 'error');
+      //   }
 
-        return;
-      } else if (hinhThucThanhToan === 2) {
+      //   return;
+      // } else
+      if (hinhThucThanhToan === 2) {
         // 1. Tạo đơn hàng trước
         // trạng thái CHO_THANH_TOAN
 
