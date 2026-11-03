@@ -33,9 +33,19 @@ public class UpdateDonHangCommandHandler {
         donDangKy.setNgayThanhToan(now);
         donDangKy.setNgayCapNhat(now);
 
-        if (donDangKy.getHinhThucThanhToan() == HinhThucThanhToanEnums.THANHTOANTIENMAT.value) {
+        if (request.getTrangThaiSanPham() == 2) {
+            donDangKy.setTrangThaiSanPham(2);
+            donDangKy.setNgayThanhToan(now);
+
             thanhToanService.xuLyThanhToanThanhCong(donDangKy.getId());
-        } else {
+        } else if (request.getTrangThaiSanPham() == 3) {
+            donDangKy.setTrangThaiSanPham(3);
+            respository.save(donDangKy);
+        } else if (request.getTrangThaiSanPham() == 4) {
+            donDangKy.setTrangThaiSanPham(4);
+            respository.save(donDangKy);
+        } else if (request.getTrangThaiSanPham() == 1) {
+            donDangKy.setTrangThaiSanPham(1);
             respository.save(donDangKy);
         }
 
