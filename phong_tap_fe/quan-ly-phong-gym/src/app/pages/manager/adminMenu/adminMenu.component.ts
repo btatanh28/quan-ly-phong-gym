@@ -21,6 +21,8 @@ import { ContactManagerComponent } from '../contact-manager/contact-manager.comp
 import { RevenueComponent } from '../revenue/revenue.component';
 import { CoachComponent } from '../coach/coach.component';
 import { ThongBaoService } from '../../../../common/shared/service/application/thongbaoService';
+import { firstValueFrom, interval, Subscription } from 'rxjs';
+import { DonHangService } from '../../../../common/shared/service/application/donhangService';
 
 @Component({
   selector: 'app-adminMenu',
@@ -52,24 +54,65 @@ export class AdminMenuComponent implements OnInit {
   public isCollapsed = false;
   public user: any;
   public listVaiTro: any[] = vaiTroOptions;
+
+  // Số thông báo đơn hàng
   public newOrderCount = 0;
+
+  // Timer kiểm tra đơn hàng mỗi phút
+  private notificationSubscription?: Subscription;
+
+  // Subscription lắng nghe số lượng thông báo
+  private countSubscription?: Subscription;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private thongBaoService: ThongBaoService,
+    private donHangService: DonHangService,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.user = this.authService.getUserCurrent();
+    await this.checkNewOrders();
 
-    this.thongBaoService.newOrderCount$.subscribe((count) => {
-      this.newOrderCount = count;
+    this.countSubscription = this.thongBaoService.newOrderCount$.subscribe(
+      (count) => {
+        this.newOrderCount = count;
+      },
+    );
+
+    this.notificationSubscription = interval(60 * 1000).subscribe(() => {
+      this.checkNewOrders();
     });
+  }
+
+  private async checkNewOrders() {
+    try {
+      const res = await firstValueFrom(
+        this.donHangService.GetAllDonHang({
+          page: 0,
+          size: 1000,
+        }),
+      );
+
+      this.thongBaoService.updateNewOrderCount(res.items);
+    } catch (error) {
+      this.thongBaoService.clear();
+    }
+  }
+
+  ngOnDestroy() {
+    this.notificationSubscription?.unsubscribe();
+    this.countSubscription?.unsubscribe();
   }
 
   setTab(tab: string) {
     this.currentTab = tab;
+
+    if (tab === 'orders') {
+      this.thongBaoService.clear();
+    }
+
     this.pageTitle = this.getPageTitle();
   }
 

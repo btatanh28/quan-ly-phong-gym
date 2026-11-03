@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormModule } from '../../../../common/module/forms.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, interval, Subscription } from 'rxjs';
 import { MoneyPipe } from '../../../../common/base/pipe/moneny/moneyPipe.component';
 import { LabelValuePipe } from '../../../../common/base/pipe/labelValue/labelValue.component';
 import { DateTimeFormatPipe } from '../../../../common/base/pipe/dateTimeFormat/dateTimeForm.component';
@@ -23,6 +23,7 @@ import { TaoDonHangComponent } from './tao-don-hang/tao-don-hang.component';
 import Swal from 'sweetalert2';
 import { InputDateComponent } from '../../../../common/base/controls/input-date/input-date.component';
 import { InputDateTimeComponent } from '../../../../common/base/controls/input-date-time/input-date-time.component';
+import { ThongBaoService } from '../../../../common/shared/service/application/thongbaoService';
 
 @Component({
   selector: 'app-order',
@@ -48,11 +49,14 @@ export class OrderComponent implements OnInit {
   public listTrangThaiDonHang: any[] = trangThaiDonHang;
   public listHinhThucThanhToan: any[] = hinhThucThanhToan;
 
+  private notificationSubscription?: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private donHangService: DonHangService,
     private dialogService: DialogService,
     private chiTietDonHangService: ChiTietDonHangService,
+    private thongBaoService: ThongBaoService,
   ) {
     this.formSearch = this.fb.group({
       idKhachHang: [null],
@@ -71,6 +75,10 @@ export class OrderComponent implements OnInit {
 
   async ngOnInit() {
     await this.getData();
+
+    this.notificationSubscription = interval(60 * 1000).subscribe(() => {
+      this.thongBaoService.updateNewOrderCount(this.listOfData);
+    });
   }
 
   async getData() {
@@ -89,6 +97,8 @@ export class OrderComponent implements OnInit {
     );
 
     this.listOfData = res.items;
+
+    this.thongBaoService.updateNewOrderCount(this.listOfData);
   }
 
   async deleteData(val: any) {

@@ -231,8 +231,6 @@ export class CartComponent implements OnInit {
         // THANH TOÁN TIỀN MẶT
         await firstValueFrom(this.donHangService.CreateDonHang(req));
 
-        this.thongBaoService.increase();
-
         Swal.fire({
           title: 'Đặt hàng thành công',
 
