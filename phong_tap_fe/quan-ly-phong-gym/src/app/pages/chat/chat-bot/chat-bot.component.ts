@@ -50,26 +50,22 @@ export class ChatBotComponent implements OnInit {
   }
 
   sendMessage() {
-    const message = this.formChat.get('message')?.value;
+    const message = this.formChat.get('message')?.value?.trim();
 
-    if (!message || !message.trim()) {
-      return;
-    }
+    if (!message) return;
 
-    // thêm tin nhắn người dùng
     this.messages.push({
       sender: 'user',
-
       content: message,
     });
 
     this.scrollToBottom();
-
     this.formChat.reset();
 
-    const request = {
-      id: this.authService.getUserCurrent()?.id,
+    const currentUser = this.authService.getUserCurrent();
 
+    const request = {
+      id: currentUser?.id ?? null,
       message: message,
     };
 
@@ -77,20 +73,19 @@ export class ChatBotComponent implements OnInit {
       next: (res) => {
         this.messages.push({
           sender: 'bot',
-
           content: res,
         });
         this.scrollToBottom();
       },
-
       error: (err) => {
         console.error(err);
 
         this.messages.push({
           sender: 'bot',
-
           content: 'Xin lỗi, hiện tại chatbot không thể trả lời.',
         });
+
+        this.scrollToBottom();
       },
     });
   }

@@ -195,7 +195,7 @@
           QR Thẻ Tập
         </h4>
 
-        <div *ngIf="qrCode; else noCard">
+        <div *ngIf="soNgayConLai > 0 && qrCode">
           <qrcode
             *ngIf="qrCode"
             [qrdata]="qrCode"
@@ -205,6 +205,14 @@
           </qrcode>
 
           <p class="text-success fw-bold">Còn lại: {{ soNgayConLai }} ngày</p>
+        </div>
+
+        <div *ngIf="soNgayConLai <= 0">
+          <p class="text-danger fw-bold">Thẻ tập của bạn đã hết hạn.</p>
+
+          <p class="text-muted">
+            Vui lòng đăng ký thêm gói tập để tiếp tục sử dụng mã QR check-in.
+          </p>
         </div>
 
         <ng-template #noCard>

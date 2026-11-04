@@ -118,7 +118,8 @@ export class PersonalPageComponent implements OnInit {
         this.theTapService.getTheTapByKhachHang(uers.id),
       );
       this.qrCode = qr.data.qrCode;
-      this.soNgayConLai = qr.data.soNgayConLai;
+
+      this.soNgayConLai = Number(qr.data?.soNgayConLai || 0);
     }
 
     if (!tab || tab === 'Huấn luyện viên') {
