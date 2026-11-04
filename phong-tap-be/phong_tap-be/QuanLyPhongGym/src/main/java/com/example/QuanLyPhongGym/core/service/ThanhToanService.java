@@ -2,6 +2,7 @@ package com.example.QuanLyPhongGym.core.service;
 
 import java.util.List;
 
+import com.example.QuanLyPhongGym.app.phongtap.chitietdonhang.command.create.CreateChiTietDonHangCommand;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,12 +35,10 @@ public class ThanhToanService {
     @Transactional
     public void xuLyThanhToanThanhCong(String orderId) {
 
-        DonDangKy donDangKy = donDangKyRespository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng: " + orderId));
+        DonDangKy donDangKy = donDangKyRespository.findById(orderId).orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng: " + orderId));
 
         // Chống IPN gọi nhiều lần
-        if (TrangThaiSanPhamEnums.DATHANHTOAN.value
-                .equals(donDangKy.getTrangThaiSanPham())) {
+        if (TrangThaiSanPhamEnums.DATHANHTOAN.value.equals(donDangKy.getTrangThaiSanPham())) {
 
             return;
         }
@@ -50,13 +49,11 @@ public class ThanhToanService {
         truTonKho(chiTietDonHangs);
 
         // 3. Cập nhật trạng thái thanh toán
-        donDangKy.setTrangThaiSanPham(
-                TrangThaiSanPhamEnums.DATHANHTOAN.value);
+        donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.DATHANHTOAN.value);
 
         taoTheTap(donDangKy, chiTietDonHangs);
 
-        donDangKy.setNgayThanhToan(
-                System.currentTimeMillis());
+        donDangKy.setNgayThanhToan(System.currentTimeMillis());
 
         donDangKyRespository.save(donDangKy);
 
@@ -66,8 +63,7 @@ public class ThanhToanService {
     /**
      * Trừ số lượng tồn kho
      */
-    private void truTonKho(
-            List<ChiTietDonHang> chiTietDonHangs) {
+    private void truTonKho(List<ChiTietDonHang> chiTietDonHangs) {
 
         for (ChiTietDonHang ct : chiTietDonHangs) {
 
@@ -75,15 +71,11 @@ public class ThanhToanService {
                 continue;
             }
 
-            SanPham sanPham = sanPhamRepository
-                    .findById(ct.getIdSanPham())
-                    .orElseThrow(() -> new RuntimeException(
-                            "Không tìm thấy sản phẩm"));
+            SanPham sanPham = sanPhamRepository.findById(ct.getIdSanPham()).orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
 
             int soLuongMua = ct.getSoLuongSanPham();
 
-            sanPham.setSoTonKho(
-                    sanPham.getSoTonKho() - soLuongMua);
+            sanPham.setSoTonKho(sanPham.getSoTonKho() - soLuongMua);
 
             sanPhamRepository.save(sanPham);
         }
@@ -92,27 +84,23 @@ public class ThanhToanService {
     /**
      * Tạo thẻ tập cho những chi tiết đơn hàng là gói tập
      */
-    private void taoTheTap(
-            DonDangKy donDangKy,
-            List<ChiTietDonHang> chiTietHangs) {
+    private void taoTheTap(DonDangKy donDangKy, List<ChiTietDonHang> chiTietHangs) {
 
         Long now = System.currentTimeMillis();
 
-        TheTap theTap = theTapRespository
-                .findFirstByIdKhachHang(
-                        donDangKy.getIdKhachHang());
+        // 1. Tìm thẻ tập của khách hàng
+        TheTap theTap = theTapRespository.findFirstByIdKhachHang(donDangKy.getIdKhachHang());
 
+        // 2. Nếu chưa có thẻ tập thì tạo mới
         if (theTap == null) {
 
             theTap = new TheTap();
 
             theTap.setId(Generator.generate());
 
-            theTap.setIdKhachHang(
-                    donDangKy.getIdKhachHang());
+            theTap.setIdKhachHang(donDangKy.getIdKhachHang());
 
-            theTap.setQrCode(
-                    GenarateCode.generate());
+            theTap.setQrCode(GenarateCode.generate());
 
             theTap.setTrangThai(1);
 
@@ -121,52 +109,49 @@ public class ThanhToanService {
             theTapRespository.save(theTap);
         }
 
+        // 3. Tìm bản ghi gói tập đang hoạt động
+        TheTapGoiTap theTapGoiTap = theTapGoiTapRepository.findFirstByIdTheTapAndTrangThai(theTap.getId(), 1);
+
+        // 4. Duyệt chi tiết đơn hàng
         for (ChiTietDonHang ct : chiTietHangs) {
 
-            // Không phải gói tập
+            // Bỏ qua nếu không phải gói tập
             if (ct.getIdGoiTap() == null) {
                 continue;
             }
 
-            GoiTap goiTap = goiTapRespository
-                    .findFirstById(ct.getIdGoiTap());
+            GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
 
             if (goiTap == null) {
-                throw new RuntimeException(
-                        "Không tìm thấy gói tập: "
-                                + ct.getIdGoiTap());
+                throw new RuntimeException("Không tìm thấy gói tập: " + ct.getIdGoiTap());
             }
 
-            TheTapGoiTap theTapGoiTap = new TheTapGoiTap();
+            // 5. Chưa có bản ghi gói tập thì tạo mới
+            if (theTapGoiTap == null) {
 
-            theTapGoiTap.setId(
-                    Generator.generate());
+                theTapGoiTap = new TheTapGoiTap();
 
-            theTapGoiTap.setIdTheTap(
-                    theTap.getId());
+                theTapGoiTap.setId(Generator.generate());
 
-            theTapGoiTap.setIdGoiTap(
-                    ct.getIdGoiTap());
+                theTapGoiTap.setIdTheTap(theTap.getId());
+
+                theTapGoiTap.setNgayTao(now);
+            }
+
+            // 6. Cập nhật bản ghi gói tập hiện tại
+            theTapGoiTap.setIdGoiTap(goiTap.getId());
 
             theTapGoiTap.setNgayBatDau(now);
 
-            theTapGoiTap.setNgayKetThuc(
-                    now
-                            + goiTap.getSoNgay()
-                                    * 24
-                                    * 60
-                                    * 60
-                                    * 1000L);
+            long ngayKetThuc = now + (goiTap.getSoNgay() * 24L * 60 * 60 * 1000);
 
-            theTapGoiTap.setSoNgayConLai(
-                    goiTap.getSoNgay());
+            theTapGoiTap.setNgayKetThuc(ngayKetThuc);
+
+            theTapGoiTap.setSoNgayConLai(goiTap.getSoNgay());
 
             theTapGoiTap.setTrangThai(1);
 
-            theTapGoiTap.setNgayTao(now);
-
-            theTapGoiTapRepository.save(
-                    theTapGoiTap);
+            theTapGoiTapRepository.save(theTapGoiTap);
         }
     }
 }

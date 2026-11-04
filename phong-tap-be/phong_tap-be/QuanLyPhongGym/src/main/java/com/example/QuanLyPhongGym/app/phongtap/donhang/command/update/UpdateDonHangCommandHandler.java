@@ -34,9 +34,6 @@ public class UpdateDonHangCommandHandler {
         donDangKy.setNgayCapNhat(now);
 
         if (request.getTrangThaiSanPham() == 2) {
-            donDangKy.setTrangThaiSanPham(2);
-            donDangKy.setNgayThanhToan(now);
-
             thanhToanService.xuLyThanhToanThanhCong(donDangKy.getId());
         } else if (request.getTrangThaiSanPham() == 3) {
             donDangKy.setTrangThaiSanPham(3);

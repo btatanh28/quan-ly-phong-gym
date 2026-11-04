@@ -33,260 +33,274 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateDonHangCommandHandler {
 
-        private final DonDangKyRespository donDangKyRepository;
+    private final DonDangKyRespository donDangKyRepository;
 
-        private final GoiTapRespository goiTapRespository;
+    private final GoiTapRespository goiTapRespository;
 
-        private final SanPhamRepository sanPhamRepository;
+    private final SanPhamRepository sanPhamRepository;
 
-        private final ChiTietDonHangRespository chiTietDonHangRespository;
+    private final ChiTietDonHangRespository chiTietDonHangRespository;
 
-        private final TheTapRespository theTapRespository;
+    private final TheTapRespository theTapRespository;
 
-        private final TheTapGoiTapRepository theTapGoiTapRepository;
+    private final TheTapGoiTapRepository theTapGoiTapRepository;
 
-        public DataResponse handle(CreateDonHangCommand request) {
+    public DataResponse handle(CreateDonHangCommand request) {
 
-                kiemTraTonKho(request.getChiTietDonHangs());
+        kiemTraTonKho(request.getChiTietDonHangs());
 
-                Long now = System.currentTimeMillis();
+        Long now = System.currentTimeMillis();
 
-                DonDangKy donDangKy = new DonDangKy();
-
-                /*
-                 * ID đơn hàng chính là orderId gửi MoMo
-                 */
-                donDangKy.setId(request.getId());
-
-                donDangKy.setIdKhachHang(request.getIdKhachHang());
-
-                donDangKy.setEmail(request.getEmail());
-
-                donDangKy.setSoDienThoai(request.getSoDienThoai());
-
-                donDangKy.setIdNguoiDung(request.getIdNguoiDung());
-
-                donDangKy.setNgayMua(now);
-
-                donDangKy.setHinhThucThanhToan(request.getHinhThucThanhToan());
-
-                /*
-                 * Xử lý trạng thái thanh toán
-                 */
-                if (request.getHinhThucThanhToan() == 1) {
-                        // MoMo
-                        donDangKy.setNgayThanhToan(now);
-
-                        donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
-
-                } else if (request.getHinhThucThanhToan() == 2) {
-                        // VnPay
-                        donDangKy.setNgayThanhToan(now);
-
-                        donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
-                } else {
-                        // Tiền mặt
-                        donDangKy.setNgayThanhToan(now);
-
-                        donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
-                }
-
-                donDangKyRepository.save(donDangKy);
-
-                BigDecimal tongTien = BigDecimal.ZERO;
-
-                /*
-                 * Lưu chi tiết đơn hàng
-                 */
-                for (CreateChiTietDonHangCommand ct : request.getChiTietDonHangs()) {
-
-                        ChiTietDonHang chiTiet = new ChiTietDonHang();
-
-                        chiTiet.setId(Generator.generate());
-                        chiTiet.setIdDonHang(donDangKy.getId());
-
-                        BigDecimal thanhTien = BigDecimal.ZERO;
-
-                        // =========================
-                        // GÓI TẬP
-                        // =========================
-                        if (ct.getIdGoiTap() != null) {
-
-                                GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
-
-                                if (goiTap == null) {
-                                        throw new RuntimeException(
-                                                        "Không tìm thấy gói tập: " + ct.getIdGoiTap());
-                                }
-
-                                BigDecimal gia = goiTap.getGiaSauGiam() != null
-                                                ? goiTap.getGiaSauGiam()
-                                                : goiTap.getGia();
-
-                                int soLuong = ct.getSoLuong();
-
-                                thanhTien = gia.multiply(
-                                                BigDecimal.valueOf(soLuong));
-
-                                chiTiet.setIdGoiTap(goiTap.getId());
-                                chiTiet.setIdSanPham(null);
-
-                                chiTiet.setSoLuong(soLuong);
-                                chiTiet.setSoLuongSanPham(0);
-
-                                chiTiet.setGia(gia);
-                                chiTiet.setGiaSanPham(BigDecimal.ZERO);
-                        }
-
-                        // =========================
-                        // SẢN PHẨM
-                        // =========================
-                        else if (ct.getIdSanPham() != null) {
-
-                                SanPham sanPham = sanPhamRepository
-                                                .findFirstById(ct.getIdSanPham());
-
-                                if (sanPham == null) {
-                                        throw new RuntimeException(
-                                                        "Không tìm thấy sản phẩm: " + ct.getIdSanPham());
-                                }
-
-                                BigDecimal giaSanPham = sanPham.getGiaSauGiam() != null
-                                                ? sanPham.getGiaSauGiam()
-                                                : sanPham.getGia();
-
-                                int soLuongSanPham = ct.getSoLuongSanPham();
-
-                                thanhTien = giaSanPham.multiply(
-                                                BigDecimal.valueOf(soLuongSanPham));
-
-                                chiTiet.setIdGoiTap(null);
-                                chiTiet.setIdSanPham(sanPham.getId());
-
-                                chiTiet.setSoLuong(0);
-                                chiTiet.setSoLuongSanPham(soLuongSanPham);
-
-                                chiTiet.setGia(BigDecimal.ZERO);
-                                chiTiet.setGiaSanPham(giaSanPham);
-                        }
-
-                        // =========================
-                        // KHÔNG CÓ GÓI / SẢN PHẨM
-                        // =========================
-                        else {
-                                throw new RuntimeException(
-                                                "Chi tiết đơn hàng phải có idGoiTap hoặc idSanPham");
-                        }
-
-                        chiTiet.setTongTien(thanhTien);
-
-                        tongTien = tongTien.add(thanhTien);
-
-                        chiTietDonHangRespository.save(chiTiet);
-                }
-
-                donDangKy.setTongTien(tongTien);
-
-                donDangKyRepository.save(donDangKy);
-
-                /*
-                 * Nếu thanh toán tiền mặt
-                 * thì tạo thẻ ngay
-                 */
-                if (Objects.equals(donDangKy.getTrangThaiSanPham(), TrangThaiSanPhamEnums.DATHANHTOAN.value)) {
-                        taoTheTap(donDangKy, request.getChiTietDonHangs());
-                }
-
-                return new DataResponse(donDangKy.getId());
-        }
+        DonDangKy donDangKy = new DonDangKy();
 
         /*
-         * Tạo thẻ tập sau khi thanh toán thành công
-         * Dùng cho:
-         * - Tiền mặt
-         * - MoMo callback
+         * ID đơn hàng chính là orderId gửi MoMo
          */
-        public void taoTheTap(
-                        DonDangKy donDangKy,
-                        List<CreateChiTietDonHangCommand> chiTietHangs) {
+        donDangKy.setId(request.getId());
 
-                Long now = System.currentTimeMillis();
+        donDangKy.setIdKhachHang(request.getIdKhachHang());
 
-                TheTap theTap = theTapRespository.findFirstByIdKhachHang(donDangKy.getIdKhachHang());
+        donDangKy.setEmail(request.getEmail());
 
-                if (theTap == null) {
+        donDangKy.setSoDienThoai(request.getSoDienThoai());
 
-                        theTap = new TheTap();
+        donDangKy.setIdNguoiDung(request.getIdNguoiDung());
 
-                        theTap.setId(Generator.generate());
+        donDangKy.setNgayMua(now);
 
-                        theTap.setIdKhachHang(donDangKy.getIdKhachHang());
+        donDangKy.setHinhThucThanhToan(request.getHinhThucThanhToan());
 
-                        theTap.setQrCode(GenarateCode.generate());
+        /*
+         * Xử lý trạng thái thanh toán
+         */
+        if (request.getHinhThucThanhToan() == 1) {
+            // MoMo
+            donDangKy.setNgayThanhToan(now);
 
-                        theTap.setTrangThai(1);
+            donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
 
-                        theTap.setNgayTao(now);
+        } else if (request.getHinhThucThanhToan() == 2) {
+            // VnPay
+            donDangKy.setNgayThanhToan(now);
 
-                        theTapRespository.save(theTap);
-                }
+            donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
+        } else {
+            // Tiền mặt
+            donDangKy.setNgayThanhToan(now);
 
-                for (CreateChiTietDonHangCommand ct : chiTietHangs) {
-
-                        if (ct.getIdGoiTap() == null) {
-                                continue;
-                        }
-
-                        GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
-
-                        TheTapGoiTap theTapGoiTap = new TheTapGoiTap();
-
-                        theTapGoiTap.setId(Generator.generate());
-
-                        theTapGoiTap.setIdTheTap(theTap.getId());
-
-                        theTapGoiTap.setIdGoiTap(ct.getIdGoiTap());
-
-                        theTapGoiTap.setNgayBatDau(now);
-
-                        theTapGoiTap.setNgayKetThuc(now + (goiTap.getSoNgay() * 24 * 60 * 60 * 1000L));
-
-                        theTapGoiTap.setSoNgayConLai(goiTap.getSoNgay());
-
-                        theTapGoiTap.setTrangThai(1);
-
-                        theTapGoiTap.setNgayTao(now);
-
-                        theTapGoiTapRepository.save(theTapGoiTap);
-                }
+            donDangKy.setTrangThaiSanPham(TrangThaiSanPhamEnums.CHOTHANHTOAN.value);
         }
 
-        private void kiemTraTonKho(
-                        List<CreateChiTietDonHangCommand> chiTietHangs) {
+        donDangKyRepository.save(donDangKy);
 
-                for (CreateChiTietDonHangCommand ct : chiTietHangs) {
+        BigDecimal tongTien = BigDecimal.ZERO;
 
-                        // Chỉ kiểm tra sản phẩm
-                        if (ct.getIdSanPham() == null) {
-                                continue;
-                        }
+        /*
+         * Lưu chi tiết đơn hàng
+         */
+        for (CreateChiTietDonHangCommand ct : request.getChiTietDonHangs()) {
 
-                        SanPham sanPham = sanPhamRepository.findFirstById(ct.getIdSanPham());
+            ChiTietDonHang chiTiet = new ChiTietDonHang();
 
-                        if (sanPham == null) {
-                                throw new CustomException("404", "Không tìm thấy sản phẩm: " + ct.getIdSanPham());
-                        }
+            chiTiet.setId(Generator.generate());
+            chiTiet.setIdDonHang(donDangKy.getId());
 
-                        int soLuongMua = ct.getSoLuongSanPham();
+            BigDecimal thanhTien = BigDecimal.ZERO;
 
-                        if (soLuongMua <= 0) {
-                                throw new CustomException("404", "Số lượng sản phẩm phải lớn hơn 0");
-                        }
+            // =========================
+            // GÓI TẬP
+            // =========================
+            if (ct.getIdGoiTap() != null) {
 
-                        if (sanPham.getSoTonKho() < soLuongMua) {
-                                throw new CustomException("404", "Sản phẩm " + sanPham.getTenSanPham() + " chỉ còn "
-                                                + sanPham.getSoTonKho() + " sản phẩm");
-                        }
+                GoiTap goiTap = goiTapRespository.findFirstById(ct.getIdGoiTap());
+
+                if (goiTap == null) {
+                    throw new RuntimeException(
+                            "Không tìm thấy gói tập: " + ct.getIdGoiTap());
                 }
+
+                BigDecimal gia = goiTap.getGiaSauGiam() != null
+                        ? goiTap.getGiaSauGiam()
+                        : goiTap.getGia();
+
+                int soLuong = ct.getSoLuong();
+
+                thanhTien = gia.multiply(
+                        BigDecimal.valueOf(soLuong));
+
+                chiTiet.setIdGoiTap(goiTap.getId());
+                chiTiet.setIdSanPham(null);
+
+                chiTiet.setSoLuong(soLuong);
+                chiTiet.setSoLuongSanPham(0);
+
+                chiTiet.setGia(gia);
+                chiTiet.setGiaSanPham(BigDecimal.ZERO);
+            }
+
+            // =========================
+            // SẢN PHẨM
+            // =========================
+            else if (ct.getIdSanPham() != null) {
+
+                SanPham sanPham = sanPhamRepository
+                        .findFirstById(ct.getIdSanPham());
+
+                if (sanPham == null) {
+                    throw new RuntimeException(
+                            "Không tìm thấy sản phẩm: " + ct.getIdSanPham());
+                }
+
+                BigDecimal giaSanPham = sanPham.getGiaSauGiam() != null
+                        ? sanPham.getGiaSauGiam()
+                        : sanPham.getGia();
+
+                int soLuongSanPham = ct.getSoLuongSanPham();
+
+                thanhTien = giaSanPham.multiply(
+                        BigDecimal.valueOf(soLuongSanPham));
+
+                chiTiet.setIdGoiTap(null);
+                chiTiet.setIdSanPham(sanPham.getId());
+
+                chiTiet.setSoLuong(0);
+                chiTiet.setSoLuongSanPham(soLuongSanPham);
+
+                chiTiet.setGia(BigDecimal.ZERO);
+                chiTiet.setGiaSanPham(giaSanPham);
+            }
+
+            // =========================
+            // KHÔNG CÓ GÓI / SẢN PHẨM
+            // =========================
+            else {
+                throw new RuntimeException(
+                        "Chi tiết đơn hàng phải có idGoiTap hoặc idSanPham");
+            }
+
+            chiTiet.setTongTien(thanhTien);
+
+            tongTien = tongTien.add(thanhTien);
+
+            chiTietDonHangRespository.save(chiTiet);
         }
+
+        donDangKy.setTongTien(tongTien);
+
+        donDangKyRepository.save(donDangKy);
+
+        /*
+         * Nếu thanh toán tiền mặt
+         * thì tạo thẻ ngay
+         */
+//        if (Objects.equals(donDangKy.getTrangThaiSanPham(), TrangThaiSanPhamEnums.DATHANHTOAN.value)) {
+//            taoTheTap(donDangKy, request.getChiTietDonHangs());
+//        }
+
+        return new DataResponse(donDangKy.getId());
+    }
+
+    /*
+     * Tạo thẻ tập sau khi thanh toán thành công
+     * Dùng cho:
+     * - Tiền mặt
+     * - MoMo callback
+     */
+    public void taoTheTap(
+            DonDangKy donDangKy,
+            List<CreateChiTietDonHangCommand> chiTietHangs) {
+
+        Long now = System.currentTimeMillis();
+
+        TheTap theTap = theTapRespository.findFirstByIdKhachHang(donDangKy.getIdKhachHang());
+
+        if (theTap == null) {
+
+            theTap = new TheTap();
+
+            theTap.setId(Generator.generate());
+
+            theTap.setIdKhachHang(donDangKy.getIdKhachHang());
+
+            theTap.setQrCode(GenarateCode.generate());
+
+            theTap.setTrangThai(1);
+
+            theTap.setNgayTao(now);
+
+            theTapRespository.save(theTap);
+        }
+
+        // Tìm bản ghi gói tập hiện tại trong thẻ
+        TheTapGoiTap theTapGoiTap =
+                theTapGoiTapRepository
+                        .findFirstByIdTheTapAndTrangThai(
+                                theTap.getId(), 1);
+
+
+        for (CreateChiTietDonHangCommand ct : chiTietHangs) {
+
+            if (ct.getIdGoiTap() == null) {
+                continue;
+            }
+
+            GoiTap goiTap = goiTapRespository
+                    .findFirstById(ct.getIdGoiTap());
+
+            if (goiTap == null) {
+                throw new RuntimeException("Không tìm thấy gói tập");
+            }
+
+            // Nếu chưa có bản ghi gói tập thì tạo mới
+            if (theTapGoiTap == null) {
+                theTapGoiTap = new TheTapGoiTap();
+
+                theTapGoiTap.setId(Generator.generate());
+                theTapGoiTap.setIdTheTap(theTap.getId());
+                theTapGoiTap.setNgayTao(now);
+            }
+
+            // Cập nhật gói tập vào bản ghi hiện tại
+            theTapGoiTap.setIdGoiTap(goiTap.getId());
+            theTapGoiTap.setNgayBatDau(now);
+
+            long ngayKetThuc = now
+                    + (goiTap.getSoNgay() * 24L * 60 * 60 * 1000);
+
+            theTapGoiTap.setNgayKetThuc(ngayKetThuc);
+            theTapGoiTap.setSoNgayConLai(goiTap.getSoNgay());
+            theTapGoiTap.setTrangThai(1);
+
+            theTapGoiTapRepository.save(theTapGoiTap);
+        }
+    }
+
+    private void kiemTraTonKho(
+            List<CreateChiTietDonHangCommand> chiTietHangs) {
+
+        for (CreateChiTietDonHangCommand ct : chiTietHangs) {
+
+            // Chỉ kiểm tra sản phẩm
+            if (ct.getIdSanPham() == null) {
+                continue;
+            }
+
+            SanPham sanPham = sanPhamRepository.findFirstById(ct.getIdSanPham());
+
+            if (sanPham == null) {
+                throw new CustomException("404", "Không tìm thấy sản phẩm: " + ct.getIdSanPham());
+            }
+
+            int soLuongMua = ct.getSoLuongSanPham();
+
+            if (soLuongMua <= 0) {
+                throw new CustomException("404", "Số lượng sản phẩm phải lớn hơn 0");
+            }
+
+            if (sanPham.getSoTonKho() < soLuongMua) {
+                throw new CustomException("404", "Sản phẩm " + sanPham.getTenSanPham() + " chỉ còn "
+                        + sanPham.getSoTonKho() + " sản phẩm");
+            }
+        }
+    }
 }
