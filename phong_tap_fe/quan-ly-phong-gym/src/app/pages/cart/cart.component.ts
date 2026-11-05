@@ -130,6 +130,7 @@ export class CartComponent implements OnInit {
     this.isModalOpen = false;
   }
 
+  isSubmitting = false;
   async handleCheckout() {
     if (!this.idKhachHang) {
       Swal.fire({
@@ -141,6 +142,23 @@ export class CartComponent implements OnInit {
       this.router.navigate(['/login']);
       return;
     }
+
+    const hinhThucThanhToan = this.myForm?.get('hinhThucThanhToan')?.value;
+    if (!hinhThucThanhToan) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Thiếu hình thức thanh toán',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      return;
+    }
+
+    // Tránh người dùng click nhiều lần
+    if (this.isSubmitting) return;
+
+    this.isSubmitting = true;
 
     const req = {
       ...this.myForm?.getRawValue(),
@@ -160,7 +178,6 @@ export class CartComponent implements OnInit {
       })),
     };
 
-    const hinhThucThanhToan = this.myForm?.get('hinhThucThanhToan')?.value;
     if (hinhThucThanhToan === 1) {
       await Swal.fire({
         position: 'center',
@@ -170,6 +187,10 @@ export class CartComponent implements OnInit {
         confirmButtonText: 'Đã hiểu',
         confirmButtonColor: '#3085d6',
       });
+
+      setTimeout(() => {
+        this.isSubmitting = false;
+      }, 3000);
 
       return;
     }
@@ -221,12 +242,15 @@ export class CartComponent implements OnInit {
 
         if (!orderId) {
           Swal.fire('Lỗi', 'Không lấy được mã đơn hàng', 'error');
-
+          this.isSubmitting = false;
           return;
         }
 
-        // 2. Gọi VnPay
+        setTimeout(() => {
+          this.isSubmitting = false;
+        }, 3000);
 
+        // 2. Gọi VnPay
         const vnPayRes: any = await firstValueFrom(
           this.vnpayService.payVNPay(this.getTotalPrice(), orderId),
         );
@@ -238,6 +262,7 @@ export class CartComponent implements OnInit {
           this.cartService.clearCart();
         } else {
           Swal.fire('Lỗi', 'Không tạo được thanh toán VNPay', 'error');
+          this.isSubmitting = false;
         }
         return;
       } else if (hinhThucThanhToan === 3) {
@@ -251,6 +276,10 @@ export class CartComponent implements OnInit {
 
           icon: 'success',
         });
+
+        setTimeout(() => {
+          this.isSubmitting = false;
+        }, 3000);
 
         this.closeModal();
 
@@ -269,6 +298,8 @@ export class CartComponent implements OnInit {
           text: message,
           confirmButtonText: 'Ok',
         });
+
+        this.isSubmitting = false;
       }
     }
   }

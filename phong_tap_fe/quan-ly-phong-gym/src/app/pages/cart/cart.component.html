@@ -186,8 +186,12 @@
             <button class="btn btn-secondary" (click)="closeModal()">
               Hủy
             </button>
-            <button class="btn btn-success btn-sm" (click)="handleCheckout()">
-              Kiểm tra và xác nhận thanh toán
+            <button
+              *ngIf="!isSubmitting"
+              class="btn btn-success btn-sm"
+              (click)="handleCheckout()"
+            >
+              Xác nhận thanh toán
             </button>
           </div>
         </div>
