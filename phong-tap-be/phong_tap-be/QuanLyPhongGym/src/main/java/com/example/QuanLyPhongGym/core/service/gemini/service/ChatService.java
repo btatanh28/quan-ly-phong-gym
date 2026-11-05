@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.example.QuanLyPhongGym.domain.entity.app.sanpham.SanPham;
+import com.example.QuanLyPhongGym.domain.repository.app.sanpham.SanPhamRepository;
 import org.springframework.stereotype.Service;
 
 // import com.example.QuanLyPhongGym.core.service.gemini.GeminiService;
@@ -40,6 +42,8 @@ public class ChatService {
     private final ChiTietDonHangRespository chiTietDonHangRespository;
 
     private final DonDangKyRespository donDangKyRespository;
+
+    private final SanPhamRepository sanPhamRepository;
 
     public String chat(
             String id,
@@ -79,6 +83,18 @@ public class ChatService {
                 || lower.contains("hội viên")
                 || lower.contains("tài khoản")
                 || lower.contains("thời hạn");
+
+        List<SanPham> danhSachSanPham = sanPhamRepository.findAll();
+
+        String thongTinSanPham = danhSachSanPham.stream()
+                .map(sp -> "- " + sp.getTenSanPham()
+                        + " | Giá: " + sp.getGia()
+                        + " VNĐ")
+                .collect(Collectors.joining("\n"));
+
+        if (thongTinSanPham.isBlank()) {
+            thongTinSanPham = "Hiện tại chưa có sản phẩm.";
+        }
 
         String thongTinThanhVien = "";
 
@@ -200,43 +216,68 @@ public class ChatService {
         String context = """
                 Bạn là chatbot tư vấn chính thức của phòng gym Blue Gym.
                 
-                ĐỐI TƯỢNG NGƯỜI DÙNG:
-                %s
+                        ĐỐI TƯỢNG NGƯỜI DÙNG:
+                        %s
                 
-                Câu hỏi:
-                %s
+                        Câu hỏi:
+                        %s
                 
-                %s
+                        DANH SÁCH GÓI TẬP TRONG DATABASE:
+                        %s
                 
-                Nhiệm vụ:
-                - Trả lời đúng trọng tâm câu hỏi.
-                - Tư vấn về gói tập, huấn luyện viên, lịch tập.
-                - Tư vấn dinh dưỡng, chế độ ăn và tập luyện.
-                - Hỗ trợ các mục tiêu: tăng cân, giảm cân, tăng cơ, giảm mỡ, giữ dáng và cải thiện sức khỏe.
+                        DANH SÁCH SẢN PHẨM TRONG DATABASE:
+                        %s
                 
+                        THÔNG TIN HỘI VIÊN:
+                        %s
                 
-                Quy tắc bắt buộc:
-                - Chỉ trả lời tối đa 4 câu hoặc 6 dòng.
-                - Không viết đoạn văn dài.
-                - Không giải thích lan man.
-                - Dễ hiểu, thân thiện, có thể dùng emoji.
-                - Không dùng markdown (*, **, #).
-                - Sau khi trả lời xong, không gợi ý thêm các chủ đề khác.
-                - Không hỏi "Bạn có muốn..." hoặc "Bạn cần tư vấn..." nếu người dùng không yêu cầu.
-                - Chỉ trả lời đúng nội dung người dùng hỏi.
-                - Không giới thiệu gói tập nếu khách không hỏi.
-                - Chỉ hỏi lại khi câu hỏi hiện tại thật sự thiếu thông tin.
-                - Nếu người dùng đã nói rõ mục tiêu ngay trong câu hỏi thì không hỏi lại.
-                - Không chẩn đoán bệnh; nếu có vấn đề sức khỏe hãy khuyên khách tham khảo bác sĩ.
-                - Địa chỉ chính thức của Blue Gym: P. Võ Thị Sáu / 101 P. Thanh Nhàn, Hai Bà Trưng, Hà Nội 10000, Việt Nam.
-                - Số điện thoại chính thức: 0918492841.
-                - Khi khách hỏi địa chỉ hoặc số điện thoại, chỉ được sử dụng thông tin trên.
-                - Tuyệt đối không tự tạo hoặc suy đoán địa chỉ, số điện thoại.
+                        Nhiệm vụ:
+                        - Trả lời đúng trọng tâm câu hỏi.
+                        - Tư vấn về gói tập, sản phẩm, huấn luyện viên, lịch tập.
+                        - Tư vấn dinh dưỡng, chế độ ăn và tập luyện.
+                        - Hỗ trợ các mục tiêu: tăng cân, giảm cân, tăng cơ, giảm mỡ, giữ dáng và cải thiện sức khỏe.
+                
+                        Quy tắc bắt buộc:
+                        - Chỉ trả lời tối đa 4 câu hoặc 6 dòng.
+                        - Không viết đoạn văn dài.
+                        - Không giải thích lan man.
+                        - Dễ hiểu, thân thiện, có thể dùng emoji.
+                        - Không dùng markdown (*, **, #).
+                        - Sau khi trả lời xong, không gợi ý thêm các chủ đề khác.
+                        - Không hỏi "Bạn có muốn..." hoặc "Bạn cần tư vấn..." nếu người dùng không yêu cầu.
+                        - Chỉ trả lời đúng nội dung người dùng hỏi.
+                        - Không giới thiệu gói tập nếu khách không hỏi.
+                        - Không giới thiệu sản phẩm khi khách không hỏi.
+                        - Chỉ hỏi lại khi câu hỏi hiện tại thật sự thiếu thông tin.
+                        - Nếu người dùng đã nói rõ mục tiêu ngay trong câu hỏi thì không hỏi lại.
+                        - Không chẩn đoán bệnh; nếu có vấn đề sức khỏe hãy khuyên khách tham khảo bác sĩ.
+                        - Địa chỉ chính thức của Blue Gym: P. Võ Thị Sáu / 101 P. Thanh Nhàn, Hai Bà Trưng, Hà Nội 10000, Việt Nam.
+                        - Số điện thoại chính thức: 0918492841.
+                        - Khi khách hỏi địa chỉ hoặc số điện thoại, chỉ được sử dụng thông tin trên.
+                        - Tuyệt đối không tự tạo hoặc suy đoán địa chỉ, số điện thoại.
+                
+                        Quy tắc tư vấn gói tập:
+                        - Khi khách hỏi về gói tập, chỉ sử dụng danh sách gói tập trong database.
+                        - Không tự tạo tên gói tập hoặc giá tiền.
+                        - Nếu khách hỏi danh sách gói tập, hãy giới thiệu các gói hiện có.
+                        - Nếu không có gói tập, thông báo hiện chưa có gói tập.
+                
+                        Quy tắc tư vấn sản phẩm:
+                        - Khi khách hỏi về sản phẩm, chỉ sử dụng danh sách sản phẩm trong database.
+                        - Không tự tạo tên sản phẩm hoặc giá tiền.
+                        - Nếu khách hỏi danh sách sản phẩm, hãy liệt kê các sản phẩm hiện có kèm giá.
+                        - Nếu không có sản phẩm, thông báo hiện chưa có sản phẩm.
+                
+                        Quy tắc thông tin hội viên:
+                        - Chỉ sử dụng thông tin hội viên nếu được cung cấp bên dưới.
+                        - Không tự suy đoán lịch sử mua hàng, số ngày còn lại hoặc thông tin cá nhân.
+                        - Nếu khách vãng lai hỏi thông tin cá nhân, thông báo cần đăng nhập để tra cứu.        
                 """
                 .formatted(
                         doiTuong,
                         message,
                         thongTinGoiTap,
+                        thongTinSanPham,
                         thongTinThanhVien);
 
         return groqService.chat(context);
