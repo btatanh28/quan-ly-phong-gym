@@ -129,6 +129,27 @@
   cursor: pointer;
 }
 
+.chat-product-action {
+  margin-top: 12px;
+}
+
+.btn-buy-now {
+  width: 100%;
+  padding: 10px;
+  background: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-buy-now:hover {
+  background: #0b5ed7;
+  transform: translateY(-2px);
+}
+
 @media (max-width: 768px) {
   .chat-container {
     width: 90%;

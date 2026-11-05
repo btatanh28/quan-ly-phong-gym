@@ -4,10 +4,11 @@ import { FormModule } from '../../../../common/module/forms.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ChatBotService } from '../../../../common/shared/service/application/chatbotService';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-chat-bot',
-  imports: [FormModule, CommonModule],
+  imports: [FormModule, CommonModule, RouterModule],
   templateUrl: './chat-bot.component.html',
   styleUrls: ['./chat-bot.component.css'],
 })
@@ -20,6 +21,7 @@ export class ChatBotComponent implements OnInit {
   public messages: {
     sender: string;
     content: string;
+    showBuyButton?: boolean;
   }[] = [
     {
       sender: 'bot',
@@ -31,6 +33,7 @@ export class ChatBotComponent implements OnInit {
     private fb: FormBuilder,
     private chatBotService: ChatBotService,
     private authService: AuthService,
+    private router: Router,
   ) {
     this.formChat = this.fb.group({
       message: '',
@@ -47,6 +50,41 @@ export class ChatBotComponent implements OnInit {
 
       element.scrollTop = element.scrollHeight;
     }, 100);
+  }
+
+  // Kiểm tra câu hỏi có liên quan đến sản phẩm không
+  isProductQuestion(message: string): boolean {
+    const lower = message.toLowerCase();
+
+    const keywords = [
+      'sản phẩm',
+      'bình nước',
+      'whey',
+      'protein',
+      'găng tay',
+      'thảm tập',
+      'bó gối',
+      'yến mạch',
+      'dây kháng lực',
+      'áo thun',
+      'dây nhảy',
+      'creatine',
+      'kìm bóp tay',
+      'shaker',
+      'mua hàng',
+      'mua sản phẩm',
+    ];
+
+    return keywords.some((keyword) => lower.includes(keyword));
+  }
+
+  // Chuyển sang trang menu và đến danh sách sản phẩm
+  goToProducts() {
+    this.hideChat = true;
+
+    this.router.navigate(['/menu'], {
+      fragment: 'san-pham',
+    });
   }
 
   sendMessage() {
@@ -74,6 +112,7 @@ export class ChatBotComponent implements OnInit {
         this.messages.push({
           sender: 'bot',
           content: res,
+          showBuyButton: this.isProductQuestion(message),
         });
         this.scrollToBottom();
       },

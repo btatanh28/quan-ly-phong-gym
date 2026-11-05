@@ -1,6 +1,6 @@
 import { VnpayService } from './../../../common/shared/service/application/vnPayService';
 import { CommonModule, NgFor } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -66,7 +66,27 @@ export class MenuComponent implements OnInit {
     private authService: AuthService,
     private sanPhamGymService: SanPhamGymService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) {}
+
+  ngAfterViewInit() {
+    this.route.fragment.subscribe((fragment) => {
+      if (fragment === 'san-pham') {
+        setTimeout(() => {
+          this.cdr.detectChanges();
+
+          const element = document.getElementById('san-pham');
+
+          if (element) {
+            element.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
+          }
+        }, 500);
+      }
+    });
+  }
 
   async ngOnInit() {
     await this.getData();

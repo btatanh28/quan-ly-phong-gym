@@ -10,7 +10,13 @@
 
   <div class="chat-body" id="chatBody" #chatBody>
     <div *ngFor="let item of messages" class="message" [ngClass]="item.sender">
-      {{ item.content }}
+      <div>{{ item.content }}</div>
+
+      <div *ngIf="item.showBuyButton" class="chat-product-action">
+        <button type="button" class="btn-buy-now" (click)="goToProducts()">
+          🛒 Mua ngay
+        </button>
+      </div>
     </div>
   </div>
 
