@@ -88,10 +88,28 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  private shouldScrollToProducts = false;
   async ngOnInit() {
+    this.shouldScrollToProducts = this.route.snapshot.fragment === 'san-pham';
+
     await this.getData();
 
     await this.getDataSanPham();
+
+    // Chờ Angular cập nhật giao diện
+    this.cdr.detectChanges();
+
+    // Chỉ cuộn khi có yêu cầu từ chatbot
+    if (this.shouldScrollToProducts) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.getElementById('san-pham')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        });
+      });
+    }
 
     this.route.queryParams.subscribe((params) => {
       // MoMo
