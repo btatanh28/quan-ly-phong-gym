@@ -88,7 +88,7 @@ export class MenuComponent implements OnInit {
           behavior: 'smooth',
           block: 'start',
         });
-      }, 2300);
+      }, 1500);
     }
 
     this.route.queryParams.subscribe((params) => {
