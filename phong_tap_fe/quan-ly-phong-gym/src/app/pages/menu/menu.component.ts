@@ -205,14 +205,25 @@ export class MenuComponent implements OnInit {
 
   async addToCart(product: any) {
     if (!product.id) {
-      alert('Không tìm thấy Sản phẩm');
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi',
+        text: 'Không tìm thấy sản phẩm!',
+      });
       return;
     }
 
-    this.cartService.addToCart(product);
+    const success = this.cartService.addToCart(product);
+
+    if (!success) {
+      return;
+    }
+
     Swal.fire({
       title: 'Thêm giỏ hàng thành công!',
       icon: 'success',
+      timer: 1500,
+      showConfirmButton: false,
     });
   }
 

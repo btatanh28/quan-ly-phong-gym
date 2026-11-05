@@ -75,7 +75,12 @@ export class ChonGoiTapComponent implements OnInit {
       return;
     }
 
-    this.cartService.addToCart(product);
+    const success = this.cartService.addToCart(product);
+
+    if (!success) {
+      return;
+    }
+
     Swal.fire({
       title: 'Thêm giỏ hàng thành công!',
       icon: 'success',

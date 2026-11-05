@@ -1,6 +1,7 @@
 import { AuthService } from './authService';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Injectable } from '@angular/core';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root',
@@ -55,7 +56,26 @@ export class CartService {
     }, 0);
   }
 
-  addToCart(product: any, soLuong: number = 1) {
+  addToCart(product: any, soLuong: number = 1): boolean {
+    if (product.tenGoiTap) {
+      const goiTapCurrent = this.cartItem.find(
+        (item) => !!item.product.tenGoiTap,
+      );
+
+      if (goiTapCurrent) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Không thể thêm gói tập',
+          text:
+            goiTapCurrent.product.id === product.id
+              ? 'Bạn chỉ được đăng ký một gói tập!'
+              : 'Giỏ hàng đã có gói tập khác. Vui lòng xóa gói tập hiện tại trước!',
+        });
+
+        return false;
+      }
+    }
+
     const soLuongCurrent = this.cartItem.find(
       (item) => item.product.id === product.id,
     );
@@ -65,6 +85,7 @@ export class CartService {
       this.cartItem.push({ product, soLuong });
     }
     this.updateCart();
+    return true;
   }
 
   private updateCart() {
