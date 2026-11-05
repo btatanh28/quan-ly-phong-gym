@@ -56,6 +56,8 @@ export class MenuComponent implements OnInit {
   public totalPagesSanPham = 0;
   public totalItemsSanPham: number = 0;
 
+  private shouldScrollToProducts = false;
+
   constructor(
     private productService: ProductService,
     private cartService: CartService,
@@ -69,26 +71,6 @@ export class MenuComponent implements OnInit {
     private cdr: ChangeDetectorRef,
   ) {}
 
-  ngAfterViewInit() {
-    this.route.fragment.subscribe((fragment) => {
-      if (fragment === 'san-pham') {
-        setTimeout(() => {
-          this.cdr.detectChanges();
-
-          const element = document.getElementById('san-pham');
-
-          if (element) {
-            element.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start',
-            });
-          }
-        }, 500);
-      }
-    });
-  }
-
-  private shouldScrollToProducts = false;
   async ngOnInit() {
     this.shouldScrollToProducts = this.route.snapshot.fragment === 'san-pham';
 
@@ -101,14 +83,12 @@ export class MenuComponent implements OnInit {
 
     // Chỉ cuộn khi có yêu cầu từ chatbot
     if (this.shouldScrollToProducts) {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          document.getElementById('san-pham')?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          });
+      setTimeout(() => {
+        document.getElementById('san-pham')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
         });
-      });
+      }, 2300);
     }
 
     this.route.queryParams.subscribe((params) => {
