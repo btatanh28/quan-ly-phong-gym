@@ -46,6 +46,10 @@ public class CreateDonHangCommandHandler {
     private final TheTapGoiTapRepository theTapGoiTapRepository;
 
     public DataResponse handle(CreateDonHangCommand request) {
+        // 1. Kiểm tra khách hàng đã có gói tập còn hiệu lực chưa
+        kiemTraGoiTapConHieuLuc(
+                request.getIdKhachHang(),
+                request.getChiTietDonHangs());
 
         kiemTraTonKho(request.getChiTietDonHangs());
 
@@ -301,6 +305,48 @@ public class CreateDonHangCommandHandler {
                 throw new CustomException("404", "Sản phẩm " + sanPham.getTenSanPham() + " chỉ còn "
                         + sanPham.getSoTonKho() + " sản phẩm");
             }
+        }
+    }
+
+    private void kiemTraGoiTapConHieuLuc(
+            String idKhachHang,
+            List<CreateChiTietDonHangCommand> chiTietHangs) {
+
+        // Chỉ kiểm tra nếu đơn hàng có mua gói tập
+        boolean coGoiTap = chiTietHangs.stream()
+                .anyMatch(ct -> ct.getIdGoiTap() != null);
+
+        if (!coGoiTap) {
+            return;
+        }
+
+        // Tìm thẻ tập của khách hàng
+        TheTap theTap = theTapRespository
+                .findFirstByIdKhachHang(idKhachHang);
+
+        if (theTap == null) {
+            return;
+        }
+
+        // Tìm gói tập đang hoạt động
+        TheTapGoiTap theTapGoiTap = theTapGoiTapRepository
+                .findFirstByIdTheTapAndTrangThai(
+                        theTap.getId(), 1);
+
+        if (theTapGoiTap == null) {
+            return;
+        }
+
+        Integer soNgayConLai = theTapGoiTap.getSoNgayConLai();
+
+        // Nếu còn hơn 1 ngày thì không cho đăng ký gói mới
+        if (soNgayConLai != null && soNgayConLai > 1) {
+            throw new CustomException(
+                    "404",
+                    "Bạn đang có gói tập còn hiệu lực và còn "
+                            + soNgayConLai
+                            + " ngày sử dụng. Vui lòng sử dụng hết gói tập hiện tại trước khi đăng ký gói mới!"
+            );
         }
     }
 }
