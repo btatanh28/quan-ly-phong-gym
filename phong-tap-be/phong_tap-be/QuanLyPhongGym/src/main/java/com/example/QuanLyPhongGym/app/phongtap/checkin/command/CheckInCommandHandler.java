@@ -1,5 +1,7 @@
 package com.example.QuanLyPhongGym.app.phongtap.checkin.command;
 
+import com.example.QuanLyPhongGym.domain.entity.app.khachhang.KhachHang;
+import com.example.QuanLyPhongGym.domain.repository.app.khachhang.KhachHangRespository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +24,20 @@ public class CheckInCommandHandler {
     private final TheTapRespository theTapRespository;
     private final CheckInRepository checkInRepository;
     private final TheTapGoiTapRepository theTapGoiTapRepository;
+    private final KhachHangRespository khachHangRespository;
 
-    public ApiResponse<String> handle(CheckInCommand request) {
+    public ApiResponse<CheckInResponse> handle(CheckInCommand request) {
 
         TheTap theTap = theTapRespository.findFirstByQrCode(request.getQrCode());
 
         if (theTap == null) {
             throw new RuntimeException("QR không hợp lệ");
         }
+
+        // 2. Tìm khách hàng
+        KhachHang khachHang = khachHangRespository
+                .findById(theTap.getIdKhachHang())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy khách hàng"));
 
         long now = System.currentTimeMillis();
 
@@ -63,6 +71,11 @@ public class CheckInCommandHandler {
 
         theTapGoiTapRepository.save(theTapGoiTap);
 
-        return new ApiResponse<>(theTap.getQrCode());
+        CheckInResponse data = new CheckInResponse(
+                theTap.getQrCode(),
+                khachHang.getTenKhachHang()
+        );
+
+        return new ApiResponse<>(data);
     }
 }

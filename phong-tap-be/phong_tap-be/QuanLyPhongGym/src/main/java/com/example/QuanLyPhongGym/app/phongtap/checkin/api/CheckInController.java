@@ -1,5 +1,6 @@
 package com.example.QuanLyPhongGym.app.phongtap.checkin.api;
 
+import com.example.QuanLyPhongGym.app.phongtap.checkin.command.CheckInResponse;
 import com.example.QuanLyPhongGym.app.phongtap.checkin.query.getlist.GetListLichSuCheckIn;
 import com.example.QuanLyPhongGym.app.phongtap.checkin.query.getlist.GetListLichSuCheckInHandler;
 import com.example.QuanLyPhongGym.core.model.response.ListResponse;
@@ -23,10 +24,10 @@ public class CheckInController {
     private final GetListLichSuCheckInHandler getListLichSuCheckInHandler;
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<String>> checkIn(
+    public ResponseEntity<ApiResponse<CheckInResponse>> checkIn(
             @RequestBody CheckInCommand request) {
 
-        ApiResponse<String> response = checkInCommandHandler.handle(request);
+        ApiResponse<CheckInResponse> response = checkInCommandHandler.handle(request);
 
         return ResponseEntity.ok(response);
     }
