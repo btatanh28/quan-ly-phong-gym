@@ -1,11 +1,11 @@
 package com.example.QuanLyPhongGym.app.phongtap.checkin.api;
 
+import com.example.QuanLyPhongGym.app.phongtap.checkin.query.getlist.GetListLichSuCheckIn;
+import com.example.QuanLyPhongGym.app.phongtap.checkin.query.getlist.GetListLichSuCheckInHandler;
+import com.example.QuanLyPhongGym.core.model.response.ListResponse;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.QuanLyPhongGym.app.phongtap.checkin.command.CheckInCommand;
 import com.example.QuanLyPhongGym.app.phongtap.checkin.command.CheckInCommandHandler;
@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 public class CheckInController {
     private final CheckInCommandHandler checkInCommandHandler;
+    private final GetListLichSuCheckInHandler getListLichSuCheckInHandler;
 
     @PostMapping()
     public ResponseEntity<ApiResponse<String>> checkIn(
@@ -27,6 +28,12 @@ public class CheckInController {
 
         ApiResponse<String> response = checkInCommandHandler.handle(request);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("list")
+    public ResponseEntity<ListResponse> getList(@ModelAttribute GetListLichSuCheckIn request) {
+        ListResponse response = getListLichSuCheckInHandler.handle(request);
         return ResponseEntity.ok(response);
     }
 }
