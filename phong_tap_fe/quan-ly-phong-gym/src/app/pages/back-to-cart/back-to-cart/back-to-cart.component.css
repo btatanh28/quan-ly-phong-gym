@@ -1,0 +1,74 @@
+.cart-toggle {
+  position: fixed;
+  bottom: 110px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background: #1e1818;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  animation: cartShake 1.5s ease-in-out infinite;
+}
+
+.cart-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* Số lượng sản phẩm */
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  background: #dc3545;
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes cartShake {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  74% {
+    transform: rotate(-12deg);
+  }
+
+  78% {
+    transform: rotate(12deg);
+  }
+
+  82% {
+    transform: rotate(-12deg);
+  }
+
+  86% {
+    transform: rotate(12deg);
+  }
+
+  90% {
+    transform: rotate(-6deg);
+  }
+
+  94% {
+    transform: rotate(6deg);
+  }
+}

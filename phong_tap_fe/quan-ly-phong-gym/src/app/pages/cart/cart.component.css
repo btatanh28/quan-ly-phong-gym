@@ -37,6 +37,16 @@
   overflow-x: auto;
 }
 
+.back-menu{
+  color: #E64A19;
+  font-size: 20px;
+}
+
+.back-menu:hover{
+  color: #1A1A1A;
+  text-decoration: underline;
+}
+
 @media (max-width: 1200px) {
 }
 

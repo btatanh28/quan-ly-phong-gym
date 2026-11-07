@@ -1,0 +1,4 @@
+<div *ngIf="hasCart && !isCartPage" class="cart-toggle" routerLink="/cart">
+  <i class="fa-solid fa-cart-shopping"></i>
+  <span class="cart-badge">{{ cartCount }}</span>
+</div>

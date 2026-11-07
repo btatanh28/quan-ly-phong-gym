@@ -2,6 +2,8 @@
   <app-header *ngIf="!isUsers"></app-header>
   <div class="bg">
     <router-outlet />
+    <app-back-to-cart *ngIf="!isUsers"></app-back-to-cart>
+    <app-chat-bot *ngIf="!isUsers"></app-chat-bot>
   </div>
   <app-footer *ngIf="!isUsers"></app-footer>
 </main>

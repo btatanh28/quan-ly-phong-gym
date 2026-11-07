@@ -7,6 +7,8 @@ import { FooterComponent } from './pages/footer/footer.component';
 import { HeaderComponent } from './pages/header/header.component';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../common/shared/service/application/authService';
+import { ChatBotComponent } from './pages/chat/chat-bot/chat-bot.component';
+import { BackToCartComponent } from './pages/back-to-cart/back-to-cart/back-to-cart.component';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +19,9 @@ import { AuthService } from '../common/shared/service/application/authService';
     NzMenuModule,
     FooterComponent,
     HeaderComponent,
+    ChatBotComponent,
     NgIf,
+    BackToCartComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

@@ -3,8 +3,8 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 65px;
-  height: 65px;
+  width: 60px;
+  height: 60px;
   background: #1e1818;
   color: white;
   border-radius: 50%;
@@ -26,8 +26,8 @@
 /* Chat Container */
 .chat-container {
   position: fixed;
-  bottom: 110px;
-  right: 30px;
+  bottom: 105px;
+  right: 20px;
   width: 380px;
   background: white;
   border-radius: 20px;
@@ -36,7 +36,7 @@
   opacity: 1;
   visibility: visible;
   transition: all 0.4s ease;
-  z-index: 999;
+  z-index: 99999;
 }
 
 .chat-container.hidden {

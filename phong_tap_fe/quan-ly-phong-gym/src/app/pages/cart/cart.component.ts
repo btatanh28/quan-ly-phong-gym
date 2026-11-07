@@ -3,7 +3,7 @@ import { CommonModule, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { firstValueFrom, Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { FormModule } from '../../../common/module/forms.module';
 import { MoneyPipe } from '../../../common/base/pipe/moneny/moneyPipe.component';
@@ -26,6 +26,7 @@ import { ThongBaoService } from '../../../common/shared/service/application/thon
     NgIf,
     CommonModule,
     FormModule,
+    RouterModule,
     MoneyPipe,
     InputSelectComponent,
     LabelValuePipe,

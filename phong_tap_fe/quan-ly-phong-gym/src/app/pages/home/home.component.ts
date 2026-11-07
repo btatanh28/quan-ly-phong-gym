@@ -26,7 +26,6 @@ import { AuthService } from '../../../common/shared/service/application/authServ
     RouterModule,
     FormModule,
     DateFormatPipe,
-    ChatBotComponent,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
