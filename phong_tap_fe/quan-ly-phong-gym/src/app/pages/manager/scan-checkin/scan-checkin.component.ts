@@ -6,18 +6,34 @@ import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { firstValueFrom } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { InputDateTimeComponent } from '../../../../common/base/controls/input-date-time/input-date-time.component';
+import { DateTimeFormatPipe } from '../../../../common/base/pipe/dateTimeFormat/dateTimeForm.component';
+
+interface CheckInResponse {
+  qrCode: string;
+  tenKhachHang: string;
+}
 
 @Component({
   selector: 'app-scan-checkin',
   standalone: true,
-  imports: [FormModule, CommonModule],
+  imports: [
+    FormModule,
+    CommonModule,
+    InputDateTimeComponent,
+    DateTimeFormatPipe,
+  ],
   templateUrl: './scan-checkin.component.html',
   styleUrls: ['./scan-checkin.component.css'],
 })
 export class ScanCheckinComponent implements OnInit {
   public formSearch?: FormGroup;
-  public qrResult: string = '';
+  public formSearchLichSu?: FormGroup;
+  public qrResult: CheckInResponse | null = null;
   public scanResult: string = '';
+  public listOfData: any[] = [];
+  public activeTab: string = 'Scan';
+  public loadedLichSu = false;
 
   constructor(
     private checkInService: CheckInService,
@@ -25,11 +41,52 @@ export class ScanCheckinComponent implements OnInit {
   ) {
     this.formSearch = this.fb.group({
       qrCode: [null],
+      tenKhachHang: [null],
+    });
+
+    this.formSearchLichSu = this.fb.group({
+      id: [null],
+      qrCode: [null],
+      tenKhachHang: [null],
+      soDienThoai: [null],
+      thoiGian: [null],
     });
   }
 
   async ngOnInit() {
-    await this.startScanner();
+    await this.selectTab(this.activeTab);
+  }
+
+  async selectTab(tab: string) {
+    this.activeTab = tab;
+
+    if (tab === 'Scan') {
+      this.loadedLichSu = false;
+
+      setTimeout(() => {
+        this.startScanner();
+      }, 300);
+    }
+
+    if (tab === 'Lịch sử' && !this.loadedLichSu) {
+      await this.getData();
+
+      this.loadedLichSu = true;
+    }
+  }
+
+  async getData() {
+    if (!this.formSearchLichSu) return;
+
+    const params = {
+      ...this.formSearchLichSu.value,
+    };
+
+    const res = await firstValueFrom(
+      this.checkInService.getAllLichSuCheckIn(params),
+    );
+
+    this.listOfData = res.items;
   }
 
   async startScanner() {
@@ -64,7 +121,7 @@ export class ScanCheckinComponent implements OnInit {
 
       const response = await firstValueFrom(this.checkInService.checkIn(body));
 
-      if (response) {
+      if (response.data) {
         Swal.fire({
           position: 'center',
           icon: 'success',
@@ -79,7 +136,7 @@ export class ScanCheckinComponent implements OnInit {
       }
 
       setTimeout(() => {
-        this.qrResult = '';
+        this.qrResult = null;
         this.formSearch?.reset();
       }, 5000);
     } catch (error) {
@@ -92,7 +149,7 @@ export class ScanCheckinComponent implements OnInit {
       });
 
       setTimeout(() => {
-        this.qrResult = '';
+        this.qrResult = null;
         this.formSearch?.reset();
 
         const input = document.getElementById('qrCode');
@@ -138,4 +195,15 @@ export class ScanCheckinComponent implements OnInit {
       }, 2000);
     }
   }
+
+  async onReset(init: boolean = false) {
+    this.formSearch?.reset();
+    this.formSearchLichSu?.reset();
+
+    if (!init) {
+      await this.getData();
+    }
+  }
+
+  changeTabLichSu(val: any) {}
 }

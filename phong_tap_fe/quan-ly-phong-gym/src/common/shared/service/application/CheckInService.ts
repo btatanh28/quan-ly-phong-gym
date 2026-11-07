@@ -14,4 +14,12 @@ export class CheckInService {
   checkIn(data: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}`, data);
   }
+
+  getAllLichSuCheckIn(params: any): Observable<any> {
+    Object.keys(params).forEach(
+      (key) =>
+        (params[key] == null || params[key] === '') && delete params[key],
+    );
+    return this.http.get<any>(`${this.apiUrl}/list`, { params });
+  }
 }
