@@ -20,7 +20,6 @@ interface CheckInResponse {
   imports: [
     FormModule,
     CommonModule,
-    InputDateTimeComponent,
     DateTimeFormatPipe,
   ],
   templateUrl: './scan-checkin.component.html',
