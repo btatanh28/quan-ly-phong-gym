@@ -29,6 +29,7 @@
 /* scan line animation */
 .scan-line {
   position: absolute;
+  right: 0;
   width: 100%;
   height: 3px;
   background: red;
